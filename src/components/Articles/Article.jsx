@@ -21,8 +21,8 @@ const Article = props => {
             {articleInfo.title}
           </Link>
         ) : (
-            articleInfo.title
-          )}
+          articleInfo.title
+        )}
         {role === 'ROLE_ADMIN' ? (
           <Link
             style={{

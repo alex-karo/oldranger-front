@@ -380,6 +380,11 @@ class Queries {
     return res;
   };
 
+  deleteMessage = async id => {
+    const res = await axios.delete(`/api/chat/messages/${id}`);
+    return res.status;
+  };
+
   createNewTopic = async formData => {
     const res = await axios.post('/api/topic/new', formData);
     return res;

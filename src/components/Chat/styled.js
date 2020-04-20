@@ -137,6 +137,7 @@ export const MessageList = styled(Ul)`
 export const Message = styled(Li)`
   position: relative;
   display: flex;
+  align-items: flex-end;
   justify-content: space-between;
   padding: 10px 20px 10px 68px;
   color: black;
@@ -179,6 +180,20 @@ export const MessageDate = styled.span`
 
 export const MessageText = styled.p`
   margin: 0;
+`;
+
+export const MessageInner = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  .message-delete {
+    cursor: pointer;
+    padding: none;
+    background: inherit;
+    border: none;
+  }
 `;
 
 export const ShowFullButton = styled.button`

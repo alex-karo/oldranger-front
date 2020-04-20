@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Input, Button, message as systemMessage } from 'antd';
+import { Input, Button, message as systemMessage, Icon, Tooltip } from 'antd';
 import { BASE_URL } from '../../constants';
 import queries from '../../serverQueries';
 import {
@@ -21,6 +21,7 @@ import {
   MessageImage,
   MessageDate,
   MessageText,
+  MessageInner,
   ShowFullButton,
   Arrow,
   Form,
@@ -78,7 +79,8 @@ class Chat extends React.Component {
   };
 
   drawMessage = msg => {
-    const { user } = this.props;
+    const { user, deleteCurrentMessage } = this.props;
+    const isSender = user.nickName === msg.sender;
     if (msg.type === 'MESSAGE') {
       // const urlAvatar = msg.senderAvatar === null ? default : `${msg.senderAvatar}`;
       return (
@@ -116,7 +118,20 @@ class Chat extends React.Component {
             )}
             <MessageText className="message-text">{msg.text}</MessageText>
           </div>
-          <MessageDate className="message-date">{msg.messageDate}</MessageDate>
+          <MessageInner>
+            {isSender ? (
+              <Tooltip placement="topRight" title="Удалить">
+                <button
+                  type="button"
+                  className="message-delete"
+                  onClick={() => deleteCurrentMessage(msg.id)}
+                >
+                  <Icon type="delete" theme="twoTone" />
+                </button>
+              </Tooltip>
+            ) : null}
+            <MessageDate className="message-date">{msg.messageDate}</MessageDate>
+          </MessageInner>
         </Message>
       );
     }
@@ -198,6 +213,7 @@ Chat.propTypes = {
   sendMessage: PropTypes.func.isRequired,
   getMessages: PropTypes.func.isRequired,
   handleDisconnect: PropTypes.func.isRequired,
+  deleteCurrentMessage: PropTypes.func.isRequired,
   user: PropTypes.shape({
     nickName: PropTypes.string,
   }),

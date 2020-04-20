@@ -87,6 +87,12 @@ class ChatAuth extends React.Component {
     }
   };
 
+  deleteCurrentMessage = async id => {
+    const { messages } = this.state;
+    queries.deleteMessage(id);
+    this.setState({ messages: messages.filter(msg => msg.id !== id) });
+  };
+
   sendMessage = (msg, file, replyTo = null) => {
     if (msg || file) {
       const { user } = this.props;
@@ -104,7 +110,6 @@ class ChatAuth extends React.Component {
 
   onMessageRecieved = payload => {
     const message = JSON.parse(payload.body);
-
     // fakeId - это костыль, чтобы избежать постоянного перерендера
     // т.к. уникального ключа для событий c type JOIN/LEAVE нет
     if (!message.id) {
@@ -133,6 +138,7 @@ class ChatAuth extends React.Component {
         messages={messages}
         sendMessage={this.sendMessage}
         user={user}
+        deleteCurrentMessage={this.deleteCurrentMessage}
         getMessages={this.getMessages}
       />
     );
