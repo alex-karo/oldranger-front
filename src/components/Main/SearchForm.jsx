@@ -7,7 +7,6 @@ import { Button, Form as AntForm, Input, Select } from 'antd';
 import Context from '../Context';
 import SimpleInput from '../formItems/SimpleInput';
 import { StyledForm, StyledSelect, ButtonGroup } from './styled';
-import Context from '../Context';
 
 const InputGroup = Input.Group;
 const { Option } = Select;
