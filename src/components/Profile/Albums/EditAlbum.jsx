@@ -207,7 +207,7 @@ class EditAlbum extends React.Component {
               src={thumbImageId ? `${photoTempUlr}${thumbImageId}` : `/defaultAlbumPicture.jpg`}
               alt="обложка альбома"
             />
-            <Button block onClick={this.showModal}>
+            <Button block onClick={this.showModal} disabled={photos.length === 0}>
               Изменить
             </Button>
             <EditSectionAlbumTitle>Название альбома</EditSectionAlbumTitle>

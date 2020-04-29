@@ -42,13 +42,13 @@ class UploadPhoto extends React.Component {
         fileList: [],
         uploading: false,
       });
-      message.success('upload successfully.');
+      message.success('успешная загрузка');
       loadPhotos();
     } catch (error) {
       this.setState({
         uploading: true,
       });
-      message.error('upload failed.');
+      message.error('ошибка при загрузке');
     }
   };
 
