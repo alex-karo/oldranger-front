@@ -84,7 +84,6 @@ TopicForm.defaultProps = {
   initialValues: {
     name: '',
     startMessage: '',
-    isHideToAnon: true,
     isDraft: true,
   },
   onSubmitSuccess: null,

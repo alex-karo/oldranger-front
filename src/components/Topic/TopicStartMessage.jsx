@@ -63,7 +63,7 @@ const TopicStartMessage = ({ topic }) => {
               </TopicHeaderAuthorWrappCol>
             </TopicHeaderAuthorWrapp>
           </TopicHeaderWrapp>
-          <TopicHeaderDefaultMessage>{topic.startMessage}</TopicHeaderDefaultMessage>
+          <TopicHeaderDefaultMessage dangerouslySetInnerHTML={{ __html: topic.startMessage }} />
         </TopicContainer>
       )}
     </Context.Consumer>
