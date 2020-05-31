@@ -38,7 +38,7 @@ const Menu = styled.div`
   justify-content: center;
 
   .ant-btn {
-    margin-right: 8%;
+    margin: 1% 6% 1% 0;
   }
 
   .ant-badge {
