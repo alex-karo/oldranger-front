@@ -1,7 +1,10 @@
+/* eslint-disable consistent-return */
 import axios from 'axios';
 import { message } from 'antd';
 import { BASE_URL } from '../constants';
 import { paramsSerializer } from '../utils';
+
+// TODO: По мере появления ошибок необходимо менять текст для них на нормальный, читаемый. Сейчас выводится обычный текст из error.message
 
 class Queries {
   constructor() {
@@ -28,27 +31,47 @@ class Queries {
   };
 
   logIn = async formData => {
-    await axios.post('login', formData);
+    try {
+      await axios.post('login', formData);
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   logOut = async () => {
-    const res = await axios.get('api/logout');
-    return res;
+    try {
+      const res = await axios.get('api/logout');
+      return res;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   updateProfile = async formData => {
-    const res = await axios.post('/api/updateProfile', formData);
-    return res.data;
+    try {
+      const res = await axios.post('/api/updateProfile', formData);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   updateAvatar = async data => {
-    const res = await axios.post('/api/avatar/set', data);
-    return res.data;
+    try {
+      const res = await axios.post('/api/avatar/set', data);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   createArticle = async (data, params) => {
-    const res = await axios.post('/api/article/add', data, { params });
-    return res.data;
+    try {
+      const res = await axios.post('/api/article/add', data, { params });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getArticlesByTag = async tags => {
@@ -57,165 +80,277 @@ class Queries {
       return res.data;
     }
     const tagsString = tags.join('&tag_id=');
-    const res = await axios.get(`/api/article/tag?tag_id=${tagsString}&page=0`, {});
-    return res.data;
+    try {
+      const res = await axios.get(`/api/article/tag?tag_id=${tagsString}&page=0`, {});
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getTagsDtoTree = async () => {
-    const res = await axios.get('/api/tags/node/tree', {
-      withCredentials: true,
-    });
-    return res.data;
+    try {
+      const res = await axios.get('/api/tags/node/tree', {
+        withCredentials: true,
+      });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   addNewTagTree = async params => {
-    const res = await axios.post('/api/tags/node/add', {}, { params });
-    return res.data;
+    try {
+      const res = await axios.post('/api/tags/node/add', {}, { params });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   updateTagsTree = async params => {
-    const res = await axios.put(`/api/tags/node/update`, {}, { params });
-    return res.data;
+    try {
+      const res = await axios.put(`/api/tags/node/update`, {}, { params });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   deleteTags = async params => {
-    const res = await axios.delete(`/api/tags/node/delete`, { params });
-    return res.data;
+    try {
+      const res = await axios.delete(`/api/tags/node/delete`, { params });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   updateArticle = async (id, data, params) => {
-    const res = await axios.put(`/api/article/update/${id}`, data, { params });
-    return res.data;
+    try {
+      const res = await axios.put(`/api/article/update/${id}`, data, { params });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getArticleById = async params => {
-    const res = await axios.get(`/api/article/comments`, { params });
-    return res.data;
+    try {
+      const res = await axios.get(`/api/article/comments`, { params });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getArticleDraft = async () => {
-    const res = await axios.get('/api/article/drafts');
-    return res.data;
+    try {
+      const res = await axios.get('/api/article/drafts');
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   createArticleComment = async (data, params) => {
-    const res = await axios.post('/api/article/comment/add', data, {
-      params,
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-    });
-    return res.data;
+    try {
+      const res = await axios.post('/api/article/comment/add', data, {
+        params,
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   updateArticleComment = async (data, params) => {
-    const res = await axios.put('/api/article/comment/update', data, {
-      params,
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-    });
-    return res.data;
+    try {
+      const res = await axios.put('/api/article/comment/update', data, {
+        params,
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   deleteArticleComment = async id => {
-    const res = await axios.delete(`/api/article/comment/delete/${id}`);
-    return res.data;
+    try {
+      const res = await axios.delete(`/api/article/comment/delete/${id}`);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getArticleTags = async () => {
-    const res = await axios.get('/api/articleTag');
-    return res.data;
+    try {
+      const res = await axios.get('/api/articleTag');
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getData = async page => {
-    const res = await axios.get(page);
-    return res.data;
+    try {
+      const res = await axios.get(page);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getProfileTopics = async page => {
-    const res = await axios.get(`/api/topics/`, { params: { page } });
-    return res.data;
+    try {
+      const res = await axios.get(`/api/topics/`, { params: { page } });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getProfileComments = async page => {
-    const res = await axios.get(`/api/comments/`, { params: { page } });
-    return res.data;
+    try {
+      const res = await axios.get(`/api/comments/`, { params: { page } });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getTopic = async (id, page, limit) => {
-    const res = await axios.get(`/api/topic/${id}`, {
-      params: { page, limit },
-    });
-    return res.data;
+    try {
+      const res = await axios.get(`/api/topic/${id}`, {
+        params: { page, limit },
+      });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   updateTopic = async formData => {
-    const res = await axios.put('/api/topic/edit', formData);
-    return res.data;
+    try {
+      const res = await axios.put('/api/topic/edit', formData);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getProfileSubscriptions = async page => {
-    const res = await axios.get(`/api/subscriptions`, { params: { page } });
-    return res.data;
+    try {
+      const res = await axios.get(`/api/subscriptions`, { params: { page } });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   addTopicToSubscriptions = async topicId => {
-    const res = await axios.post(`/api/subscriptions`, {}, { params: { topicId } });
-    return res.data;
+    try {
+      const res = await axios.post(`/api/subscriptions`, {}, { params: { topicId } });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   deleteTopicFromSubscriptions = async topicId => {
-    const res = await axios.delete('/api/subscriptions', { params: { topicId } });
-    return res.data;
+    try {
+      const res = await axios.delete('/api/subscriptions', { params: { topicId } });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getProfileData = async () => {
-    const { data } = await axios.get('/api/currentUser');
-    return data;
+    try {
+      const { data } = await axios.get('/api/currentUser');
+      return data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getUserProfileData = async () => {
-    const { data } = await axios.get('/api/profile');
-    return data;
+    try {
+      const { data } = await axios.get('/api/profile');
+      return data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getSubsectionTopics = async (id, page = 0) => {
-    // TODO dateTime ???
-    const res = await axios.get(`/api/subsection/${id}`, {
-      params: { dateTime: '2099-01-01%2000%3A00%3A00', page },
-    });
-    return res.data;
+    try {
+      // TODO dateTime ???
+      const res = await axios.get(`/api/subsection/${id}`, {
+        params: { dateTime: '2099-01-01%2000%3A00%3A00', page },
+      });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getAllSections = async () => {
-    const res = await axios.get('/api/allsectionsandsubsections');
-    return res.data;
+    try {
+      const res = await axios.get('/api/allsectionsandsubsections');
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getActualTopics = async () => {
-    const res = await axios.get('/api/actualtopics');
-    return res.data;
+    try {
+      const res = await axios.get('/api/actualtopics');
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   searchByComments = async (finderTag, page) => {
-    const res = await axios.get(`/api/searchComments`, { params: { finderTag, page } });
-    return res.data;
+    try {
+      const res = await axios.get(`/api/searchComments`, { params: { finderTag, page } });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   searchByTopics = async finderTag => {
-    // TODO node nodeValue ???
-    const res = await axios.get(`/api/searchTopics`, {
-      params: { finderTag, node: 0, nodeValue: 0 },
-    });
-    return res.data;
+    try {
+      // TODO node nodeValue ???
+      const res = await axios.get(`/api/searchTopics`, {
+        params: { finderTag, node: 0, nodeValue: 0 },
+      });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   searchByArticles = async (title, page) => {
-    const res = await axios.get(`/api/searchArticles`, {
-      params: { title, page },
-    });
-    return res.data;
+    try {
+      const res = await axios.get(`/api/searchArticles`, {
+        params: { title, page },
+      });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   addComment = async newComment => {
@@ -236,9 +371,12 @@ class Queries {
     if (newComment.image2) {
       formData.set('image2', newComment.image2.originFileObj, newComment.image2.name);
     }
-
-    const res = await axios.post('/api/comment/add', formData);
-    return res.data;
+    try {
+      const res = await axios.post('/api/comment/add', formData);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   updateComment = async editingComment => {
@@ -257,37 +395,60 @@ class Queries {
     if (editingComment.image2) {
       formData.set('image2', editingComment.image2.originFileObj, editingComment.image2.name);
     }
+    try {
+      const res = await axios.put('/api/comment/update', formData, {
+        params: { commentID: commentId },
+      });
 
-    const res = await axios.put('/api/comment/update', formData, {
-      params: { commentID: commentId },
-    });
-
-    return res.data;
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   deleteComment = async commentId => {
-    const res = await axios.delete(`/api/comment/delete/${commentId}`);
-    return res.status;
+    try {
+      const res = await axios.delete(`/api/comment/delete/${commentId}`);
+      return res.status;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getInviteCode = async () => {
-    const res = await axios.post('/api/token/invite', {});
-    return res.data;
+    try {
+      const res = await axios.post('/api/token/invite', {});
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   sendInviteCode = async ({ mail }) => {
-    const res = await axios.post(`/api/token/invite/bymail`, {}, { params: { mail } });
-    return res.data;
+    try {
+      const res = await axios.post(`/api/token/invite/bymail`, {}, { params: { mail } });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   registrationUserAdd = async key => {
-    const res = await axios.post(`/api/registration`, {}, { params: { key } });
-    return res.data;
+    try {
+      const res = await axios.post(`/api/registration`, {}, { params: { key } });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   registrationUser = async values => {
-    const res = await axios.post('/api/token/confirm/bymail', values);
-    return res.data;
+    try {
+      const res = await axios.post('/api/token/confirm/bymail', values);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   // uploadPhoto = async photo => {
@@ -300,133 +461,242 @@ class Queries {
   // };
 
   getAlbums = async () => {
-    const res = await axios.get('/api/albums');
-    return res.data;
+    try {
+      const res = await axios.get('/api/albums');
+      return res.data;
+    } catch (error) {
+      if (error.response.status === 400) {
+        message.error('Альбомы не найдены');
+      } else {
+        message.error(error.message);
+      }
+    }
+    return [];
   };
 
   createNewAlbum = async data => {
-    const res = await axios.post(`/api/albums?albumTitle=${data}`);
-    return res.data;
+    try {
+      const res = await axios.post(`/api/albums?albumTitle=${data}`);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   updateAlbum = async (id, params) => {
-    const res = await axios.put(`/api/albums/${id}`, null, { params });
-    return res.data;
+    try {
+      const res = await axios.put(`/api/albums/${id}`, null, { params });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   deleteAlbum = async id => {
-    const res = await axios.delete(`/api/albums/${id}`);
-    return res.data;
+    try {
+      const res = await axios.delete(`/api/albums/${id}`);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getPhotosFromAlbum = async id => {
-    const res = await axios.get(`/api/albums/getPhotos/${id}`);
-    return res.data;
+    try {
+      const res = await axios.get(`/api/albums/getPhotos/${id}`);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   addPhotosInAlbum = async (albumId, photosArr) => {
-    const res = await axios.post(`/api/photos/${albumId}`, photosArr);
-    return res.data;
+    try {
+      const res = await axios.post(`/api/photos/${albumId}`, photosArr);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   deletePhotoFromAlbum = async photoId => {
-    const res = await axios.delete(`/api/photos/${photoId}`);
-    return res.data;
+    try {
+      const res = await axios.delete(`/api/photos/${photoId}`);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   deletePhotosFromAlbum = async photoIds => {
-    await axios.delete('api/photos/deleteMultiplePhoto', { data: photoIds });
+    try {
+      await axios.delete('api/photos/deleteMultiplePhoto', { data: photoIds });
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getUsersList = async (page, query) => {
-    const res = await axios.get('/api/admin/users', {
-      params: { page: Number(page), ...(query ? { query } : {}) },
-    });
-    return res.data;
+    try {
+      const res = await axios.get('/api/admin/users', {
+        params: { page: Number(page), ...(query ? { query } : {}) },
+      });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getUserById = async id => {
-    const res = await axios.get(`/api/admin/getUser/${id}`);
-    return res.data;
+    try {
+      const res = await axios.get(`/api/admin/getUser/${id}`);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getUsersTree = async (id, deep) => {
-    const res = await axios.get(`/api/usersTree/user/${id}/${deep}`);
-    return res.data;
+    try {
+      const res = await axios.get(`/api/usersTree/user/${id}/${deep}`);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   blackListRequest = async (id, dateUnblock = new Date()) => {
-    const res = await axios.post('/api/admin/blocking', {
-      id,
-      dateUnblock: new Date(dateUnblock).toISOString(),
-      // Не работает, потому что на беке ещё не смержили ветку с dev
-    });
-    return res.data;
+    try {
+      const res = await axios.post('/api/admin/blocking', {
+        id,
+        dateUnblock: new Date(dateUnblock).toISOString(),
+        // Не работает, потому что на беке ещё не смержили ветку с dev
+      });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   unblockUser = async id => {
-    const res = await axios.post('/api/admin/unblocking', { id });
-    return res.data;
+    try {
+      const res = await axios.post('/api/admin/unblocking', { id });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   sendMailToAllUsers = async params => {
-    const res = await axios.post('/api/admin/sendMail', params);
-    return res.data;
+    try {
+      const res = await axios.post('/api/admin/sendMail', params);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   postFile = async formData => {
-    const res = await axios.post('/api/chat/image', formData);
-    return res.data;
+    try {
+      const res = await axios.post('/api/chat/image', formData);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   isForbidden = async () => {
-    const res = await axios.get('/api/chat/isForbidden');
-    return res.data;
+    try {
+      const res = await axios.get('/api/chat/isForbidden');
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getCurrentUser = async () => {
-    const res = await axios.get('/api/chat/user');
-    return res.data;
+    try {
+      const res = await axios.get('/api/chat/user');
+      return res.data;
+    } catch (error) {
+      if (error.response.status === 401) {
+        message.error('Пользователь не авторизован');
+      } else {
+        message.error(error.message);
+      }
+    }
   };
 
   getAllUsers = async () => {
-    const res = await axios.get('/api/chat/users');
-    return res.data;
+    try {
+      const res = await axios.get('/api/chat/users');
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getAllMessages = async page => {
-    const res = await axios.get(`/api/chat/messages?page=${page}`);
-    return res;
+    try {
+      const res = await axios.get(`/api/chat/messages?page=${page}`);
+      return res;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   deleteMessage = async id => {
-    const res = await axios.delete(`/api/chat/messages/${id}`);
-    return res.status;
+    try {
+      const res = await axios.delete(`/api/chat/messages/${id}`);
+      return res.status;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   createNewTopic = async formData => {
-    const res = await axios.post('/api/topic/new', formData);
-    return res;
+    try {
+      const res = await axios.post('/api/topic/new', formData);
+      return res;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getPersonalToken = async (id, params) => {
-    const res = await axios.get(`/api/private/${id}`, { params });
-    return res.data;
+    try {
+      const res = await axios.get(`/api/private/${id}`, { params });
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getPersonalMessage = async (chatToken, page) => {
-    const res = await axios.get(`/api/private/messages/${chatToken}?page=${page}`);
-    return res;
+    try {
+      const res = await axios.get(`/api/private/messages/${chatToken}?page=${page}`);
+      return res;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   postFilePersonalChat = async (formData, chatToken) => {
-    const res = await axios.post(`/api/private/image/${chatToken}`, formData);
-    return res.data;
+    try {
+      const res = await axios.post(`/api/private/image/${chatToken}`, formData);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   getAnotherUserData = async id => {
-    const res = await axios.get(`/api/${id}`);
-    return res.data;
+    try {
+      const res = await axios.get(`/api/${id}`);
+      return res.data;
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 }
 

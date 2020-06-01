@@ -53,7 +53,7 @@ class App extends React.Component {
 
   connect = async () => {
     const currentUser = await queries.getCurrentUser();
-    if (currentUser.username) {
+    if (currentUser && currentUser.username) {
       const socket = new SockJS(`${url}ws`, null, {});
       this.stompClient = Stomp.over(socket);
       // this.stompClient.debug = null;
