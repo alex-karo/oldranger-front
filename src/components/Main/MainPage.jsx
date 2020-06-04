@@ -5,7 +5,6 @@ import queries from '../../serverQueries';
 import { StyledMainPage } from './styled';
 import TopicsList from '../Subsection/TopicsList';
 import TopicsListItem from '../Subsection/TopicsListItem';
-import Albums from '../Profile/Albums/Albums';
 import SearchForm from './SearchForm';
 
 class MainPage extends React.Component {
@@ -41,7 +40,6 @@ class MainPage extends React.Component {
             {rootSections.map(section => (
               <SubSectionsList section={section} key={section.section.id} />
             ))}
-            <Albums isMainPage />
           </>
         ) : (
           <Spin />

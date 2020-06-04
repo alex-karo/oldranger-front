@@ -24,6 +24,7 @@ import PrivateChat from './components/Chat/PrivateChat';
 import AdminPanel from './components/AdminPanel';
 import ProfileAnotherUser from './components/Profile/ProfileAnotherUser';
 import { BASE_URL } from './constants';
+import Albums from './components/Profile/Albums/Albums';
 
 const url = BASE_URL;
 
@@ -111,6 +112,7 @@ class App extends React.Component {
       stompClient,
       connect,
     } = this.state;
+
     return (
       <Context.Provider
         value={{
@@ -135,11 +137,13 @@ class App extends React.Component {
           path="/admin-panel"
           component={AdminPanel}
         />
+        <PrivateRoute isAllowed={isLogin} exact path="/albums" isMainPage component={Albums} />
         <TopicRoute isLogin={isLogin} role={role} />
         <SubsectionRoute />
         <SearchRoute />
         <ArticleDraft />
         <ArticlesRoute isLogin={isLogin} role={role} />
+
         {/* TODO delete eslint disable */}
         {/* eslint-disable-next-line no-undef */}
         {connect ? (

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button, Badge } from 'antd';
 import logo from '../../media/img/logo.png';
@@ -48,7 +48,13 @@ const Menu = styled.div`
   }
 `;
 
-const Header = ({ countMessages }) => {
+const Header = ({ countMessages, location: { pathname } }) => {
+  const [isForumHeader, setHeaderState] = useState(pathname === '/');
+
+  const switchForumSitePart = bool => {
+    setHeaderState(bool);
+  };
+
   return (
     <Context.Consumer>
       {({ isLogin, logOut, user }) => (
@@ -58,9 +64,16 @@ const Header = ({ countMessages }) => {
             <LogoText>Клуб &quot;Старый следопыт&quot;</LogoText>
           </WrapLogo>
           <Menu>
-            <Button type="primary">
-              <Link to="/">Главная</Link>
-            </Button>
+            {isForumHeader ? (
+              <Button type="primary">
+                <Link to="/">Главная</Link>
+              </Button>
+            ) : (
+              <Button type="primary" onClick={() => switchForumSitePart(true)}>
+                <Link to="/">Форум</Link>
+              </Button>
+            )}
+
             {isLogin && (
               <>
                 <Button type="primary">
@@ -69,9 +82,20 @@ const Header = ({ countMessages }) => {
                     <Badge count={countMessages} />
                   </Link>
                 </Button>
-                <Button>
-                  <Link to="/articles">Статьи</Link>
-                </Button>
+                {isForumHeader ? (
+                  <Button type="primary" onClick={() => switchForumSitePart(false)}>
+                    <Link to="/articles">Сайт</Link>
+                  </Button>
+                ) : (
+                  <>
+                    <Button>
+                      <Link to="/articles">Статьи</Link>
+                    </Button>
+                    <Button>
+                      <Link to="/albums">Альбомы</Link>
+                    </Button>
+                  </>
+                )}
               </>
             )}
             {isLogin && user.role === 'ROLE_ADMIN' && (
@@ -106,6 +130,9 @@ Header.defaultProps = {
 
 Header.propTypes = {
   countMessages: PropTypes.number,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
-export default Header;
+export default withRouter(Header);
