@@ -19,7 +19,11 @@ const validationSchema = Yup.object({
 });
 
 const SearchForm = ({ history }) => {
-  const { isLogin } = useContext(Context);
+  const {
+    isLogin,
+    user: { mute },
+  } = useContext(Context);
+  const muteForumMess = mute && mute.includes('ON_FORUM_MESS');
   return (
     <Formik
       initialValues={{
@@ -39,7 +43,7 @@ const SearchForm = ({ history }) => {
             >
               <ButtonGroup>
                 {isLogin && (
-                  <Button>
+                  <Button disabled={muteForumMess}>
                     <Link to="/topic/add">Создать тему</Link>
                   </Button>
                 )}

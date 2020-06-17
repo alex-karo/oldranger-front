@@ -51,7 +51,7 @@ const Menu = styled.div`
 const Header = ({ countMessages }) => {
   return (
     <Context.Consumer>
-      {({ isLogin, logOut, user }) => (
+      {({ isLogin, logOut, user, muteChat }) => (
         <StyledHeader>
           <WrapLogo>
             <Logo src={logo} alt='Клуб "Старый следопыт"' />
@@ -63,7 +63,7 @@ const Header = ({ countMessages }) => {
             </Button>
             {isLogin && (
               <>
-                <Button type="primary">
+                <Button disabled={muteChat} type="primary">
                   <Link to="/chat">
                     Чат
                     <Badge count={countMessages} />
@@ -91,6 +91,11 @@ const Header = ({ countMessages }) => {
             ) : (
               <Button type="link">
                 <Link to="/login">Войти</Link>
+              </Button>
+            )}
+            {isLogin || (
+              <Button type="primary">
+                <Link to="/request-invite">Запросить регистрацию</Link>
               </Button>
             )}
           </Menu>

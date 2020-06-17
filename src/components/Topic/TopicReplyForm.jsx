@@ -1,11 +1,12 @@
-import React from 'react';
-import { Button, Form as AntForm } from 'antd';
+import React, { useContext } from 'react';
+import { Button, Form as AntForm, Alert } from 'antd';
 import PropTypes from 'prop-types';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import TopicReplyEditor from './TopicReplyEditor';
 import TopicPhotoList from './TopicPhotoList';
 import fileProps from './propTypes/fileProps';
+import context from '../Context';
 
 const validationSchema = Yup.object({
   message: Yup.string()
@@ -14,7 +15,17 @@ const validationSchema = Yup.object({
 });
 
 const TopicReplyForm = ({ replyRef, handleSubmitComment, handleAddFile, files, uploading }) => {
-  return (
+  const {
+    user: { mute },
+  } = useContext(context);
+  const muteComments = mute && mute.includes('ON_COMMENTS');
+  return muteComments ? (
+    <Alert
+      message="Комментирование заблокировано"
+      description="Вам запрещено оставлять комментарии"
+      type="error"
+    />
+  ) : (
     <Formik
       initialValues={{
         message: '',
@@ -50,7 +61,7 @@ const TopicReplyForm = ({ replyRef, handleSubmitComment, handleAddFile, files, u
               <Button
                 type="primary"
                 htmlType="submit"
-                disabled={!!touched.messgae && !!errors.message}
+                disabled={(!!touched.messgae && !!errors.message) || muteComments}
                 loading={uploading}
               >
                 {uploading ? 'Отправка' : 'Отправить'}

@@ -49,6 +49,7 @@ class App extends React.Component {
     if (isLogin) {
       await this.connect();
     }
+    this.сonnect();
   };
 
   connect = async () => {
@@ -66,14 +67,20 @@ class App extends React.Component {
     this.setState({ isJoinChat: isJoin, countMessages: 0 });
   };
 
-  onConnected = () => {
-    this.stompClient.subscribe(`/channel/public`, this.onCheckMessage, {});
+  сonnect = () => {
     this.setState({ connect: true });
   };
 
+  onConnected = () => {
+    this.stompClient.subscribe(`/channel/public`, this.onCheckMessage, {});
+  };
+
   disconnect = () => {
-    this.stompClient.unsubscribe(`/channel/public`);
-    this.stompClient.disconnect();
+    const { stompClient } = this.state;
+    if (stompClient) {
+      this.stompClient.unsubscribe(`/channel/public`);
+      this.stompClient.disconnect();
+    }
   };
 
   onCheckMessage = payload => {

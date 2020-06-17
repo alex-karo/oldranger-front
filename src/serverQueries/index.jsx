@@ -24,7 +24,11 @@ class Queries {
       message.error('Сервер не отвечает');
     }
 
-    return Promise.reject(error);
+    if (error.response.status === 401) {
+      message.error('Пользователь не авторизован');
+    }
+
+    message.error(error.message);
   };
 
   logIn = async formData => {
@@ -34,6 +38,11 @@ class Queries {
   logOut = async () => {
     const res = await axios.get('api/logout');
     return res;
+  };
+
+  requestRegistration = async values => {
+    const res = await axios.post('api/registration/new', values);
+    return res.data;
   };
 
   updateProfile = async formData => {
@@ -364,8 +373,22 @@ class Queries {
     return res.data;
   };
 
+  prohibitionWrite = async (id, banType, dateUnblock = new Date()) => {
+    const res = await axios.post('/api/admin/writingBan', {
+      id,
+      banType,
+      dateUnblock: new Date(dateUnblock).toISOString(),
+    });
+    return res.data;
+  };
+
   unblockUser = async id => {
     const res = await axios.post('/api/admin/unblocking', { id });
+    return res.data;
+  };
+
+  unmuteUser = async id => {
+    const res = await axios.post('/api/admin/unmute', { id });
     return res.data;
   };
 

@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import styled from 'styled-components';
 import queries from '../../serverQueries';
 import FormItem from '../formItems/FormItem';
-import { BASE_URL } from '../../constants';
+// import { BASE_URL } from '../../constants';
 
 const { Title } = Typography;
 
@@ -74,7 +74,7 @@ class Invite extends React.Component {
             <h4>Скопируйте ссылку и отправьте другу</h4>
           </Row>
           <Row type="flex" justify="center">
-            <Input value={`${BASE_URL}invite?key=${token}`} />
+            <Input value={`oldranger.club/invite?key=${token}`} />
           </Row>
         </StyledWrapper>
 
