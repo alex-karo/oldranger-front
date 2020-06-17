@@ -1,11 +1,13 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-import { Button, Form as AntForm } from 'antd';
+import { Button, Form as AntForm, Input } from 'antd';
 import SimpleInput from '../formItems/SimpleInput';
-import { StyledForm } from './styled';
+import { StyledForm, ButtonGroup } from './styled';
+
+const InputGroup = Input.Group;
 
 const validationSchema = Yup.object({
   searchRequest: Yup.string()
@@ -31,22 +33,29 @@ const SearchForm = ({ history }) => {
               validateStatus={touched.searchRequest && errors.searchRequest ? 'error' : 'success'}
               help={touched.searchRequest ? errors.searchRequest : ''}
             >
-              <SimpleInput
-                placeholder="поиск по статьям"
-                name="searchRequest"
-                type="text"
-                value={values.searchRequest}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <Button
-                type="primary"
-                htmlType="submit"
-                icon="search"
-                disabled={!!touched.searchRequest && !!errors.searchRequest}
-              >
-                Искать
-              </Button>
+              <ButtonGroup>
+                <Button>
+                  <Link to="/profile/albums">Создать альбом</Link>
+                </Button>
+                <InputGroup compact>
+                  <SimpleInput
+                    placeholder="поиск по статьям"
+                    name="searchRequest"
+                    type="text"
+                    value={values.searchRequest}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </InputGroup>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  icon="search"
+                  disabled={!!touched.searchRequest && !!errors.searchRequest}
+                >
+                  Искать
+                </Button>
+              </ButtonGroup>
             </AntForm.Item>
           </StyledForm>
         );

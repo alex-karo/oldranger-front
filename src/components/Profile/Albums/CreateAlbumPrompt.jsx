@@ -25,7 +25,8 @@ const CreateAlbumPrompt = ({ visible, onCreate, onCancel }) => {
         message.success('Альбом успешно создан!');
       }}
     >
-      <Input value={albumName} onChange={chandeHandler} />
+      <p>Введите название альбома:</p>
+      <Input placeholder="Название альбома" value={albumName} onChange={chandeHandler} />
     </Modal>
   );
 };
