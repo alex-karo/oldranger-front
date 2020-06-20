@@ -74,7 +74,7 @@ class EditEmail extends Component {
         const key = new URLSearchParams(history.location.search).get('key');
         await queries.editEmailConfirm(key);
         Modal.success({
-          title: 'Подтверждение!',
+          title: 'Подтверждение.',
           content: 'Ваш Email успешно изменен.',
         });
         history.push('/profile');
