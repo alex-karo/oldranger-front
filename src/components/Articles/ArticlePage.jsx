@@ -8,6 +8,7 @@ import ArticleComment from './ArticleComment';
 import CommentForm from '../forms/CommentForm';
 import queries from '../../serverQueries';
 import { createTreeBuildFunction } from '../../utils';
+import ArticlesPhotoAlbum from './ArticlesPhotoAlbum';
 
 const buildCommentTreeFromFlat = createTreeBuildFunction('id', 'parentId');
 
@@ -23,6 +24,7 @@ class ArticlePage extends React.Component {
       flatComments: [],
       commentWithOpenEditor: null,
       eventType: 'reply',
+      albumId: null,
     };
   }
 
@@ -38,12 +40,14 @@ class ArticlePage extends React.Component {
         loading: true,
       });
       const { article, articleCommentDto = [] } = await queries.getArticleById({ id: articleId });
+      const { photoAlbum } = article;
       this.setState({
         loading: false,
         error: null,
         article,
         commentsTree: buildCommentTreeFromFlat(articleCommentDto),
         flatComments: articleCommentDto,
+        albumId: photoAlbum ? photoAlbum.id : null,
       });
     } catch (err) {
       this.setState({
@@ -214,8 +218,8 @@ class ArticlePage extends React.Component {
       commentsTree,
       flatComments,
       commentWithOpenEditor,
+      albumId,
     } = this.state;
-
     if (error || loading) {
       return (
         <StyledCenteredContainer>
@@ -229,6 +233,7 @@ class ArticlePage extends React.Component {
     return (
       <>
         <Article articleInfo={article} />
+        {albumId ? <ArticlesPhotoAlbum photoAlbumId={albumId} /> : null}
         <div>Комментарии ({commentsCount})</div>
         {commentsTree.map(comment => (
           <ArticleComment

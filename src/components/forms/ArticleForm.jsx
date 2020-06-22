@@ -1,10 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { Formik } from 'formik';
 import { EditorField, SelectField, FormItemLabel } from './fields';
 import useTagsFetching from '../../hooks/useTagsFetching';
+import ArticlePhotosUploader from '../AdminPanel/ArticlePhotosUploader';
 
 const validationSchema = Yup.object({
   title: Yup.string()
@@ -22,14 +23,19 @@ const editorModules = {
     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
     [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
     [{ list: 'ordered' }, { list: 'bullet' }],
+    ['image'],
   ],
 };
 
 const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onSubmitError }) => {
+  const [photosData, setPhotosData] = useState(new FormData());
+
+  const getFormData = formData => setPhotosData(formData);
+
   const onSubmitWrapper = useCallback(
     () => async (data, { resetForm, setSubmitting }) => {
       try {
-        const res = await onSubmit(data);
+        const res = await onSubmit(photosData, data);
         setSubmitting(false);
         resetForm();
         if (onSubmitSuccess) {
@@ -42,7 +48,7 @@ const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onS
         }
       }
     },
-    [onSubmit, onSubmitSuccess, onSubmitError]
+    [onSubmit, onSubmitSuccess, onSubmitError, photosData]
   );
 
   const { loading, results: tags, error } = useTagsFetching();
@@ -73,6 +79,9 @@ const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onS
                 {/* <ArticleContentView /> */}
               </EditorField>
             </FormItemLabel>
+            <Form.Item>
+              <ArticlePhotosUploader getFormData={getFormData} />
+            </Form.Item>
             <Form.Item wrapperCol={{ span: 24 }}>
               <Checkbox name="isDraft" checked={values.isDraft} onChange={handleChange('isDraft')}>
                 Черновик
