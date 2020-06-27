@@ -105,7 +105,6 @@ class Album extends React.Component {
     const albumId = state.photoAlbumId;
     try {
       const photos = await queries.getPhotosFromAlbum(albumId);
-      console.log('photos ', photos);
       this.setState({ photos });
     } catch (error) {
       /* eslint-disable-next-line no-console */

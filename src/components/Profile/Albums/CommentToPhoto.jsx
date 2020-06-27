@@ -24,7 +24,6 @@ class CommentToPhoto extends React.Component {
 
   handleChange = event => {
     const { value } = event.target;
-    console.log('value ', value);
     this.setState({
       value,
     });
