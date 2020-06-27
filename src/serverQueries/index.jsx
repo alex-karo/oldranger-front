@@ -305,6 +305,13 @@ class Queries {
     return res.status;
   };
 
+  addCommentToPhoto = async params => {
+    const res = await axios.post('/api/photo/comment/add', null, {
+      params,
+    });
+    return res.data;
+  };
+
   getInviteCode = async () => {
     const res = await axios.post('/api/token/invite', {});
     return res.data;

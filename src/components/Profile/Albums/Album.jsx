@@ -8,26 +8,27 @@ import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
 import queries from '../../../serverQueries';
 import UploadPhoto from './UploadPhoto';
+import CommentToPhoto from './CommentToPhoto';
 import { BASE_URL } from '../../../constants';
 
 const CloseModalButton = styled(Button)`
-position:absolute;
-top:20px;
-padding:5px
-right:20px;
-width:44px;
-opacity: 0.7;
-z-index: 1;
+  position: absolute;
+  top: 20px;
+  padding: 5px;
+  width: 44px;
+  right: 20px;
+  opacity: 0.7;
+  z-index: 1;
 `;
 
 const DeletePhotoModalButton = styled(Button)`
-position:absolute;
-top:20px;
-right:64px;
-padding:5px
-width:44px;
-opacity: 0.7;
-z-index: 1;
+  position: absolute;
+  top: 20px;
+  right: 64px;
+  padding: 5px;
+  width: 44px;
+  opacity: 0.7;
+  z-index: 1;
 `;
 
 const DeletePhotoButton = styled(Button)`
@@ -104,6 +105,7 @@ class Album extends React.Component {
     const albumId = state.photoAlbumId;
     try {
       const photos = await queries.getPhotosFromAlbum(albumId);
+      console.log('photos ', photos);
       this.setState({ photos });
     } catch (error) {
       /* eslint-disable-next-line no-console */
@@ -167,6 +169,9 @@ class Album extends React.Component {
         </div>
       ) : null;
 
+    const CustomFooter = ({ isModal, currentIndex }) =>
+      isModal ? <CommentToPhoto idPhoto={photos[currentIndex].photoID} /> : null;
+
     if (window.matchMedia('(max-width: 479px)').matches) {
       return (
         <>
@@ -201,6 +206,7 @@ class Album extends React.Component {
                         currentIndex={selectedIndex}
                         components={{ Header: CustomHeader }}
                       />
+                      <div>Комментарий</div>
                     </Modal>
                   ) : null}
                 </ModalGateway>
@@ -247,11 +253,14 @@ class Album extends React.Component {
             <SortableList axis="xy" items={photos} onSortEnd={this.onSortEnd} distance={1} />
             <ModalGateway>
               {lightboxIsOpen ? (
-                <Modal onClose={this.toggleLightbox}>
+                <Modal onClose={this.toggleLightbox} allowFullscreen={false}>
                   <Carousel
                     views={images}
                     currentIndex={selectedIndex}
-                    components={{ Header: CustomHeader }}
+                    components={{
+                      Footer: CustomFooter,
+                      Header: CustomHeader,
+                    }}
                   />
                 </Modal>
               ) : null}
