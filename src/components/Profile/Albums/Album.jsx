@@ -1,35 +1,36 @@
 import React from 'react';
-import { Row, Button, Icon, message } from 'antd';
+import { Row, Button, Icon, message, Modal } from 'antd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Carousel, { Modal, ModalGateway } from 'react-images';
+// import Carousel, { Modal, ModalGateway } from 'react-images';
 import { Link, withRouter } from 'react-router-dom';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
 import queries from '../../../serverQueries';
 import UploadPhoto from './UploadPhoto';
-import CommentToPhoto from './CommentToPhoto';
+import ModalPhoto from './ModalPhoto';
+
 import { BASE_URL } from '../../../constants';
 
-const CloseModalButton = styled(Button)`
-  position: absolute;
-  top: 20px;
-  padding: 5px;
-  width: 44px;
-  right: 20px;
-  opacity: 0.7;
-  z-index: 1;
-`;
+// const CloseModalButton = styled(Button)`
+//   position: absolute;
+//   top: 20px;
+//   padding: 5px;
+//   width: 44px;
+//   right: 20px;
+//   opacity: 0.7;
+//   z-index: 1;
+// `;
 
-const DeletePhotoModalButton = styled(Button)`
-  position: absolute;
-  top: 20px;
-  right: 64px;
-  padding: 5px;
-  width: 44px;
-  opacity: 0.7;
-  z-index: 1;
-`;
+// const DeletePhotoModalButton = styled(Button)`
+//   position: absolute;
+//   top: 20px;
+//   right: 64px;
+//   padding: 5px;
+//   width: 44px;
+//   opacity: 0.7;
+//   z-index: 1;
+// `;
 
 const DeletePhotoButton = styled(Button)`
   position: absolute;
@@ -45,6 +46,7 @@ export const ImageWrapper = styled.div`
   position: relative;
   width: 239px;
   margin: 3px;
+  cursor: pointer;
   &:hover ${DeletePhotoButton} {
     display: block;
   }
@@ -81,14 +83,48 @@ class Album extends React.Component {
     this.state = {
       photoTempUlr: `${BASE_URL}api/securedPhoto/photoFromAlbum/`,
       photos: [],
-      selectedIndex: 0,
-      lightboxIsOpen: false,
+      currentComments: [],
+      selectedIndex: null,
+      visible: false,
     };
   }
 
   componentDidMount() {
     this.loadPhotos();
   }
+
+  showModal = async photoID => {
+    const res = await queries.getPhotoWithData(photoID);
+    const comments = res.data.commentDto.content;
+    this.setState({
+      selectedIndex: photoID,
+      currentComments: comments,
+      visible: true,
+    });
+  };
+
+  handleOk = () => {
+    this.setState({
+      selectedIndex: null,
+      visible: false,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      selectedIndex: null,
+      visible: false,
+    });
+  };
+
+  addComment = async data => {
+    const { currentComments } = this.state;
+    const newComment = await queries.addCommentToPhoto(data);
+    const newArrComments = [...currentComments, newComment];
+    this.setState({
+      currentComments: newArrComments,
+    });
+  };
 
   toggleLightbox = selectedIndex => {
     this.setState(state => ({
@@ -140,105 +176,42 @@ class Album extends React.Component {
   };
 
   render() {
-    const { photos, lightboxIsOpen, selectedIndex, photoTempUlr } = this.state;
+    const { photos, photoTempUlr, selectedIndex, currentComments, visible } = this.state;
     const {
       location: {
         state: { photoAlbumId, title },
       },
     } = this.props;
-    const images = photos.reduce((acc, photo) => {
-      return [...acc, { src: `${photoTempUlr}${photo.photoID}?type=original` }];
-    }, []);
 
-    const CustomHeader = ({ currentIndex, isModal, modalProps: { onClose } }) =>
-      isModal ? (
-        <div>
-          <CloseModalButton onClick={onClose} title="close">
-            <Icon type="close" />
-          </CloseModalButton>
-          <DeletePhotoModalButton
-            title="delete"
-            onClick={event => {
-              this.deletePhoto(photos[currentIndex].photoID)(event);
-              onClose();
-            }}
-          >
-            <Icon type="delete" title="delete" />
-          </DeletePhotoModalButton>
-        </div>
-      ) : null;
-
-    const CustomFooter = ({ isModal, currentIndex }) =>
-      isModal ? <CommentToPhoto idPhoto={photos[currentIndex].photoID} /> : null;
-
-    if (window.matchMedia('(max-width: 479px)').matches) {
+    const SortableItem = SortableElement(({ value }) => {
+      const { photoID } = value;
       return (
-        <>
-          <AlbumNavigation>
-            <Link to="/profile/albums">Альбомы</Link>
-            <span>{` > ${title}`}</span>
-          </AlbumNavigation>
-          <AlbumWrapper>
-            {photos.length > 0 ? (
-              <>
-                {photos.map((photo, index) => (
-                  <ImageWrapper onClick={() => this.toggleLightbox(index)} key={photo.photoID}>
-                    <StyledImage
-                      title={photo.title}
-                      alt="userPhoto"
-                      src={`${photoTempUlr}${photo.photoID}?type=original`}
-                    />
-                    <DeletePhotoButton
-                      type="default"
-                      title="Удалить Фотографию"
-                      onClick={this.deletePhoto(photo.photoID)}
-                    >
-                      <Icon type="delete" style={{ color: 'red' }} />
-                    </DeletePhotoButton>
-                  </ImageWrapper>
-                ))}
-                <ModalGateway>
-                  {lightboxIsOpen ? (
-                    <Modal onClose={this.toggleLightbox}>
-                      <Carousel
-                        views={images}
-                        currentIndex={selectedIndex}
-                        components={{ Header: CustomHeader }}
-                      />
-                      <div>Комментарий</div>
-                    </Modal>
-                  ) : null}
-                </ModalGateway>
-              </>
-            ) : (
-              <StyledRow type="flex" justify="center">
-                <h4>Альбом пуст</h4>
-              </StyledRow>
-            )}
-          </AlbumWrapper>
-          <UploadPhoto albumId={photoAlbumId} loadPhotos={this.loadPhotos} />
-        </>
+        <ImageWrapper onClick={() => this.showModal(photoID)}>
+          <StyledImage title={value.title} alt="userPhoto" src={`${photoTempUlr}${photoID}`} />
+          <DeletePhotoButton
+            type="default"
+            title="Удалить Фотографию"
+            onClick={this.deletePhoto(photoID)}
+          >
+            <Icon type="delete" style={{ color: 'red' }} />
+          </DeletePhotoButton>
+        </ImageWrapper>
       );
-    }
-
-    const SortableItem = SortableElement(({ value, photoNum }) => (
-      <ImageWrapper onClick={() => this.toggleLightbox(photoNum)}>
-        <StyledImage title={value.title} alt="userPhoto" src={`${photoTempUlr}${value.photoID}`} />
-        <DeletePhotoButton
-          type="default"
-          title="Удалить Фотографию"
-          onClick={this.deletePhoto(value.photoID)}
-        >
-          <Icon type="delete" style={{ color: 'red' }} />
-        </DeletePhotoButton>
-      </ImageWrapper>
-    ));
+    });
 
     const SortableList = SortableContainer(({ items }) => (
       <AlbumWrapper>
-        {items.map((photo, index) => (
-          <SortableItem key={photo.photoID} index={index} value={photo} photoNum={index} />
-        ))}
+        {items.map(photo => {
+          const { photoID } = photo;
+          return (
+            <SortableItem
+              key={photoID}
+              photoId={photoID}
+              value={photo}
+              onClick={() => this.showModal(photoID)}
+            />
+          );
+        })}
       </AlbumWrapper>
     ));
     return (
@@ -248,28 +221,29 @@ class Album extends React.Component {
           <span>{` > ${title}`}</span>
         </AlbumNavigation>
         {photos.length > 0 ? (
-          <>
-            <SortableList axis="xy" items={photos} onSortEnd={this.onSortEnd} distance={1} />
-            <ModalGateway>
-              {lightboxIsOpen ? (
-                <Modal onClose={this.toggleLightbox} allowFullscreen={false}>
-                  <Carousel
-                    views={images}
-                    currentIndex={selectedIndex}
-                    components={{
-                      Footer: CustomFooter,
-                      Header: CustomHeader,
-                    }}
-                  />
-                </Modal>
-              ) : null}
-            </ModalGateway>
-          </>
+          <SortableList axis="xy" items={photos} onSortEnd={this.onSortEnd} distance={1} />
         ) : (
           <StyledRow type="flex" justify="center">
             <h4>Альбом пуст</h4>
           </StyledRow>
         )}
+
+        <Modal
+          title=""
+          visible={visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+          footer={null}
+          width={800}
+        >
+          <ModalPhoto
+            idPhoto={selectedIndex}
+            src={`${photoTempUlr}${selectedIndex}`}
+            currentComments={currentComments}
+            addComment={this.addComment}
+          />
+        </Modal>
+
         <UploadPhoto albumId={photoAlbumId} loadPhotos={this.loadPhotos} />
       </>
     );

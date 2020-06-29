@@ -312,6 +312,16 @@ class Queries {
     return res.data;
   };
 
+  // getPhotoById = async id => {
+  //   const res = await axios.get(`/api/photos/${id}`);
+  //   return res;
+  // };
+
+  getPhotoWithData = async id => {
+    const res = await axios.get(`/api/photos/${id}`, { params: { limit: 100 } });
+    return res;
+  };
+
   getInviteCode = async () => {
     const res = await axios.post('/api/token/invite', {});
     return res.data;
