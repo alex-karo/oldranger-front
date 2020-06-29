@@ -95,12 +95,18 @@ class Album extends React.Component {
 
   showModal = async photoID => {
     const res = await queries.getPhotoWithData(photoID);
-    const comments = res.data.commentDto.content;
-    this.setState({
-      selectedIndex: photoID,
-      currentComments: comments,
-      visible: true,
-    });
+    try {
+      const comments = res.data.commentDto.content;
+      this.setState({
+        selectedIndex: photoID,
+        currentComments: comments,
+        visible: true,
+      });
+    } catch (error) {
+      /* eslint-disable-next-line no-console */
+      console.error(error.response);
+      message.error('что-то пошло не так');
+    }
   };
 
   handleOk = () => {
@@ -119,18 +125,17 @@ class Album extends React.Component {
 
   addComment = async data => {
     const { currentComments } = this.state;
-    const newComment = await queries.addCommentToPhoto(data);
-    const newArrComments = [...currentComments, newComment];
-    this.setState({
-      currentComments: newArrComments,
-    });
-  };
-
-  toggleLightbox = selectedIndex => {
-    this.setState(state => ({
-      lightboxIsOpen: !state.lightboxIsOpen,
-      selectedIndex,
-    }));
+    try {
+      const newComment = await queries.addCommentToPhoto(data);
+      const newArrComments = [...currentComments, newComment];
+      this.setState({
+        currentComments: newArrComments,
+      });
+    } catch (error) {
+      /* eslint-disable-next-line no-console */
+      console.error(error.response);
+      message.error('что-то пошло не так');
+    }
   };
 
   loadPhotos = async () => {
@@ -234,7 +239,7 @@ class Album extends React.Component {
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           footer={null}
-          width={800}
+          width={820}
         >
           <ModalPhoto
             idPhoto={selectedIndex}

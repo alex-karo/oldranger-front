@@ -312,11 +312,6 @@ class Queries {
     return res.data;
   };
 
-  // getPhotoById = async id => {
-  //   const res = await axios.get(`/api/photos/${id}`);
-  //   return res;
-  // };
-
   getPhotoWithData = async id => {
     const res = await axios.get(`/api/photos/${id}`, { params: { limit: 100 } });
     return res;
@@ -341,15 +336,6 @@ class Queries {
     const res = await axios.post('/api/token/confirm/bymail', values);
     return res.data;
   };
-
-  // uploadPhoto = async photo => {
-  //   // пока бекенд не готов, загружаем фото в первый и единственный альбом
-  //   const res = await axios.post('/api/photos/1', photo, {
-  //     withCredentials: true,
-  //   });
-  //   const res = await axios.post('/api/photos/1', photo);
-  //   return res.data.small;
-  // };
 
   getAlbums = async () => {
     const res = await axios.get('/api/albums');

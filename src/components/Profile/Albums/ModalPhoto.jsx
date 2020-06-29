@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
+import { parseISO, format, formatDistanceToNow } from 'date-fns';
+
+import ru from 'date-fns/locale/ru';
 import PropTypes from 'prop-types';
-import { Button, Comment, Form, List, Input } from 'antd';
+import { Button, Comment, Form, List, Input, Tooltip } from 'antd';
 
 const { TextArea } = Input;
 
@@ -22,22 +25,34 @@ const Editor = data => {
   );
 };
 
+function formatDateToLocalTimeZone(date) {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const dates = date.getDate();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+  const result = new Date(Date.UTC(year, month, dates, hours, minutes, seconds));
+  return result;
+}
+
 function ModalPhoto(props) {
   const { src, currentComments, addComment, idPhoto } = props;
-  const [commentText, setCommentText] = useState('');
+
+  const [newCommentText, setNewCommentText] = useState('');
 
   const handleSubmit = async () => {
-    if (!commentText) {
+    if (!newCommentText) {
       return;
     }
-    const data = { idPhoto, commentText };
+    const data = { idPhoto, commentText: newCommentText };
     addComment(data);
-    setCommentText('');
+    setNewCommentText('');
   };
 
   const handleChange = event => {
     const { value } = event.target;
-    setCommentText(value);
+    setNewCommentText(value);
   };
 
   currentComments.sort((commentA, commentB) => {
@@ -48,39 +63,55 @@ function ModalPhoto(props) {
     <List
       dataSource={currentComments}
       renderItem={item => {
+        const { author, commentText, commentDateTime } = item;
         return (
           <li style={{ backgroundColor: 'white' }}>
-            <Comment author={item.author.username} content={item.commentText} />
+            <Comment
+              author={author.username}
+              content={commentText}
+              datetime={
+                <Tooltip
+                  title={format(
+                    formatDateToLocalTimeZone(parseISO(commentDateTime)),
+                    "dd MMMM yyyy 'в' HH:mm",
+                    {
+                      locale: ru,
+                    }
+                  )}
+                >
+                  <span>
+                    {formatDistanceToNow(formatDateToLocalTimeZone(parseISO(commentDateTime)), {
+                      locale: ru,
+                      addSuffix: true,
+                    })}
+                  </span>
+                </Tooltip>
+              }
+            />
           </li>
         );
       }}
     />
   );
 
-  const formAddComment = (
+  const formAddComment = () => (
     <Comment
       content={
         <Editor
           onChange={handleChange}
           onSubmit={handleSubmit}
-          value={commentText}
+          value={newCommentText}
           idPhoto={idPhoto}
         />
       }
     />
   );
 
-  const commentsBlock = (
-    <>
-      {formAddComment}
-      {currentComments.length > 0 && <CommentList comments={currentComments} />}
-    </>
-  );
-
   return (
     <>
       <StyledImage src={src} />
-      {commentsBlock}
+      {formAddComment()}
+      {currentComments.length > 0 && <CommentList comments={currentComments} />}
     </>
   );
 }
