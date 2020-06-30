@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { parseISO, format, formatDistanceToNow } from 'date-fns';
-
 import ru from 'date-fns/locale/ru';
 import PropTypes from 'prop-types';
-import { Button, Comment, Form, List, Input, Tooltip } from 'antd';
+import { Button, Comment, Form, List, Input, Tooltip, Popover } from 'antd';
+
+import UserAvatar from '../../commons/UserAvatar';
 
 const { TextArea } = Input;
 
@@ -38,7 +39,6 @@ function formatDateToLocalTimeZone(date) {
 
 function ModalPhoto(props) {
   const { src, currentComments, addComment, idPhoto } = props;
-
   const [newCommentText, setNewCommentText] = useState('');
 
   const handleSubmit = async () => {
@@ -68,6 +68,11 @@ function ModalPhoto(props) {
           <li style={{ backgroundColor: 'white' }}>
             <Comment
               author={author.username}
+              avatar={
+                <Popover placement="right">
+                  <UserAvatar src={author.avatar.small} />
+                </Popover>
+              }
               content={commentText}
               datetime={
                 <Tooltip

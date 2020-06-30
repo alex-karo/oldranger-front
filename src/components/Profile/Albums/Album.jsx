@@ -132,9 +132,10 @@ class Album extends React.Component {
         currentComments: newArrComments,
       });
     } catch (error) {
-      /* eslint-disable-next-line no-console */
-      console.error(error.response);
-      message.error('что-то пошло не так');
+      this.setState({
+        selectedIndex: null,
+        visible: false,
+      });
     }
   };
 
