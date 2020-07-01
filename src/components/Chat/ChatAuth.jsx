@@ -49,12 +49,11 @@ class ChatAuth extends React.Component {
     const { stompClient } = this.props;
     const { user } = this.state;
     this.getMessages();
-    stompClient.subscribe(`/channel/public`, this.onMessageRecieved, {});
-    stompClient.send(`/chat/addUser`, {}, JSON.stringify({ sender: user.nickName, type: 'JOIN' }));
+    stompClient.subscribe('/channel/public', this.onMessageRecieved);
+    stompClient.send('/chat/addUser', {}, JSON.stringify({ sender: user.nickName, type: 'JOIN' }));
   };
 
   getUsersOnline = async () => {
-    // this.setState({ usersOnline: {} });
     const usersOnline = await queries.getAllUsers();
     this.setState({ usersOnline });
   };
@@ -95,7 +94,6 @@ class ChatAuth extends React.Component {
 
   onMessageRecieved = payload => {
     const message = JSON.parse(payload.body);
-
     // fakeId - это костыль, чтобы избежать постоянного перерендера
     // т.к. уникального ключа для событий c type JOIN/LEAVE нет
     if (!message.id) {

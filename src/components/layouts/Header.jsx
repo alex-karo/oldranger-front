@@ -84,7 +84,12 @@ const Header = ({ countMessages }) => {
               {isLogin && (
                 <>
                   <Button disabled={muteChat} type="primary">
-                    <Link to="/chat">
+                    <Link
+                      to={{
+                        pathname: '/chat',
+                        state: 'mainChat',
+                      }}
+                    >
                       Чат
                       <Badge count={countMessages} />
                     </Link>
