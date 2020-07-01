@@ -2,6 +2,7 @@ import axios from 'axios';
 import { message } from 'antd';
 import { BASE_URL } from '../constants';
 import { paramsSerializer } from '../utils';
+import AuthorizationStatusEmitter from '../EventEmitter/EventEmmiter';
 
 class Queries {
   constructor() {
@@ -26,13 +27,14 @@ class Queries {
 
     if (error.response.status === 401) {
       message.error('Пользователь не авторизован');
+      AuthorizationStatusEmitter.emit(false);
     }
-
     message.error(error.message);
   };
 
   logIn = async formData => {
-    await axios.post('login', formData);
+    const res = await axios.post('login', formData);
+    return res.data;
   };
 
   logOut = async () => {
@@ -53,6 +55,32 @@ class Queries {
   updateAvatar = async data => {
     const res = await axios.post('/api/avatar/set', data);
     return res.data;
+  };
+
+  editEmailProfile = async (newEmail, password) => {
+    const res = await axios.post(
+      '/api/profile/editEmail',
+      {},
+      {
+        params: {
+          password,
+          newEmail,
+        },
+      }
+    );
+    if (res.data === 0) {
+      throw Error('Что-то не так, не удалось изменить email');
+    }
+    return res;
+  };
+
+  editEmailConfirm = async key => {
+    const res = await axios.get(`/api/editEmail`, {
+      params: {
+        key,
+      },
+    });
+    return res;
   };
 
   createArticle = async (data, params) => {
@@ -94,6 +122,11 @@ class Queries {
 
   updateArticle = async (id, data, params) => {
     const res = await axios.put(`/api/article/update/${id}`, data, { params });
+    return res.data;
+  };
+
+  deleteArticle = async id => {
+    const res = await axios.delete(`/api/article/delete?idArticle=${id}`);
     return res.data;
   };
 
@@ -449,6 +482,13 @@ class Queries {
 
   getAnotherUserData = async id => {
     const res = await axios.get(`/api/${id}`);
+    return res.data;
+  };
+
+  getFilteredUsers = async (page, query) => {
+    const res = await axios.get('/api/admin/users', {
+      params: { page: Number(page), ...(query ? { query } : {}) },
+    });
     return res.data;
   };
 }

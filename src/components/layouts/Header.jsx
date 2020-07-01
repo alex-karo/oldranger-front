@@ -34,18 +34,37 @@ const LogoText = styled.h1`
 const Menu = styled.div`
   width: 100%;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-
-  .ant-btn {
-    margin-right: 8%;
-  }
+  justify-content: space-between;
+  align-items: flex-start;
 
   .ant-badge {
     position: absolute;
     right: -10px;
     top: -5px;
   }
+`;
+const MenuMain = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+
+  .ant-btn {
+    margin-right: 4%;
+  }
+`;
+
+const MenuUser = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+`;
+
+const MenuUserFirstRow = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 4%;
 `;
 
 const Header = ({ countMessages }) => {
@@ -58,46 +77,52 @@ const Header = ({ countMessages }) => {
             <LogoText>Клуб &quot;Старый следопыт&quot;</LogoText>
           </WrapLogo>
           <Menu>
-            <Button type="primary">
-              <Link to="/">Главная</Link>
-            </Button>
-            {isLogin && (
-              <>
-                <Button disabled={muteChat} type="primary">
-                  <Link to="/chat">
-                    Чат
-                    <Badge count={countMessages} />
-                  </Link>
-                </Button>
-                <Button>
-                  <Link to="/articles">Статьи</Link>
-                </Button>
-              </>
-            )}
-            {isLogin && user.role === 'ROLE_ADMIN' && (
-              <Button style={{ marginLeft: '0' }}>
-                <Link to="/admin-panel">Панель администратора</Link>
-              </Button>
-            )}
-            {isLogin ? (
-              <>
-                <Button>
-                  <Link to="/profile">Профиль</Link>
-                </Button>
-                <Button type="danger" onClick={logOut}>
-                  Выйти
-                </Button>
-              </>
-            ) : (
-              <Button type="link">
-                <Link to="/login">Войти</Link>
-              </Button>
-            )}
-            {isLogin || (
+            <MenuMain>
               <Button type="primary">
-                <Link to="/request-invite">Запросить регистрацию</Link>
+                <Link to="/">Главная</Link>
               </Button>
-            )}
+              {isLogin && (
+                <>
+                  <Button disabled={muteChat} type="primary">
+                    <Link to="/chat">
+                      Чат
+                      <Badge count={countMessages} />
+                    </Link>
+                  </Button>
+                  <Button>
+                    <Link to="/articles">Статьи</Link>
+                  </Button>
+                </>
+              )}
+            </MenuMain>
+            <MenuUser>
+              <MenuUserFirstRow>
+                {isLogin ? (
+                  <>
+                    <Button style={{ marginRight: '8%' }}>
+                      <Link to="/profile">Профиль</Link>
+                    </Button>
+                    <Button type="danger" onClick={logOut} style={{ marginLeft: 'auto' }}>
+                      Выйти
+                    </Button>
+                  </>
+                ) : (
+                  <Button type="link">
+                    <Link to="/login">Войти</Link>
+                  </Button>
+                )}
+              </MenuUserFirstRow>
+              {isLogin || (
+                <Button type="primary">
+                  <Link to="/request-invite">Запросить регистрацию</Link>
+                </Button>
+              )}
+              {isLogin && user.role === 'ROLE_ADMIN' && (
+                <Button style={{ marginLeft: '0' }}>
+                  <Link to="/admin-panel">Панель администратора</Link>
+                </Button>
+              )}
+            </MenuUser>
           </Menu>
         </StyledHeader>
       )}

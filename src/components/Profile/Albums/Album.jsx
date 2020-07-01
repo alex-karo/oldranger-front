@@ -11,23 +11,23 @@ import UploadPhoto from './UploadPhoto';
 import { BASE_URL } from '../../../constants';
 
 const CloseModalButton = styled(Button)`
-position:absolute;
-top:20px;
-padding:5px
-right:20px;
-width:44px;
-opacity: 0.7;
-z-index: 1;
+  position: absolute;
+  top: 20px;
+  padding: 5px;
+  right: 20px;
+  width: 44px;
+  opacity: 0.7;
+  z-index: 1;
 `;
 
 const DeletePhotoModalButton = styled(Button)`
-position:absolute;
-top:20px;
-right:64px;
-padding:5px
-width:44px;
-opacity: 0.7;
-z-index: 1;
+  position: absolute;
+  top: 20px;
+  right: 64px;
+  padding: 5px;
+  width: 44px;
+  opacity: 0.7;
+  z-index: 1;
 `;
 
 const DeletePhotoButton = styled(Button)`
@@ -42,8 +42,9 @@ const DeletePhotoButton = styled(Button)`
 export const ImageWrapper = styled.div`
   display: inline-block;
   position: relative;
-  width: 239px;
+  width: ${({ topicPageProp }) => (topicPageProp ? 'auto' : '239px')};
   margin: 3px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
   &:hover ${DeletePhotoButton} {
     display: block;
   }
@@ -54,13 +55,13 @@ const AlbumNavigation = styled.div`
 export const StyledImage = styled.img`
   object-fit: cover;
   object-position: top center;
-  width: 239px;
-  height: 150px;
+  width: ${({ topicPageProp }) => (topicPageProp ? 'auto' : '239px')};
+  height: ${({ topicPageProp }) => (topicPageProp ? '100px' : '150px')};
 `;
 
 const AlbumWrapper = styled.div`
   display: flex;
-  flex-direction: columns;
+  flex-direction: row;
   flex-wrap: wrap;
   margin-bottom: 50px;
   margin-top: 30px;
@@ -97,10 +98,10 @@ class Album extends React.Component {
   };
 
   loadPhotos = async () => {
-    const {
-      location: { state },
-    } = this.props;
-
+    const { topicPageProp } = this.props;
+    const { location } = this.props;
+    const changeProp = topicPageProp || location;
+    const { state } = changeProp;
     const albumId = state.photoAlbumId;
     try {
       const photos = await queries.getPhotosFromAlbum(albumId);
@@ -140,11 +141,12 @@ class Album extends React.Component {
 
   render() {
     const { photos, lightboxIsOpen, selectedIndex, photoTempUlr } = this.state;
+    const { topicPageProp } = this.props;
+    const { location } = this.props;
+    const changeProp = topicPageProp || location;
     const {
-      location: {
-        state: { photoAlbumId, title },
-      },
-    } = this.props;
+      state: { photoAlbumId, title },
+    } = changeProp;
     const images = photos.reduce((acc, photo) => {
       return [...acc, { src: `${photoTempUlr}${photo.photoID}?type=original` }];
     }, []);
@@ -178,8 +180,13 @@ class Album extends React.Component {
             {photos.length > 0 ? (
               <>
                 {photos.map((photo, index) => (
-                  <ImageWrapper onClick={() => this.toggleLightbox(index)} key={photo.photoID}>
+                  <ImageWrapper
+                    topicPageProp={topicPageProp}
+                    onClick={() => this.toggleLightbox(index)}
+                    key={photo.photoID}
+                  >
                     <StyledImage
+                      topicPageProp={topicPageProp}
                       title={photo.title}
                       alt="userPhoto"
                       src={`${photoTempUlr}${photo.photoID}?type=original`}
@@ -217,8 +224,13 @@ class Album extends React.Component {
     }
 
     const SortableItem = SortableElement(({ value, photoNum }) => (
-      <ImageWrapper onClick={() => this.toggleLightbox(photoNum)}>
-        <StyledImage title={value.title} alt="userPhoto" src={`${photoTempUlr}${value.photoID}`} />
+      <ImageWrapper topicPageProp={topicPageProp} onClick={() => this.toggleLightbox(photoNum)}>
+        <StyledImage
+          topicPageProp={topicPageProp}
+          title={value.title}
+          alt="userPhoto"
+          src={`${photoTempUlr}${value.photoID}`}
+        />
         <DeletePhotoButton
           type="default"
           title="Удалить Фотографию"
@@ -268,7 +280,18 @@ class Album extends React.Component {
   }
 }
 
+Album.defaultProps = {
+  topicPageProp: null,
+  location: null,
+};
+
 Album.propTypes = {
+  topicPageProp: PropTypes.shape({
+    state: PropTypes.shape({
+      topicPageProp: PropTypes.string,
+      title: PropTypes.string,
+    }),
+  }),
   location: PropTypes.shape({
     state: PropTypes.shape({
       photoAlbumId: PropTypes.number.isRequired,
@@ -278,7 +301,7 @@ Album.propTypes = {
         slice: PropTypes.func.isRequired,
       }),
     }),
-  }).isRequired,
+  }),
 };
 
 export default withRouter(Album);

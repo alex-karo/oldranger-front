@@ -24,6 +24,7 @@ import PrivateChat from './components/Chat/PrivateChat';
 import AdminPanel from './components/AdminPanel';
 import ProfileAnotherUser from './components/Profile/ProfileAnotherUser';
 import { BASE_URL } from './constants';
+import AuthorizationStatusEmitter from './EventEmitter/EventEmmiter';
 
 const url = BASE_URL;
 
@@ -50,6 +51,16 @@ class App extends React.Component {
       await this.connect();
     }
     this.сonnect();
+
+    AuthorizationStatusEmitter.subscribe(isAuthorized => {
+      if (!isAuthorized) {
+        localStorage.clear();
+        this.setState({
+          isLogin: false,
+        });
+        this.disconnect();
+      }
+    });
   };
 
   connect = async () => {

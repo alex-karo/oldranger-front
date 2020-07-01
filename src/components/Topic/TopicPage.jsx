@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { Breadcrumb, message, notification, Spin, Typography, Button, Result } from 'antd';
-// import styled from 'styled-components';
 import Comment from 'antd/es/comment';
 import { Markup } from 'interweave';
+import Album from '../Profile/Albums/Album';
 import TopicCommentsList from './TopicCommentsList';
 import queries from '../../serverQueries';
 import { GoldIcon, ReplyFloatButton, TopicCommentReplyAlert, TopicReplyWarning } from './styled';
@@ -16,16 +16,6 @@ import withGetUserProfile from '../hoc/withGetUserProfile';
 import UserAvatar from '../commons/UserAvatar';
 
 const { Text } = Typography;
-
-// const CloseModalButton = styled(Button)`
-// position:absolute;
-// top:20px;
-// padding:5px
-// right:20px;
-// width:44px;
-// opacity: 0.7;
-// z-index: 1;
-// `;
 
 class TopicPage extends React.Component {
   constructor(props) {
@@ -46,9 +36,9 @@ class TopicPage extends React.Component {
     this.replyForm = React.createRef();
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { page } = this.state;
-    this.getTopics(parseInt(page, 10));
+    await this.getTopics(parseInt(page, 10));
   }
 
   getTopics = page => {
@@ -253,6 +243,16 @@ class TopicPage extends React.Component {
     }
   };
 
+  createAlbumProp = topic => {
+    const albumProps = {
+      state: {
+        photoAlbumId: topic.photoAlbum.id,
+        title: topic.photoAlbum.title,
+      },
+    };
+    return albumProps;
+  };
+
   render() {
     const { messages, topic, page, reply, files, uploading, error } = this.state;
     const { userProfile } = this.props;
@@ -290,6 +290,7 @@ class TopicPage extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <TopicStartMessage topic={topic} toggleLightbox={this.toggleLightbox} />
+            {topic.photoAlbum ? <Album topicPageProp={this.createAlbumProp(topic)} /> : null}
             {isLogin && (
               <Button onClick={this.toggleSubscriptionStatus}>
                 {topic.isSubscribed ? 'Отписаться' : 'Подписаться'}

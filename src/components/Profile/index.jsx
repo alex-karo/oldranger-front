@@ -4,6 +4,7 @@ import { Radio } from 'antd';
 
 import Context from '../Context';
 
+import EditEmail from './EditEmail';
 import EditProfile from './EditProfile';
 import EditAvatar from './EditAvatar';
 
@@ -35,8 +36,9 @@ const Profile = () => {
     <Switch>
       <Route path={`${path}/edit`} component={EditProfile} />
       <Route path={`${path}/avatar`} component={EditAvatar} />
+      <Route path={`${path}/editEmail`} component={EditEmail} />
       <Route path="*">
-        <h2>Профиль пользоkвателя</h2>
+        <h2>Профиль пользователя</h2>
         <div>
           <Radio.Group value={currentPage} onChange={changePage} style={{ marginBottom: 20 }}>
             <Radio.Button value="">Профиль</Radio.Button>
