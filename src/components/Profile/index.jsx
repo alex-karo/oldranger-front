@@ -27,6 +27,10 @@ const Profile = () => {
   const endPoint = pathname.split('/').pop();
   const [currentPage, setPage] = useState(endPoint === 'profile' ? '' : endPoint);
 
+  if (endPoint === 'profile' && currentPage !== '') {
+    setPage('');
+  }
+
   const changePage = ({ target: { value } }) => {
     history.push(`${path}/${value}`);
     setPage(value);
