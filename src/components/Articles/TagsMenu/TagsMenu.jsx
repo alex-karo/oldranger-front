@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Menu, Spin } from 'antd';
+import { Menu } from 'antd';
 import { useHistory, withRouter } from 'react-router-dom';
 import { StyledMenu, TagsItem } from '../styled';
 import queries from '../../../serverQueries/index';
@@ -20,7 +20,9 @@ const TagsMenu = ({ location }) => {
   useEffect(() => {
     queries.getTagsDtoTree().then(el => {
       setMenuItems(el);
-      addActiveTag(el);
+      if (Array.isArray(el)) {
+        addActiveTag(el);
+      }
     });
   }, []);
 
@@ -72,9 +74,7 @@ const TagsMenu = ({ location }) => {
     <StyledMenu>
       {menuItems.length > 0 ? (
         <Menu mode="inline">{buildTreeMenu(menuItems.filter(el => el.parentId === null))}</Menu>
-      ) : (
-        <Spin />
-      )}
+      ) : null}
     </StyledMenu>
   );
 };
