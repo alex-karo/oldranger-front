@@ -174,7 +174,7 @@ const TagsItem = styled.div`
   padding-left: ${props => `${props.left}`};
 `;
 const TagsLabel = styled.span`
-  fontsize: 16px;
+  font-size: 16px;
   margin-right: 15px;
 `;
 const TagsAdd = styled.p`
