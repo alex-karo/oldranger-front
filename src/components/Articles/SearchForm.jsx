@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
@@ -6,6 +6,8 @@ import * as Yup from 'yup';
 import { Button, Form as AntForm, Input } from 'antd';
 import SimpleInput from '../formItems/SimpleInput';
 import { StyledForm, ButtonGroup } from './styled';
+import UserContext from '../Context/index';
+import { userRoles } from '../../constants/index';
 
 const InputGroup = Input.Group;
 
@@ -17,6 +19,9 @@ const validationSchema = Yup.object({
 });
 
 const SearchForm = ({ history }) => {
+  const {
+    user: { role },
+  } = useContext(UserContext);
   return (
     <Formik
       initialValues={{
@@ -34,9 +39,12 @@ const SearchForm = ({ history }) => {
               help={touched.searchRequest ? errors.searchRequest : ''}
             >
               <ButtonGroup>
-                <Button>
-                  <Link to="/admin-panel/article-create">Создать статью</Link>
-                </Button>
+                {role === userRoles.admin ? (
+                  <Button>
+                    <Link to="/admin-panel/article-create">Создать статью</Link>
+                  </Button>
+                ) : null}
+
                 <InputGroup compact>
                   <SimpleInput
                     placeholder="поиск по статьям"
