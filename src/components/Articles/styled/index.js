@@ -82,7 +82,7 @@ export const StyledHeader = styled.h1`
   font-size: 24px;
 `;
 export const TagsItem = styled.p`
-  cursor: pointer;
+  cursor: ${props => (props.cursor === 'default' ? 'default' : 'pointer')};
   margin: 0;
   display: flex;
   height: 40px;
