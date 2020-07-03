@@ -26,10 +26,9 @@ class Queries {
     }
 
     if (error.response.status === 401) {
-      message.error('Пользователь не авторизован');
       AuthorizationStatusEmitter.emit(false);
+      throw error;
     }
-    message.error(error.message);
   };
 
   logIn = async formData => {

@@ -18,19 +18,18 @@ const Li = styled.li`
 `;
 
 export const ChatContainer = styled.div`
-  width: ${({ state }) => (state !== 'mainChat' && state !== 'privateChat' ? '550px' : '100%')};
+  width: ${({ state }) => (state ? '550px' : '100%')};
   display: block;
   margin: 10px auto 20px;
   background-color: #fff;
   box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
-  height: ${({ state }) => (state !== 'mainChat' && state !== 'privateChat' ? 'auto' : '100%')};
-  position: ${({ state }) =>
-    state !== 'mainChat' && state !== 'privateChat' ? 'fixed' : 'relative'};
-  bottom: ${({ state }) => (state !== 'mainChat' && state !== 'privateChat' ? '0' : 'none')};
-  right: ${({ state }) => (state !== 'mainChat' && state !== 'privateChat' ? '0' : 'none')};
+  height: ${({ state }) => (state ? 'auto' : '100%')};
+  position: ${({ state }) => (state ? 'fixed' : 'relative')};
+  bottom: ${({ state }) => (state ? '0' : 'none')};
+  right: ${({ state }) => (state ? '0' : 'none')};
   border-radius: 10px;
   @media (max-width: 2200px) {
-    display: ${({ state }) => (state !== 'mainChat' && state !== 'privateChat' ? 'none' : 'block')};
+    display: ${({ state }) => (state ? 'none' : 'block')};
   }
 `;
 
@@ -75,7 +74,7 @@ export const CloseButton = styled.button`
 
 export const Main = styled.div`
   display: flex;
-  height: ${({ state }) => (state !== 'mainChat' && state !== 'privateChat' ? '300px' : '400px')};
+  height: ${({ state }) => (state ? '300px' : '400px')};
 `;
 
 export const UserListTitle = styled.h3`
@@ -109,7 +108,7 @@ export const OnlineLED = styled.span`
 
 export const UserList = styled(Ul)`
   border: none;
-  height: ${({ state }) => (state !== 'mainChat' && state !== 'privateChat' ? '300px' : '350px')};
+  height: ${({ state }) => (state ? '300px' : '350px')};
   width: 100%;
 `;
 

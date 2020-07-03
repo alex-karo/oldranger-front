@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Menu, Spin, Icon } from 'antd';
+import { Menu, Icon } from 'antd';
 import styled from 'styled-components';
 import queries from '../../serverQueries/index';
 import TagsForm from '../forms/TagsForm';
@@ -147,9 +147,9 @@ const ArticlesTagsEdit = () => {
 
   return (
     <div style={{ border: '1px solid lightblue', padding: '20px' }}>
-      {menuItems.length > 0 ? (
+      {
         <Menu mode="inline">
-          {buildTreeTags(menuItems.filter(el => el.parentId === null))}
+          {menuItems ? buildTreeTags(menuItems.filter(el => el.parentId === null)) : null}
           <TagsAddFirst role="button" tabIndex="0" onClick={changeActiveTags(-1, 'add')}>
             <span>Добавить новый раздел</span>
           </TagsAddFirst>
@@ -159,9 +159,7 @@ const ArticlesTagsEdit = () => {
             ''
           )}
         </Menu>
-      ) : (
-        <Spin />
-      )}
+      }
     </div>
   );
 };
@@ -176,7 +174,7 @@ const TagsItem = styled.div`
   padding-left: ${props => `${props.left}`};
 `;
 const TagsLabel = styled.span`
-  fontsize: 16px;
+  font-size: 16px;
   margin-right: 15px;
 `;
 const TagsAdd = styled.p`

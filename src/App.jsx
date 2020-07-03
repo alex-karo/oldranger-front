@@ -69,18 +69,7 @@ class App extends React.Component {
     if (currentUser.username) {
       const socket = await new SockJS(`${url}ws`, null, {});
       this.stompClient = await Stomp.over(socket);
-      this.stompClient.connect({}, this.onConnected, () => {});
-      const waitConnection = () => {
-        const timeoutID = setTimeout(() => {
-          if (this.stompClient.ws.readyState === 1) {
-            this.setState({ stompClient: this.stompClient });
-            clearTimeout(timeoutID);
-          } else {
-            waitConnection();
-          }
-        }, 100);
-      };
-      waitConnection();
+      await this.stompClient.connect({}, this.onConnected);
     }
   };
 
@@ -93,7 +82,8 @@ class App extends React.Component {
   };
 
   onConnected = () => {
-    this.stompClient.subscribe(`/channel/public`, this.onCheckMessage, {});
+    this.setState({ stompClient: this.stompClient });
+    this.stompClient.subscribe('/channel/public', this.onCheckMessage, {});
   };
 
   disconnect = () => {

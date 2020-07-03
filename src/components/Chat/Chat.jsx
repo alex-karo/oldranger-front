@@ -191,19 +191,20 @@ class Chat extends React.Component {
         location: { state },
       },
     } = this.props;
+    const chatState = state !== 'mainChat' && state !== 'privateChat';
     const { message, filePath, hasScrolled } = this.state;
     return (
       <section>
-        <ChatContainer state={state}>
+        <ChatContainer state={chatState}>
           <Header>
             <h2>{label}</h2>
             <CloseButton onClick={handleDisconnect} />
           </Header>
-          <Main state={state}>
+          <Main state={chatState}>
             <div style={{ width: '20%' }}>
               <OnlineLED />
               <UserListTitle>Online:</UserListTitle>
-              <UserList state={state}>
+              <UserList state={chatState}>
                 {Object.entries(usersOnline).map(user => {
                   const [username, id] = user;
                   return (

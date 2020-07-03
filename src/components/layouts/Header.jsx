@@ -94,7 +94,7 @@ const Header = ({ countMessages }) => {
                       <Badge count={countMessages} />
                     </Link>
                   </Button>
-                  <Button>
+                  <Button type="primary">
                     <Link to="/articles">Статьи</Link>
                   </Button>
                 </>
@@ -104,7 +104,7 @@ const Header = ({ countMessages }) => {
               <MenuUserFirstRow>
                 {isLogin ? (
                   <>
-                    <Button style={{ marginRight: '8%' }}>
+                    <Button type="primary">
                       <Link to="/profile">Профиль</Link>
                     </Button>
                     <Button type="danger" onClick={logOut} style={{ marginLeft: 'auto' }}>
@@ -112,13 +112,13 @@ const Header = ({ countMessages }) => {
                     </Button>
                   </>
                 ) : (
-                  <Button type="link">
+                  <Button type="primary" style={{ width: '100%' }}>
                     <Link to="/login">Войти</Link>
                   </Button>
                 )}
               </MenuUserFirstRow>
               {isLogin || (
-                <Button type="primary">
+                <Button>
                   <Link to="/request-invite">Запросить регистрацию</Link>
                 </Button>
               )}
