@@ -5,7 +5,7 @@ import { parseISO, format, formatDistanceToNow } from 'date-fns';
 import ru from 'date-fns/locale/ru';
 import PropTypes from 'prop-types';
 import { Button, Comment, Form, List, Input, Tooltip, Popover } from 'antd';
-
+import { formatDateToLocalTimeZone } from '../../../utils';
 import UserAvatar from '../../commons/UserAvatar';
 
 const { TextArea } = Input;
@@ -19,23 +19,12 @@ const Editor = data => {
       </Form.Item>
       <Form.Item>
         <Button htmlType="submit" onClick={() => onSubmit(idPhoto)} type="primary">
-          Add Comment
+          Добавить комментарий
         </Button>
       </Form.Item>
     </>
   );
 };
-
-function formatDateToLocalTimeZone(date) {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const dates = date.getDate();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
-  const result = new Date(Date.UTC(year, month, dates, hours, minutes, seconds));
-  return result;
-}
 
 function ModalPhoto(props) {
   const { src, currentComments, addComment, idPhoto } = props;
