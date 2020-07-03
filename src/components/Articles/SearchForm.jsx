@@ -35,7 +35,7 @@ const SearchForm = ({ history }) => {
             >
               <ButtonGroup>
                 <Button>
-                  <Link to="/profile/albums">Создать альбом</Link>
+                  <Link to="/admin-panel/article-create">Создать статью</Link>
                 </Button>
                 <InputGroup compact>
                   <SimpleInput
