@@ -97,10 +97,15 @@ class Queries {
   };
 
   getTagsDtoTree = async () => {
+    // на бэке снесли этот эндпойнт
     const res = await axios.get('/api/tags/node/tree', {
       withCredentials: true,
     });
-    return res.data;
+
+    if (res) {
+      return res.data;
+    }
+    return [];
   };
 
   addNewTagTree = async params => {
