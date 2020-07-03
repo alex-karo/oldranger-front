@@ -10,21 +10,21 @@ import queries from '../../../serverQueries';
 import UploadPhoto from './UploadPhoto';
 
 const CloseModalButton = styled(Button)`
-position:absolute;
-top:20px;
-padding:5px
-right:20px;
-width:44px;
-opacity: 0.7;
-z-index: 1;
+  position: absolute;
+  top: 20px;
+  padding: 5px;
+  right: 20px;
+  width: 44px;
+  opacity: 0.7;
+  z-index: 1;
 `;
 
 const DeletePhotoModalButton = styled(Button)`
-position:absolute;
-top:20px;
-right:64px;
-padding:5px
-width:44px;
+position: absolute;
+top: 20px;
+right: 64px;
+padding: 5px
+width: 44px;
 opacity: 0.7;
 z-index: 1;
 `;
