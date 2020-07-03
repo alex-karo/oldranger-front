@@ -80,6 +80,11 @@ const ProfileData = ({ user, self, id }) => {
           Редактировать
         </Button>
       </Link>
+      <Link to="/profile/editEmail">
+        <Button type="primary" block className="button">
+          Изменить почтовый адрес
+        </Button>
+      </Link>
     </>
   ) : (
     <Link to={`/private/${id}`}>

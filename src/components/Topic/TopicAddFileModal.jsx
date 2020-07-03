@@ -24,6 +24,10 @@ const ModalOverlay = styled.div`
 
 const Form = styled.form`
   position: relative;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  overflow: hidden;
   padding: 10px;
   padding-top: 42px;
   margin: 0 auto;
@@ -39,6 +43,33 @@ const Gallery = styled.div`
   flex-wrap: wrap;
   margin: 10px auto;
   align-items: flex-start;
+`;
+
+const StyledButton = styled(Button)`
+  width: 100%;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+`;
+
+const StyledRow = styled(Row)`
+  display: flex;
+  flex-flow: column;
+  margin-top: 20px;
+  align-items: center;
+
+  & span {
+    max-width: 350px;
+  }
+
+  & .ant-upload {
+    max-width: 350px;
+  }
+
+  & .ant-upload-list-item {
+    display: inline-block;
+    width: 100%;
+  }
 `;
 
 const CloseModalButton = styled(Button)`
@@ -63,14 +94,14 @@ const AlbumCard = styled.div`
 `;
 
 const AlbumShadow = styled.div`
-    color: #fff;
-    box-sizing: border-box;
-    position: absolute; 
-    bottom: 0;
-    width: 100%;
-    padding: 35px 12px 9px;
-    background: url(/shadow.png);
-}`;
+  color: #fff;
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 35px 12px 9px;
+  background: url(/shadow.png);
+`;
 
 const AlbumTitle = styled.span`
   word-break: break-all;
@@ -110,6 +141,7 @@ class TopicAddFileModal extends React.Component {
     this.state = {
       albums: [],
       fileList: [],
+      previewFileList: [],
     };
   }
 
@@ -120,11 +152,13 @@ class TopicAddFileModal extends React.Component {
   loadAlbums = async () => {
     const allAlbums = await queries.getAlbums();
     const promises = allAlbums.map(album => {
-      return queries.getPhotosFromAlbum(album.id).then(data => {
-        const images = data.map(image => ({
-          src: `${photoTempUrl}${image.id}?type=original`,
-          id: image.id,
-        }));
+      return queries.getPhotosFromAlbum(album.photoAlbumId).then(data => {
+        const images = data.map(image => {
+          return {
+            src: `${photoTempUrl}${image.photoID}?type=original`,
+            id: image.photoID,
+          };
+        });
         return { ...album, selected: false, images };
       });
     });
@@ -136,7 +170,7 @@ class TopicAddFileModal extends React.Component {
   toggleFullAlbum = id => async () => {
     const { albums } = this.state;
     const newAlbums = albums.map(item => {
-      if (item.id === id) {
+      if (item.photoAlbumId === id) {
         return { ...item, selected: !item.selected };
       }
       return { ...item, selected: false };
@@ -148,40 +182,39 @@ class TopicAddFileModal extends React.Component {
     const { fileList } = this.state;
     const { setFileList } = this.props;
     const formData = new FormData();
-
     fileList.forEach(file => {
-      formData.append('photos', file);
+      formData.append(`photos`, file);
     });
-    // Необходимо добавить функционал загрузки изображений
-    // в топик по id на бэкенде
-    // http://localhost:8888/api/securedPhoto/photoFromAlbum/id'
-
     setFileList(formData);
   };
 
   render() {
-    const { fileList, albums } = this.state;
+    const { fileList, albums, previewFileList } = this.state;
     const { handleCloseModal, toggleImageToUpload, imagesToUpload } = this.props;
-
     const selectedAlbum = albums.find(album => album.selected);
     const uploadProps = {
       accept: '.jpg, .jpeg, .png',
+      listType: 'picture',
       multiple: true,
       onRemove: file => {
         const index = fileList.indexOf(file);
         const newFileList = fileList.slice();
         newFileList.splice(index, 1);
         this.setState({
-          fileList: newFileList,
+          fileList,
         });
       },
-      beforeUpload: file => {
+      // eslint-disable-next-line no-shadow
+      onChange: ({ file, fileList }) => {
         this.setState(state => ({
           fileList: [...state.fileList, file],
+          previewFileList: fileList,
         }));
+      },
+      beforeUpload: () => {
         return false;
       },
-      fileList,
+      fileList: previewFileList,
     };
     return (
       <>
@@ -189,26 +222,26 @@ class TopicAddFileModal extends React.Component {
           <CloseModalButton onClick={handleCloseModal(false)}>
             <Icon type="close" />
           </CloseModalButton>
-          <Row type="flex" justify="center">
+          <StyledRow type="flex" justify="center">
             <Upload {...uploadProps}>
-              <Button>
+              <StyledButton>
                 <Icon type="upload" />
                 <span>Перетащите сюда или выберите фотографии</span>
-              </Button>
+              </StyledButton>
             </Upload>
-          </Row>
+          </StyledRow>
           <Gallery>
             {albums.map(album => (
               <AlbumCard
-                key={album.id}
-                onClick={this.toggleFullAlbum(album.id)}
-                selected={selectedAlbum && album.id === selectedAlbum.id}
+                key={album.photoAlbumId}
+                onClick={this.toggleFullAlbum(album.photoAlbumId)}
+                selected={selectedAlbum && album.photoAlbumId === selectedAlbum.photoAlbumId}
               >
                 <BGImage
                   src={
-                    album.originalThumbImage === 'thumb_image_placeholder'
-                      ? '/defaultAlbumPicture.jpg'
-                      : `${url}img/chat/${album.originalThumbImage}`
+                    album.thumbImageId
+                      ? `${photoTempUrl}${album.thumbImageId}?type=original`
+                      : '/defaultAlbumPicture.jpg'
                   }
                 />
                 <AlbumShadow>
@@ -234,7 +267,7 @@ class TopicAddFileModal extends React.Component {
                     <ChoosePhotoButton
                       shape="circle"
                       icon={imagesToUpload.includes(image.id) ? 'check' : undefined}
-                      onClick={toggleImageToUpload(image.id)}
+                      onClick={toggleImageToUpload(image.id, selectedAlbum.photoAlbumId)}
                     />
                   </ImageCard>
                 ))}
@@ -246,7 +279,7 @@ class TopicAddFileModal extends React.Component {
               type="primary"
               onClick={this.handleUpload}
               disabled={fileList.length === 0 && imagesToUpload.length === 0}
-              style={{ marginBottom: 10 }}
+              style={{ marginBottom: '10px' }}
             >
               Выбрать фотографии
             </Button>

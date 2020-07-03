@@ -30,23 +30,27 @@ const UserInfo = () => {
     serverQueries.getUserById(id).then(setUser);
   }, [id]);
 
-  const { nickName, accountNonLocked } = user;
-
+  const { nickName, accountNonLocked, mute } = user;
   return (
     <div>
       <Button type="primary" onClick={() => history.go(-1)}>
         Назад
       </Button>
-      <UserInfoBlock>
-        <p>
-          Никнейм: <b>{nickName}</b>
-        </p>
-        <p>
-          Статус бана: {accountNonLocked ? <Clear>Отсутствует</Clear> : <Banned>Забанен</Banned>}
-        </p>
-        <AdminMenu user={user} updateUser={setUser} />
-        <InvitedUsersTree treeData={tree} />
-      </UserInfoBlock>
+      {nickName && (
+        <UserInfoBlock>
+          <p>
+            Никнейм: <b>{nickName}</b>
+          </p>
+          <p>
+            Статус бана: {accountNonLocked ? <Clear>Отсутствует</Clear> : <Banned>Забанен</Banned>}
+          </p>
+          <p>
+            Статус мута: {mute.length === 0 ? <Clear>Отсутствует</Clear> : <Banned>{mute}</Banned>}
+          </p>
+          <AdminMenu user={user} updateUser={setUser} />
+          <InvitedUsersTree treeData={tree} />
+        </UserInfoBlock>
+      )}
     </div>
   );
 };

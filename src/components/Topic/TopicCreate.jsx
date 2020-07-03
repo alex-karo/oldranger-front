@@ -47,6 +47,7 @@ class TopicCreate extends React.Component {
       subsection: '',
       isModal: false,
       imagesToUpload: [],
+      photoAlbumIds: [],
       fileList: [],
     };
   }
@@ -87,7 +88,7 @@ class TopicCreate extends React.Component {
     });
   };
 
-  toggleImageToUpload = id => () => {
+  toggleImageToUpload = (id, photoAlbumId) => () => {
     const { imagesToUpload } = this.state;
     if (imagesToUpload.indexOf(id) !== -1) {
       imagesToUpload.splice(imagesToUpload.indexOf(id), 1);
@@ -99,6 +100,11 @@ class TopicCreate extends React.Component {
         imagesToUpload: [...state.imagesToUpload, id],
       }));
     }
+    this.setState(state => ({
+      photoAlbumIds: !state.photoAlbumIds.includes(photoAlbumId)
+        ? [...state.photoAlbumIds, photoAlbumId]
+        : state.photoAlbumIds,
+    }));
   };
 
   setFileList = formData => {
@@ -111,12 +117,14 @@ class TopicCreate extends React.Component {
 
   handleSubmit = () => {
     const { values, setValues } = this.props;
-    const { subsection, fileList } = this.state;
+    const { subsection, fileList, imagesToUpload, photoAlbumIds } = this.state;
     setValues({
       ...values,
       subsection,
       subsectionsData: this.subsectionsData,
       fileList,
+      imagesToUpload,
+      photoAlbumIds,
     });
   };
 
@@ -183,7 +191,9 @@ class TopicCreate extends React.Component {
                   type={count > 0 ? 'dashed' : 'default'}
                   onClick={this.handleToggleModal(true)}
                 >
-                  {count > 0 ? `Выбрано ${count} фото` : 'Добавить фото'}
+                  {count + imagesToUpload.length > 0
+                    ? `Выбрано ${count + imagesToUpload.length} фото`
+                    : 'Добавить фото'}
                 </Button>
               </Row>
               <Row type="flex" justify="center">
@@ -219,8 +229,17 @@ const formikTopicCreate = withFormik({
   validationSchema,
   handleSubmit: async (values, { setSubmitting, resetForm, props }) => {
     const { history } = props;
-    const { name, startMessage, subsection, subsectionsData, fileList } = values;
+    const {
+      name,
+      startMessage,
+      subsection,
+      subsectionsData,
+      fileList,
+      imagesToUpload,
+      photoAlbumIds,
+    } = values;
     const formData = new FormData();
+    formData.append('checkedImagesId', imagesToUpload);
     formData.append('name', name);
     formData.append('startMessage', startMessage);
     formData.append('subsection', subsectionsData[subsection].id);
@@ -230,7 +249,10 @@ const formikTopicCreate = withFormik({
     const response = await queries.createNewTopic(formData);
     if (response.status === 200) {
       setSubmitting(false);
-      history.push(`/topic/${response.data.id}`);
+      history.push({
+        pathname: `/topic/${response.data.id}`,
+        state: { imagesToUpload, photoAlbumIds },
+      });
       resetForm();
     }
   },

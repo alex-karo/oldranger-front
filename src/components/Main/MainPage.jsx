@@ -7,6 +7,8 @@ import TopicsList from '../Subsection/TopicsList';
 import TopicsListItem from '../Subsection/TopicsListItem';
 import SearchForm from './SearchForm';
 
+import Context from '../Context/index';
+
 class MainPage extends React.Component {
   constructor(props) {
     super(props);

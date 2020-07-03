@@ -2,6 +2,7 @@ import axios from 'axios';
 import { message } from 'antd';
 import { BASE_URL } from '../constants';
 import { paramsSerializer } from '../utils';
+import AuthorizationStatusEmitter from '../EventEmitter/EventEmmiter';
 
 class Queries {
   constructor() {
@@ -24,16 +25,25 @@ class Queries {
       message.error('Сервер не отвечает');
     }
 
-    return Promise.reject(error);
+    if (error.response.status === 401) {
+      AuthorizationStatusEmitter.emit(false);
+      throw error;
+    }
   };
 
   logIn = async formData => {
-    await axios.post('login', formData);
+    const res = await axios.post('login', formData);
+    return res.data;
   };
 
   logOut = async () => {
     const res = await axios.get('api/logout');
     return res;
+  };
+
+  requestRegistration = async values => {
+    const res = await axios.post('api/registration/new', values);
+    return res.data;
   };
 
   updateProfile = async formData => {
@@ -44,6 +54,32 @@ class Queries {
   updateAvatar = async data => {
     const res = await axios.post('/api/avatar/set', data);
     return res.data;
+  };
+
+  editEmailProfile = async (newEmail, password) => {
+    const res = await axios.post(
+      '/api/profile/editEmail',
+      {},
+      {
+        params: {
+          password,
+          newEmail,
+        },
+      }
+    );
+    if (res.data === 0) {
+      throw Error('Что-то не так, не удалось изменить email');
+    }
+    return res;
+  };
+
+  editEmailConfirm = async key => {
+    const res = await axios.get(`/api/editEmail`, {
+      params: {
+        key,
+      },
+    });
+    return res;
   };
 
   createArticle = async (data, params) => {
@@ -85,6 +121,11 @@ class Queries {
 
   updateArticle = async (id, data, params) => {
     const res = await axios.put(`/api/article/update/${id}`, data, { params });
+    return res.data;
+  };
+
+  deleteArticle = async id => {
+    const res = await axios.delete(`/api/article/delete?idArticle=${id}`);
     return res.data;
   };
 
@@ -364,8 +405,22 @@ class Queries {
     return res.data;
   };
 
+  prohibitionWrite = async (id, banType, dateUnblock = new Date()) => {
+    const res = await axios.post('/api/admin/writingBan', {
+      id,
+      banType,
+      dateUnblock: new Date(dateUnblock).toISOString(),
+    });
+    return res.data;
+  };
+
   unblockUser = async id => {
     const res = await axios.post('/api/admin/unblocking', { id });
+    return res.data;
+  };
+
+  unmuteUser = async id => {
+    const res = await axios.post('/api/admin/unmute', { id });
     return res.data;
   };
 
@@ -426,6 +481,13 @@ class Queries {
 
   getAnotherUserData = async id => {
     const res = await axios.get(`/api/${id}`);
+    return res.data;
+  };
+
+  getFilteredUsers = async (page, query) => {
+    const res = await axios.get('/api/admin/users', {
+      params: { page: Number(page), ...(query ? { query } : {}) },
+    });
     return res.data;
   };
 }

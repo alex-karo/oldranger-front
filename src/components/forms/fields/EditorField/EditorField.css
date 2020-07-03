@@ -1,8 +1,6 @@
-.ql-toolbar, .ql-container {
-  -webkit-transition: border-color, -webkit-box-shadow 0.3s;
-  transition: border-color, -webkit-box-shadow 0.3s;
+.ql-toolbar,
+.ql-container {
   transition: border-color, box-shadow 0.3s;
-  transition: border-color, box-shadow 0.3s, -webkit-box-shadow 0.3s;
 }
 
 .ql-toolbar {
@@ -14,21 +12,19 @@
 }
 
 .quill--focus .ql-container.ql-snow {
-  border-right: 1px solid #37A3FF;
-  border-left: 1px solid #37A3FF;
-  border-bottom: 1px solid #37A3FF;
-  -webkit-box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
-          box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  border-right: 1px solid #37a3ff;
+  border-left: 1px solid #37a3ff;
+  border-bottom: 1px solid #37a3ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
 .quill--focus .ql-toolbar.ql-snow {
-  border: 1px solid #37A3FF;
-  -webkit-box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
-          box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  border: 1px solid #37a3ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
 .article-editor .ql-editor {
-  min-height: 480px;
+  max-height: 400px;
 }
 
 .article-editor .ql-container {
@@ -37,9 +33,7 @@
   color: #24292e;
 }
 
-.article-editor .ql-container h1,
-.article-editor .ql-container h2,
-.article-editor .ql-container h3 {
+.article-editor .ql-container h1, .article-editor .ql-container h2, .article-editor .ql-container h3 {
   font-weight: 600;
   margin: 0;
   padding: 0;
@@ -74,17 +68,20 @@
   margin-bottom: 24px;
 }
 
-.article-editor .ql-container ul, .article-editor .ql-container ol {
+.article-editor .ql-container ul,
+.article-editor .ql-container ol {
   margin: 0 0 0 34px;
   padding: 0;
 }
 
-.article-editor .ql-container ul li, .article-editor .ql-container ol li {
+.article-editor .ql-container ul li,
+.article-editor .ql-container ol li {
   padding: 9px 0;
   line-height: 1.6;
 }
 
-.article-editor .ql-container ul li:first-child, .article-editor .ql-container ol li:first-child {
+.article-editor .ql-container ul li:first-child,
+.article-editor .ql-container ol li:first-child {
   padding-top: 0;
 }
 
@@ -102,21 +99,23 @@
   margin-bottom: 18px;
 }
 
-.comment-editor .ql-container ul, .comment-editor .ql-container ol {
+.comment-editor .ql-container ul,
+.comment-editor .ql-container ol {
   margin: 0 0 0 18px;
   padding: 0;
 }
 
-.comment-editor .ql-container ul li, .comment-editor .ql-container ol li {
+.comment-editor .ql-container ul li,
+.comment-editor .ql-container ol li {
   padding: 7px 0;
   line-height: 1.6;
 }
 
-.comment-editor .ql-container ul li:first-child, .comment-editor .ql-container ol li:first-child {
+.comment-editor .ql-container ul li:first-child,
+.comment-editor .ql-container ol li:first-child {
   padding-top: 0;
 }
 
 .comment-editor .ql-container ul {
   list-style-type: disc;
 }
-/*# sourceMappingURL=EditorField.css.map */

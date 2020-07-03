@@ -58,6 +58,10 @@ class TopicCommentItem extends React.Component {
 
   render() {
     const {
+      user: { mute },
+    } = this.context;
+    const muteComments = mute && mute.includes('ON_COMMENTS');
+    const {
       comment,
       handleQuoteComment,
       deleteComment,
@@ -150,6 +154,7 @@ class TopicCommentItem extends React.Component {
         toggleEdeting={toggleEdeting}
         convertedImages={convertedImages}
         commentActions={commentActions}
+        muteComments={muteComments}
         contentCommentText={contentCommentText}
         contentEditingForm={contentEditingForm}
         contentReplyText={contentReplyText}

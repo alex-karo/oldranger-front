@@ -1,7 +1,6 @@
 import React from 'react';
 import Stomp from 'stompjs';
 import SockJS from 'sockjs-client';
-import { Spin } from 'antd';
 import 'antd/dist/antd.css';
 
 import queries from './serverQueries';
@@ -26,6 +25,8 @@ import ProfileAnotherUser from './components/Profile/ProfileAnotherUser';
 import { BASE_URL } from './constants';
 import MainAlbums from './components/hoc/MainAlbums';
 import Albums from './components/Profile/Albums/Albums';
+import AuthorizationStatusEmitter from './EventEmitter/EventEmmiter';
+
 
 const url = BASE_URL;
 
@@ -51,6 +52,17 @@ class App extends React.Component {
     if (isLogin) {
       await this.connect();
     }
+    this.сonnect();
+
+    AuthorizationStatusEmitter.subscribe(isAuthorized => {
+      if (!isAuthorized) {
+        localStorage.clear();
+        this.setState({
+          isLogin: false,
+        });
+        this.disconnect();
+      }
+    });
   };
 
   connect = async () => {
@@ -68,14 +80,20 @@ class App extends React.Component {
     this.setState({ isJoinChat: isJoin, countMessages: 0 });
   };
 
-  onConnected = () => {
-    this.stompClient.subscribe(`/channel/public`, this.onCheckMessage, {});
+  сonnect = () => {
     this.setState({ connect: true });
   };
 
+  onConnected = () => {
+    this.stompClient.subscribe(`/channel/public`, this.onCheckMessage, {});
+  };
+
   disconnect = () => {
-    this.stompClient.unsubscribe(`/channel/public`);
-    this.stompClient.disconnect();
+    const { stompClient } = this.state;
+    if (stompClient) {
+      this.stompClient.unsubscribe(`/channel/public`);
+      this.stompClient.disconnect();
+    }
   };
 
   onCheckMessage = payload => {
@@ -161,9 +179,7 @@ class App extends React.Component {
             user={user}
             component={ChatAuth}
           />
-        ) : (
-          <Spin />
-        )}
+        ) : null}
         <ChatRoute
           exact
           path="/private/:id"

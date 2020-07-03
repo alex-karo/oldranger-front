@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactQuill from 'react-quill';
-import './quill.snow.css';
-import './EditorField.scss';
+import './EditorField.css';
 import { useField } from 'formik';
 
 const wrapperHandler = (fn, value) => () => fn(value);

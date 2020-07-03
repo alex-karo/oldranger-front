@@ -45,3 +45,5 @@ export const createTreeBuildFunction = (childKey = 'id', parentKey = 'parentId')
   });
   return tree;
 };
+
+export const convertTimeToMilliseconds = (time = 1) => time * 24 * 60 * 60 * 1000;
