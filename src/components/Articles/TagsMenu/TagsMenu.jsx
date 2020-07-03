@@ -9,7 +9,7 @@ import useQuery from '../../../hooks/useQuery';
 const TagsMenu = ({ location }) => {
   const [menuItems, setMenuItems] = useState([]);
   const history = useHistory();
-  const [activeId, setActiveId] = useState(null);
+  const [activeId, setActiveId] = useState(undefined);
   const hierarchy = useQuery().tags;
 
   const addActiveTag = tags => {
