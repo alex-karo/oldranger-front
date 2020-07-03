@@ -2,7 +2,6 @@ import React from 'react';
 import { Row, Button, Icon, message, Modal } from 'antd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-// import Carousel, { Modal, ModalGateway } from 'react-images';
 import { Link, withRouter } from 'react-router-dom';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
@@ -11,26 +10,6 @@ import UploadPhoto from './UploadPhoto';
 import ModalPhoto from './ModalPhoto';
 
 import { BASE_URL } from '../../../constants';
-
-// const CloseModalButton = styled(Button)`
-//   position: absolute;
-//   top: 20px;
-//   padding: 5px;
-//   width: 44px;
-//   right: 20px;
-//   opacity: 0.7;
-//   z-index: 1;
-// `;
-
-// const DeletePhotoModalButton = styled(Button)`
-//   position: absolute;
-//   top: 20px;
-//   right: 64px;
-//   padding: 5px;
-//   width: 44px;
-//   opacity: 0.7;
-//   z-index: 1;
-// `;
 
 const DeletePhotoButton = styled(Button)`
   position: absolute;
