@@ -6,6 +6,7 @@ import { Formik } from 'formik';
 import { EditorField, SelectField, FormItemLabel } from './fields';
 import useTagsFetching from '../../hooks/useTagsFetching';
 import ArticlePhotosUploader from '../AdminPanel/ArticlePhotosUploader';
+import ArticleAddPhotosModal from '../AdminPanel/ArticleAddPhotosModal';
 
 const validationSchema = Yup.object({
   title: Yup.string()
@@ -17,18 +18,37 @@ const validationSchema = Yup.object({
   tagsId: Yup.array(Yup.number().required('Это поле обязательно')).min(1, 'Добавьте минимум 1 тэг'),
 });
 
-const editorModules = {
-  toolbar: [
-    [{ header: [2, 3, false] }],
-    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-    [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
-    [{ list: 'ordered' }, { list: 'bullet' }],
-    ['image'],
-  ],
-};
-
 const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onSubmitError }) => {
   const [photosData, setPhotosData] = useState(new FormData());
+  const [photoList, setPhotoList] = useState([]);
+  const [addPhotosModalVisible, setAddPhotosModalVisible] = useState(false);
+  const [checkedImage, setCheckedImage] = useState('');
+  const [replyRef, setReplyRef] = useState('');
+
+  const imageHandler = image => {
+    if (image === true) {
+      setAddPhotosModalVisible(true);
+    }
+    if (image && typeof image === 'string') {
+      const quillRef = replyRef.getEditor();
+      const range = quillRef.getSelection(true);
+
+      quillRef.insertEmbed(range.index, 'img', { alt: 'image', src: image });
+    }
+  };
+
+  const editorModules = {
+    toolbar: {
+      container: [
+        [{ header: [2, 3, false] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['image'],
+      ],
+      handlers: { image: imageHandler },
+    },
+  };
 
   const getFormData = formData => setPhotosData(formData);
 
@@ -75,12 +95,22 @@ const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onS
             </FormItemLabel>
 
             <FormItemLabel wrapperCol={{ span: 24 }} name="text">
-              <EditorField name="text" className="article-editor" modules={editorModules}>
+              <EditorField
+                name="text"
+                className="article-editor"
+                setReplyRef={setReplyRef}
+                modules={editorModules}
+              >
                 {/* <ArticleContentView /> */}
               </EditorField>
             </FormItemLabel>
             <Form.Item>
-              <ArticlePhotosUploader getFormData={getFormData} />
+              <ArticlePhotosUploader
+                setPhotoList={setPhotoList}
+                setCheckedImage={setCheckedImage}
+                getFormData={getFormData}
+                photoList={photoList}
+              />
             </Form.Item>
             <Form.Item wrapperCol={{ span: 24 }}>
               <Checkbox name="isDraft" checked={values.isDraft} onChange={handleChange('isDraft')}>
@@ -97,6 +127,14 @@ const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onS
                 {buttonText}
               </Button>
             </Form.Item>
+            <ArticleAddPhotosModal
+              isVisible={addPhotosModalVisible}
+              imageHandler={imageHandler}
+              checkedImage={checkedImage}
+              setCheckedImage={setCheckedImage}
+              setVisible={setAddPhotosModalVisible}
+              photoList={photoList}
+            />
           </Form>
         );
       }}

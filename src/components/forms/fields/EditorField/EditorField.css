@@ -119,3 +119,22 @@
 .comment-editor .ql-container ul {
   list-style-type: disc;
 }
+
+.ql-snow .ql-editor .img-fluid.ql-align-center  {
+  clear: both;
+  margin: 0 30%;
+}
+
+.ql-snow .ql-editor .img-fluid {
+  max-width: 40%;
+  max-height: 40%;
+  float:left;
+  margin: 4px 10px 2px 0px;
+  border:1px solid #CCC;
+  padding:6px;
+}
+
+.ql-snow .ql-editor .img-fluid.ql-align-right  {
+  float:right;
+}
+
