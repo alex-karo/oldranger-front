@@ -19,12 +19,14 @@ const AdminPanelHeader = styled.div`
 const AdminPanel = () => {
   const { path } = useRouteMatch();
   const history = useHistory();
-  const [selectedUrl, setUrl] = useState('');
+  const currentPath = window.location.pathname.split('/');
+  const [selectedUrl, setUrl] = useState(currentPath.pop());
 
   const changeUrl = ({ target: { value } }) => {
     history.push(`${path}/${value}`);
     setUrl(value);
   };
+
 
   return (
     <div>
