@@ -46,6 +46,10 @@ const TagsMenu = ({ location }) => {
   };
 
   const buildTreeMenu = (tags, result = []) => {
+    if (tags.length === 0 && result.length !== 0) {
+      return result;
+    }
+
     if (tags.length === 0) {
       return (
         <li>
