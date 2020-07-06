@@ -15,15 +15,11 @@ class ChatAuth extends React.Component {
   }
 
   componentWillUnmount = () => {
-    const { changeJoinChat } = this.props;
     this.disconnect();
-    changeJoinChat(false);
   };
 
   componentDidMount = async () => {
-    const { changeJoinChat } = this.props;
     await this.connect();
-    changeJoinChat(true);
   };
 
   connect = async () => {
@@ -36,7 +32,8 @@ class ChatAuth extends React.Component {
 
   disconnect = evt => {
     const { user } = this.state;
-    const { history, stompClient } = this.props;
+    const { history, stompClient, changeJoinChat } = this.props;
+    changeJoinChat(false);
     stompClient.send(`chat/delUser`, {}, JSON.stringify({ sender: user.nickName, type: 'LEAVE' }));
     this.setState({ isJoin: false });
     if (evt) {
@@ -118,9 +115,17 @@ class ChatAuth extends React.Component {
 
   render() {
     const { isJoin, messages, usersOnline } = this.state;
-    const { user } = this.props;
+    const {
+      user,
+      changeJoinChat,
+      history: {
+        location: { state },
+      },
+    } = this.props;
     return isJoin ? (
       <Chat
+        chatState={state}
+        changeJoinChat={changeJoinChat}
         handleDisconnect={this.disconnect}
         deleteCurrentMessage={this.deleteCurrentMessage}
         usersOnline={usersOnline}

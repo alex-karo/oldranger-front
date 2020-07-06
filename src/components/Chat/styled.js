@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components';
+import { Badge } from 'antd';
 
 const Ul = styled.ul`
   list-style: none;
@@ -18,18 +19,18 @@ const Li = styled.li`
 `;
 
 export const ChatContainer = styled.div`
-  width: ${({ state }) => (state ? '550px' : '100%')};
+  width: ${({ fixedChat }) => (fixedChat ? '550px' : '100%')};
   display: block;
-  margin: 10px auto 20px;
+  margin: 10px 20px 20px 20px;
   background-color: #fff;
   box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
-  height: ${({ state }) => (state ? 'auto' : '100%')};
-  position: ${({ state }) => (state ? 'fixed' : 'relative')};
-  bottom: ${({ state }) => (state ? '0' : 'none')};
-  right: ${({ state }) => (state ? '0' : 'none')};
+  height: ${({ fixedChat }) => (fixedChat ? 'auto' : '100%')};
+  position: ${({ fixedChat }) => (fixedChat ? 'fixed' : 'relative')};
+  bottom: ${({ fixedChat }) => (fixedChat ? '0' : 'none')};
+  right: ${({ fixedChat }) => (fixedChat ? '0' : 'none')};
   border-radius: 10px;
   @media (max-width: 2200px) {
-    display: ${({ state }) => (state ? 'none' : 'block')};
+    display: ${({ fixedChat }) => (fixedChat ? 'none' : 'block')};
   }
 `;
 
@@ -40,41 +41,39 @@ export const Header = styled.header`
   border-bottom: 1px solid #e8e8e8;
 `;
 
-export const CloseButton = styled.button`
+export const Title = styled.h2`
+  position: relative;
+  display: inline-block;
+`;
+
+export const StyledBadge = styled(Badge)`
+  position: absolute;
+  top: 0;
+  right: -23px;
+`;
+
+export const MinimizeButton = styled.button`
   position: absolute;
   background: none;
-  border: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 2px solid #333;
   right: 20px;
-  top: 15px;
-  width: 32px;
-  height: 32px;
+  top: 10px;
+  width: 25px;
+  height: 25px;
   opacity: 0.3;
   outline: none;
   &:hover {
     opacity: 1;
     cursor: pointer;
   }
-  &:before,
-  &:after {
-    position: absolute;
-    left: 15px;
-    top: 0;
-    content: ' ';
-    height: 33px;
-    width: 2px;
-    background-color: #333;
-  }
-  &:before {
-    transform: rotate(45deg);
-  }
-  &:after {
-    transform: rotate(-45deg);
-  }
 `;
 
 export const Main = styled.div`
-  display: flex;
-  height: ${({ state }) => (state ? '300px' : '400px')};
+  display: ${({ minimizeChat, fixedChat }) => (minimizeChat && fixedChat ? 'none' : 'flex')};
+  height: ${({ fixedChat }) => (fixedChat ? '300px' : '400px')};
 `;
 
 export const UserListTitle = styled.h3`
@@ -108,7 +107,7 @@ export const OnlineLED = styled.span`
 
 export const UserList = styled(Ul)`
   border: none;
-  height: ${({ state }) => (state ? '300px' : '350px')};
+  height: ${({ fixedChat }) => (fixedChat ? '300px' : '350px')};
   width: 100%;
 `;
 
@@ -218,6 +217,7 @@ export const Arrow = styled.span`
 `;
 
 export const Form = styled.form`
+  display: ${({ minimizeChat, fixedChat }) => (minimizeChat && fixedChat ? 'none' : 'block')};
   padding: 20px;
 `;
 

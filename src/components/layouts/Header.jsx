@@ -19,6 +19,13 @@ const WrapLogo = styled.div`
   margin-bottom: 10px;
 `;
 
+const StyledBadge = styled(Badge)`
+  display: none;
+  @media (max-width: 2200px) {
+    display: ${({ state }) => (state === 'mainChat' ? 'none' : 'block')};
+  }
+`;
+
 const Logo = styled.img`
   width: 110px;
   height: 95px;
@@ -70,7 +77,7 @@ const MenuUserFirstRow = styled.div`
 const Header = ({ countMessages }) => {
   return (
     <Context.Consumer>
-      {({ isLogin, logOut, user, muteChat }) => (
+      {({ isLogin, logOut, user, muteChat, state, changeJoinChat }) => (
         <StyledHeader>
           <WrapLogo>
             <Logo src={logo} alt='Клуб "Старый следопыт"' />
@@ -83,7 +90,7 @@ const Header = ({ countMessages }) => {
               </Button>
               {isLogin && (
                 <>
-                  <Button disabled={muteChat} type="primary">
+                  <Button onClick={() => changeJoinChat(true)} disabled={muteChat} type="primary">
                     <Link
                       to={{
                         pathname: '/chat',
@@ -91,7 +98,7 @@ const Header = ({ countMessages }) => {
                       }}
                     >
                       Чат
-                      <Badge count={countMessages} />
+                      <StyledBadge state={state} count={countMessages} />
                     </Link>
                   </Button>
                   <Button type="primary">
