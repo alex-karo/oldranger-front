@@ -4,9 +4,10 @@ import queries from '../../serverQueries';
 import ArticleForm from '../forms/ArticleForm';
 import { StyledHeader } from '../Articles/styled';
 
-const createArticle = async values => {
-  const { title, text, ...params } = values;
-  const data = await queries.createArticle({ title, text }, params);
+const createArticle = async (photos, params) => {
+  // console.log('params', params);
+  // console.log('photos', photos.getAll('photos'))
+  const data = await queries.createArticle(photos, params);
   return data;
 };
 

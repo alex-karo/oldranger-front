@@ -363,6 +363,11 @@ class Queries {
     return res.data;
   };
 
+  getSecuredPhoto = async id => {
+    const res = await axios.get(`/api/securedPhoto/photoFromAlbum/${id}`);
+    return res.data;
+  };
+
   addPhotosInAlbum = async (albumId, photosArr) => {
     const res = await axios.post(`/api/photos/${albumId}`, photosArr);
     return res.data;
