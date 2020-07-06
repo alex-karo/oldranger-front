@@ -21,7 +21,7 @@ const SelectField = ({ name, disabled, options, ...rest }) => {
       name={name}
       disabled={disabled}
       optionFilterProp="title"
-      value={value}
+      value={`тема ${value}`}
       multiple
       onChange={arr => setFieldValue(name, arr)}
       treeData={normalizedTags}
