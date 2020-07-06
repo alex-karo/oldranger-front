@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button, Badge } from 'antd';
 import logo from '../../media/img/logo.png';
@@ -74,7 +74,13 @@ const MenuUserFirstRow = styled.div`
   margin-bottom: 4%;
 `;
 
-const Header = ({ countMessages }) => {
+const Header = ({ countMessages, location: { pathname } }) => {
+  const [isForumHeader, setHeaderState] = useState(pathname === '/');
+
+  const switchForumSitePart = bool => {
+    setHeaderState(bool);
+  };
+
   return (
     <Context.Consumer>
       {({ isLogin, logOut, user, muteChat, state, changeJoinChat }) => (
@@ -85,9 +91,15 @@ const Header = ({ countMessages }) => {
           </WrapLogo>
           <Menu>
             <MenuMain>
-              <Button type="primary">
-                <Link to="/">Главная</Link>
-              </Button>
+              {isForumHeader ? (
+                <Button type="primary">
+                  <Link to="/">Главная</Link>
+                </Button>
+              ) : (
+                <Button type="primary" onClick={() => switchForumSitePart(true)}>
+                  <Link to="/">Форум</Link>
+                </Button>
+              )}
               {isLogin && (
                 <>
                   <Button onClick={() => changeJoinChat(true)} disabled={muteChat} type="primary">
@@ -101,9 +113,20 @@ const Header = ({ countMessages }) => {
                       <StyledBadge state={state} count={countMessages} />
                     </Link>
                   </Button>
-                  <Button type="primary">
-                    <Link to="/articles">Статьи</Link>
-                  </Button>
+                  {isForumHeader ? (
+                    <Button type="primary" onClick={() => switchForumSitePart(false)}>
+                      <Link to="/articles">Сайт</Link>
+                    </Button>
+                  ) : (
+                    <>
+                      <Button>
+                        <Link to="/articles">Статьи</Link>
+                      </Button>
+                      <Button>
+                        <Link to="/albums">Альбомы</Link>
+                      </Button>
+                    </>
+                  )}
                 </>
               )}
             </MenuMain>
@@ -111,27 +134,27 @@ const Header = ({ countMessages }) => {
               <MenuUserFirstRow>
                 {isLogin ? (
                   <>
-                    <Button type="primary">
+                    <Button>
                       <Link to="/profile">Профиль</Link>
                     </Button>
-                    <Button type="danger" onClick={logOut} style={{ marginLeft: 'auto' }}>
+                    <Button type="danger" onClick={logOut}>
                       Выйти
                     </Button>
                   </>
                 ) : (
-                  <Button type="primary" style={{ width: '100%' }}>
+                  <Button type="link">
                     <Link to="/login">Войти</Link>
                   </Button>
                 )}
               </MenuUserFirstRow>
-              {isLogin || (
-                <Button>
-                  <Link to="/request-invite">Запросить регистрацию</Link>
-                </Button>
-              )}
               {isLogin && user.role === 'ROLE_ADMIN' && (
                 <Button style={{ marginLeft: '0' }}>
                   <Link to="/admin-panel">Панель администратора</Link>
+                </Button>
+              )}
+              {isLogin || (
+                <Button>
+                  <Link to="/request-invite">Запросить регистрацию</Link>
                 </Button>
               )}
             </MenuUser>
@@ -148,6 +171,9 @@ Header.defaultProps = {
 
 Header.propTypes = {
   countMessages: PropTypes.number,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
-export default Header;
+export default withRouter(Header);

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import queries from '../../../serverQueries';
 import Context from '../../Context';
 import { BASE_URL } from '../../../constants';
+import CreateAlbumPrompt from './CreateAlbumPrompt';
 
 const DeletePhotoButton = styled(Button)`
   display: none;
@@ -83,6 +84,7 @@ class Albums extends React.Component {
     super(props);
     this.state = {
       albums: [],
+      visible: false,
     };
   }
 
@@ -98,15 +100,8 @@ class Albums extends React.Component {
     this.setState({ albums: allAlbums });
   };
 
-  createNewAlbum = async () => {
+  createNewAlbum = async title => {
     const { albums } = this.state;
-    // eslint-disable-next-line no-alert
-    const title = prompt('Название альбома');
-    if (!title) {
-      /* eslint-disable-next-line no-alert */
-      message.error('Необходимо указать название для альбома');
-      return;
-    }
     try {
       const NewAlbum = await queries.createNewAlbum(title);
       this.setState({ albums: [...albums, NewAlbum] });
@@ -184,7 +179,7 @@ class Albums extends React.Component {
   };
 
   render() {
-    const { albums } = this.state;
+    const { albums, visible } = this.state;
     const { isMainPage } = this.props;
     return (
       <>
@@ -235,9 +230,23 @@ class Albums extends React.Component {
         )}
         {isMainPage ? null : (
           <Row type="flex" justify="center">
-            <Button type="primary" onClick={this.createNewAlbum}>
-              Создать новый альбом
-            </Button>
+            <div>
+              <Button
+                type="primary"
+                onClick={() => {
+                  this.setState({ visible: true });
+                }}
+              >
+                Создать альбом
+              </Button>
+              <CreateAlbumPrompt
+                visible={visible}
+                onCreate={this.createNewAlbum}
+                onCancel={() => {
+                  this.setState({ visible: false });
+                }}
+              />
+            </div>
           </Row>
         )}
       </>
