@@ -99,7 +99,7 @@ class Queries {
 
   getTagsDtoTree = async () => {
     const res = await axios.get('/api/tags/node/tree');
-    return res?.data;
+    return res.data;
   };
 
   addNewTagTree = async params => {
@@ -340,6 +340,11 @@ class Queries {
 
   getAlbums = async () => {
     const res = await axios.get('/api/albums');
+    return res.data;
+  };
+
+  getAllAlbums = async () => {
+    const res = await axios.get('/api/albums/all');
     return res.data;
   };
 
