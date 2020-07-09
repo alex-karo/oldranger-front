@@ -46,7 +46,6 @@ const AlbomShadow = styled.div`
   padding: 35px 12px 9px;
   background: url(/shadow.png);
 `;
-
 const PhotoCounter = styled.span`
   position: absolute;
   bottom: 0;
@@ -288,10 +287,14 @@ Albums.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
-  isMainPage: PropTypes.bool.isRequired,
+  isMainPage: PropTypes.bool,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+};
+
+Albums.defaultProps = {
+  isMainPage: false,
 };
 
 export default withRouter(Albums);
