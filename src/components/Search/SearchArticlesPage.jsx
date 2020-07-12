@@ -58,11 +58,11 @@ class SearchArticlesPage extends React.Component {
                 return <Article key={article.id} articleInfo={article} isPreview />;
               })
             : messageError && (
-            <StyledTitle>
-              {`${messageError} `}
-              <i>{searchRequest}</i>
-            </StyledTitle>
-          )}
+                <StyledTitle>
+                  {`${messageError} `}
+                  <i>{searchRequest}</i>
+                </StyledTitle>
+              )}
         </Column>
       </>
     );

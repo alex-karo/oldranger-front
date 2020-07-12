@@ -28,7 +28,7 @@ class Queries {
     if (error.response.status === 401) {
       AuthorizationStatusEmitter.emit(false);
     }
-    
+
     throw error;
   };
 
