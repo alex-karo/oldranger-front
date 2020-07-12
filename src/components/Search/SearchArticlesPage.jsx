@@ -18,14 +18,18 @@ class SearchArticlesPage extends React.Component {
   }
 
   componentDidMount() {
-    this.getArticles(1)
+    const firstPage = 1;
+
+    this.getArticles(firstPage)
       .then(data => {
-        if (data) this.setState({ articles: data.articleList, loading: false });
+        if (data.articleList) this.setState({ articles: data.articleList, loading: false });
+        else this.setState({ messageError: 'Нет результатов по запросу', loading: false });
       })
       .catch(error => {
         if (error.response && error.response.status === 404) {
           this.setState({ messageError: error.response.data, loading: false });
         }
+        this.setState({ loading: false });
       });
   }
 
@@ -53,8 +57,7 @@ class SearchArticlesPage extends React.Component {
             ? articles.map(article => {
                 return <Article key={article.id} articleInfo={article} isPreview />;
               })
-            : null}
-          {messageError && (
+            : messageError && (
             <StyledTitle>
               {`${messageError} `}
               <i>{searchRequest}</i>
