@@ -89,7 +89,7 @@ const TagsMenu = ({ location }) => {
 
   return (
     <StyledMenu>
-      {!loading.tags ? (
+      {!loading.tags || menuItems.length === 0 ? (
         <Menu mode="inline">{buildTreeMenu(menuItems.filter(el => el.parentId === null))}</Menu>
       ) : (
         <Spin />
