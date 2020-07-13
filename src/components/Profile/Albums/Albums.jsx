@@ -99,9 +99,10 @@ class Albums extends React.Component {
     if (isMainPage) {
       const allAlbums = await queries.getAllAlbums();
       this.setState({ albums: allAlbums });
+    } else {
+      const userAlbums = await queries.getAlbums();
+      this.setState({ albums: userAlbums });
     }
-    const userAlbums = await queries.getAlbums();
-    this.setState({ albums: userAlbums });
   };
 
   createNewAlbum = async title => {
