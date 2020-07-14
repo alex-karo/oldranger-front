@@ -7,31 +7,33 @@ import TopicsList from '../Subsection/TopicsList';
 import TopicsListItem from '../Subsection/TopicsListItem';
 import SearchForm from './SearchForm';
 
-import Context from '../Context/index';
-
 class MainPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       rootSections: [],
       actualTopics: [],
+      errorOnLoading: false,
     };
   }
 
   componentDidMount() {
-    queries.getActualTopics().then(actualTopics => {
-      this.setState({ actualTopics });
-    });
+    queries
+      .getActualTopics()
+      .then(actualTopics => {
+        this.setState({ actualTopics });
+      })
+      .catch(() => this.setState({ errorOnLoading: true }));
     queries.getAllSections().then(sections => {
       this.setState({ rootSections: sections });
     });
   }
 
   render() {
-    const { rootSections, actualTopics } = this.state;
-    return (
-      <StyledMainPage>
-        <SearchForm />
+    const { rootSections, actualTopics, errorOnLoading } = this.state;
+
+    const topics = (
+      <>
         {actualTopics.length > 0 && rootSections.length > 0 ? (
           <>
             <TopicsList
@@ -46,6 +48,13 @@ class MainPage extends React.Component {
         ) : (
           <Spin />
         )}
+      </>
+    );
+
+    return (
+      <StyledMainPage>
+        <SearchForm />
+        {errorOnLoading ? 'Не найдено ни одной темы' : topics}
       </StyledMainPage>
     );
   }
