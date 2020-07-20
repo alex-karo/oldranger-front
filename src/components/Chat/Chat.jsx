@@ -56,10 +56,8 @@ class Chat extends React.Component {
   componentDidUpdate(prevProps) {
     const { changeJoinChat, chatState } = this.props;
     const { minimizeChat } = this.state;
-    if (chatState !== prevProps.chatState) {
-      if (minimizeChat) {
-        changeJoinChat(false);
-      }
+    if (chatState !== prevProps.chatState && minimizeChat) {
+      changeJoinChat(false);
     }
   }
 
