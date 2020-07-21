@@ -29,7 +29,6 @@ import MainAlbums from './components/hoc/MainAlbums';
 import Albums from './components/Profile/Albums/Albums';
 import AuthorizationStatusEmitter from './EventEmitter/EventEmmiter';
 
-
 const url = BASE_URL;
 
 class App extends React.Component {
@@ -137,10 +136,11 @@ class App extends React.Component {
         location: { state },
       },
     } = this.props;
-
     return (
       <Context.Provider
         value={{
+          state,
+          changeJoinChat: this.changeJoinChat,
           changeUserState: this.changeUserState,
           changeLoginState: this.changeLoginState,
           logOut: this.logOut,
@@ -176,6 +176,7 @@ class App extends React.Component {
         {connect ? (
           <ChatRoute
             path={state === 'privateChat' ? '/private/:id' : '/'}
+            countMessages={countMessages}
             isLogin={isLogin}
             changeJoinChat={this.changeJoinChat}
             stompClient={stompClient}

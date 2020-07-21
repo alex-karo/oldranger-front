@@ -5,10 +5,10 @@ import { throttle } from 'lodash';
 import { Input, Button, message as systemMessage, Icon, Tooltip } from 'antd';
 import { withRouter } from 'react-router-dom';
 import { BASE_URL } from '../../constants';
+import Context from '../Context';
 import {
   ChatContainer,
   Header,
-  CloseButton,
   Main,
   UserListTitle,
   OnlineLED,
@@ -28,6 +28,9 @@ import {
   Arrow,
   Form,
   Footer,
+  MinimizeButton,
+  StyledBadge,
+  Title,
 } from './styled';
 
 const url = BASE_URL;
@@ -35,12 +38,27 @@ const url = BASE_URL;
 class Chat extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { message: '', file: null, filePath: '', replyTo: null, hasScrolled: false };
+    this.state = {
+      message: '',
+      file: null,
+      filePath: '',
+      replyTo: null,
+      hasScrolled: false,
+      minimizeChat: true,
+    };
   }
 
   componentDidMount() {
     this.trottledFunction = throttle(this.onScroll, 150);
     this.scrollingWrapper.addEventListener('scroll', this.trottledFunction);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { changeJoinChat, chatState } = this.props;
+    const { minimizeChat } = this.state;
+    if (chatState !== prevProps.chatState && minimizeChat) {
+      changeJoinChat(false);
+    }
   }
 
   componentWillUnmount() {
@@ -177,78 +195,98 @@ class Chat extends React.Component {
     }
   };
 
+  handleMinimizeChat = changeJoinChat => () => {
+    const { minimizeChat } = this.state;
+    this.setState(
+      state => ({
+        minimizeChat: !state.minimizeChat,
+      }),
+      () => {
+        changeJoinChat(minimizeChat);
+      }
+    );
+  };
+
   reference = id => ref => {
     this[id] = ref;
   };
 
   render() {
-    const {
-      handleDisconnect,
-      messages,
-      usersOnline,
-      label,
-      history: {
-        location: { state },
-      },
-    } = this.props;
-    const chatState = state !== 'mainChat' && state !== 'privateChat';
-    const { message, filePath, hasScrolled } = this.state;
+    const { messages, usersOnline, label, chatState } = this.props;
+    const fixedChat = chatState !== 'mainChat' && chatState !== 'privateChat';
+    const { message, filePath, hasScrolled, minimizeChat } = this.state;
     return (
-      <section>
-        <ChatContainer state={chatState}>
-          <Header>
-            <h2>{label}</h2>
-            <CloseButton onClick={handleDisconnect} />
-          </Header>
-          <Main state={chatState}>
-            <div style={{ width: '20%' }}>
-              <OnlineLED />
-              <UserListTitle>Online:</UserListTitle>
-              <UserList state={chatState}>
-                {Object.entries(usersOnline).map(user => {
-                  const [username, id] = user;
-                  return (
-                    <User key={user}>
-                      <UserLink href={`/anotheruser/${id}`}>{username}</UserLink>
-                    </User>
-                  );
-                })}
-              </UserList>
-            </div>
-            <div style={{ width: '80%', postion: 'relative' }}>
-              <MessageList className="message-list" ref={this.reference('scrollingWrapper')}>
-                {hasScrolled && (
-                  <ScrollToTopButton onClick={this.handleShowFull}>
-                    <Arrow />
-                  </ScrollToTopButton>
-                )}
-                {messages.map(msg => this.drawMessage(msg))}
-              </MessageList>
-            </div>
-          </Main>
+      <Context.Consumer>
+        {({ countMessages, changeJoinChat }) => {
+          return (
+            <section>
+              <ChatContainer fixedChat={fixedChat}>
+                <Header>
+                  <Title>
+                    {label}
+                    {fixedChat ? <StyledBadge count={countMessages} /> : null}
+                  </Title>
+                  {fixedChat ? (
+                    <MinimizeButton onClick={this.handleMinimizeChat(changeJoinChat)} />
+                  ) : null}
+                </Header>
+                <Main minimizeChat={minimizeChat} fixedChat={fixedChat}>
+                  <div style={{ width: '20%' }}>
+                    <OnlineLED />
+                    <UserListTitle>Online:</UserListTitle>
+                    <UserList fixedChat={fixedChat}>
+                      {Object.entries(usersOnline).map(user => {
+                        const [username, id] = user;
+                        return (
+                          <User key={user}>
+                            <UserLink href={`/anotheruser/${id}`}>{username}</UserLink>
+                          </User>
+                        );
+                      })}
+                    </UserList>
+                  </div>
+                  <div style={{ width: '80%', postion: 'relative' }}>
+                    <MessageList className="message-list" ref={this.reference('scrollingWrapper')}>
+                      {hasScrolled && (
+                        <ScrollToTopButton onClick={this.handleShowFull}>
+                          <Arrow />
+                        </ScrollToTopButton>
+                      )}
+                      {messages.map(msg => this.drawMessage(msg))}
+                    </MessageList>
+                  </div>
+                </Main>
 
-          <Form className="message-form" onSubmit={this.handleSubmit}>
-            <Input
-              type="text"
-              placeholder="Введите сообщение..."
-              className="message-input"
-              value={message}
-              onChange={this.handleChangeMessage}
-            />
-            <Footer>
-              <input
-                type="file"
-                onChange={this.handleChangeFile}
-                value={filePath}
-                name="file-input"
-              />
-              <Button type="primary" className="send-button" htmlType="submit">
-                Отправить
-              </Button>
-            </Footer>
-          </Form>
-        </ChatContainer>
-      </section>
+                <Form
+                  minimizeChat={minimizeChat}
+                  fixedChat={fixedChat}
+                  className="message-form"
+                  onSubmit={this.handleSubmit}
+                >
+                  <Input
+                    type="text"
+                    placeholder="Введите сообщение..."
+                    className="message-input"
+                    value={message}
+                    onChange={this.handleChangeMessage}
+                  />
+                  <Footer>
+                    <input
+                      type="file"
+                      onChange={this.handleChangeFile}
+                      value={filePath}
+                      name="file-input"
+                    />
+                    <Button type="primary" className="send-button" htmlType="submit">
+                      Отправить
+                    </Button>
+                  </Footer>
+                </Form>
+              </ChatContainer>
+            </section>
+          );
+        }}
+      </Context.Consumer>
     );
   }
 }
@@ -256,15 +294,11 @@ class Chat extends React.Component {
 export default withRouter(Chat);
 
 Chat.propTypes = {
-  history: PropTypes.shape({
-    location: PropTypes.shape({
-      state: PropTypes.string,
-    }),
-  }),
+  changeJoinChat: PropTypes.func.isRequired,
+  chatState: PropTypes.string.isRequired,
   sendMessage: PropTypes.func.isRequired,
   deleteCurrentMessage: PropTypes.func.isRequired,
   getMessages: PropTypes.func.isRequired,
-  handleDisconnect: PropTypes.func.isRequired,
   user: PropTypes.shape({
     nickName: PropTypes.string,
   }),
@@ -275,7 +309,6 @@ Chat.propTypes = {
 };
 
 Chat.defaultProps = {
-  history: null,
   user: null,
   usersOnline: {},
   messages: [],
