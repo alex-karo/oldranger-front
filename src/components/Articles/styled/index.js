@@ -11,6 +11,7 @@ export const StyledMenu = styled.div`
 export const Column = styled.div`
   display: flex;
   margin-left: 20px;
+  margin-bottom: 20px;
   width: 100%;
   flex-direction: column;
   justify-content: flex-start;

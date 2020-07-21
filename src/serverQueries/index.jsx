@@ -88,13 +88,15 @@ class Queries {
     return res;
   };
 
-  getArticlesByTag = async tags => {
+  getArticlesByTag = async (tags, pageNumber) => {
     if (!tags) {
-      const res = await axios.get(`/api/article/withoutTag`, {});
+      const res = await axios.get(`/api/article/withoutTag?page=${pageNumber}`, {
+        page: pageNumber,
+      });
       return res;
     }
     const tagsString = tags.join('&tag_id=');
-    const res = await axios.get(`/api/article/tag?tag_id=${tagsString}&page=0`, {});
+    const res = await axios.get(`/api/article/tag?tag_id=${tagsString}&page=${pageNumber}`, {});
     return res;
   };
 
