@@ -5,10 +5,7 @@ import queries from '../../serverQueries';
 import { StyledMainPage } from './styled';
 import TopicsList from '../Subsection/TopicsList';
 import TopicsListItem from '../Subsection/TopicsListItem';
-import Albums from '../Profile/Albums/Albums';
 import SearchForm from './SearchForm';
-
-import Context from '../Context/index';
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -31,28 +28,23 @@ class MainPage extends React.Component {
   render() {
     const { rootSections, actualTopics } = this.state;
     return (
-      <Context.Consumer>
-        {({ isLogin }) => (
-          <StyledMainPage>
-            <SearchForm />
-            {actualTopics.length > 0 && rootSections.length > 0 ? (
-              <>
-                <TopicsList
-                  itemComponent={item => <TopicsListItem topicData={item} />}
-                  items={actualTopics}
-                  title="Актуальные темы"
-                />
-                {rootSections.map(section => (
-                  <SubSectionsList section={section} key={section.section.id} isLogin={isLogin} />
-                ))}
-                {isLogin && <Albums isMainPage />}
-              </>
-            ) : (
-              <Spin />
-            )}
-          </StyledMainPage>
+      <StyledMainPage>
+        <SearchForm />
+        {actualTopics.length > 0 && rootSections.length > 0 ? (
+          <>
+            <TopicsList
+              itemComponent={item => <TopicsListItem topicData={item} />}
+              items={actualTopics}
+              title="Актуальные темы"
+            />
+            {rootSections.map(section => (
+              <SubSectionsList section={section} key={section.section.id} />
+            ))}
+          </>
+        ) : (
+          <Spin />
         )}
-      </Context.Consumer>
+      </StyledMainPage>
     );
   }
 }

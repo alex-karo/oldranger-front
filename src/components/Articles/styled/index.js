@@ -104,3 +104,8 @@ export const StyledForm = styled(AntForm)`
     display: none;
   }
 `;
+
+export const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;

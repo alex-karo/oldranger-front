@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components';
+import { Badge } from 'antd';
 
 const Ul = styled.ul`
   list-style: none;
@@ -6,7 +7,6 @@ const Ul = styled.ul`
   overflow: auto;
   overflow-y: scroll;
   padding: 0 20px 0 20px;
-  height: 100%;
   width: 80%;
   border-left: 1px solid #e8e8e8;
 `;
@@ -19,14 +19,19 @@ const Li = styled.li`
 `;
 
 export const ChatContainer = styled.div`
-  max-width: 700px;
-  margin: 10px auto 0;
+  width: ${({ fixedChat }) => (fixedChat ? '550px' : '100%')};
+  display: block;
+  margin: 10px 20px 20px 20px;
   background-color: #fff;
   box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
-  height: calc(100% - 60px);
-  max-height: 700px;
-  position: relative;
+  height: ${({ fixedChat }) => (fixedChat ? 'auto' : '100%')};
+  position: ${({ fixedChat }) => (fixedChat ? 'fixed' : 'relative')};
+  bottom: ${({ fixedChat }) => (fixedChat ? '0' : 'none')};
+  right: ${({ fixedChat }) => (fixedChat ? '0' : 'none')};
   border-radius: 10px;
+  @media (max-width: 2200px) {
+    display: ${({ fixedChat }) => (fixedChat ? 'none' : 'block')};
+  }
 `;
 
 export const Header = styled.header`
@@ -36,41 +41,39 @@ export const Header = styled.header`
   border-bottom: 1px solid #e8e8e8;
 `;
 
-export const CloseButton = styled.button`
+export const Title = styled.h2`
+  position: relative;
+  display: inline-block;
+`;
+
+export const StyledBadge = styled(Badge)`
+  position: absolute;
+  top: 0;
+  right: -23px;
+`;
+
+export const MinimizeButton = styled.button`
   position: absolute;
   background: none;
-  border: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 2px solid #333;
   right: 20px;
-  top: 15px;
-  width: 32px;
-  height: 32px;
+  top: 10px;
+  width: 25px;
+  height: 25px;
   opacity: 0.3;
   outline: none;
   &:hover {
     opacity: 1;
     cursor: pointer;
   }
-  &:before,
-  &:after {
-    position: absolute;
-    left: 15px;
-    top: 0;
-    content: ' ';
-    height: 33px;
-    width: 2px;
-    background-color: #333;
-  }
-  &:before {
-    transform: rotate(45deg);
-  }
-  &:after {
-    transform: rotate(-45deg);
-  }
 `;
 
 export const Main = styled.div`
-  display: flex;
-  height: 350px;
+  display: ${({ minimizeChat, fixedChat }) => (minimizeChat && fixedChat ? 'none' : 'flex')};
+  height: ${({ fixedChat }) => (fixedChat ? '300px' : '400px')};
 `;
 
 export const UserListTitle = styled.h3`
@@ -104,7 +107,7 @@ export const OnlineLED = styled.span`
 
 export const UserList = styled(Ul)`
   border: none;
-  height: 80%;
+  height: ${({ fixedChat }) => (fixedChat ? '300px' : '350px')};
   width: 100%;
 `;
 
@@ -121,6 +124,7 @@ export const UserLink = styled.a`
 `;
 
 export const MessageList = styled(Ul)`
+  padding: 0;
   width: 100%;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
@@ -132,8 +136,9 @@ export const Message = styled(Li)`
   position: relative;
   display: flex;
   justify-content: space-between;
-  padding: 10px 0 10px 68px;
+  padding: 10px 0 0 45px;
   color: black;
+  line-height: 1rem;
   border-bottom-width: 1px;
   border-bottom-style: solid;
   border-bottom-color: ${props => (props.toMe ? '#128ff2' : '#f4f4f4')};
@@ -145,8 +150,8 @@ export const EventMessage = styled(Li)`
 
 export const MessageAvatar = styled.img`
   position: absolute;
-  width: 42px;
-  height: 42px;
+  width: 28px;
+  height: 28px;
   left: 10px;
   top: 10px;
   border: 1px solid #128ff2;
@@ -158,11 +163,11 @@ export const MessageAvatar = styled.img`
 
 export const MessageAuthor = styled.div`
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.8rem;
 `;
 
 export const MessageImage = styled.img`
-  margin: 10px 0;
+  margin: 0 0;
   max-height: 250px;
 `;
 
@@ -173,7 +178,7 @@ export const MessageDate = styled.span`
 `;
 
 export const MessageText = styled.p`
-  margin: 0;
+  margin: 5px 0;
   word-break: break-all;
 `;
 
@@ -181,7 +186,6 @@ export const MessageInner = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: 5px;
-
   .message-delete {
     cursor: pointer;
     padding: none;
@@ -195,8 +199,8 @@ export const ScrollToTopButton = styled.button`
   top: 80px;
   left: 50%;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 1.5rem;
+  height: 1.5rem;
   padding: 0;
   background-color: #fff;
   border: 1px solid #128ff2;
@@ -213,6 +217,7 @@ export const Arrow = styled.span`
 `;
 
 export const Form = styled.form`
+  display: ${({ minimizeChat, fixedChat }) => (minimizeChat && fixedChat ? 'none' : 'block')};
   padding: 20px;
 `;
 

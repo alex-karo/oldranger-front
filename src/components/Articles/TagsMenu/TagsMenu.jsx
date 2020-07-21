@@ -49,6 +49,16 @@ const TagsMenu = ({ location }) => {
     if (tags.length === 0 && result.length !== 0) {
       return result;
     }
+    
+    if (tags.length === 0) {
+      return (
+        <li>
+          <TagsItem active={false} cursor="default" pad={1}>
+            Нет тегов
+          </TagsItem>
+        </li>
+      );
+    }
 
     if (tags.length === 0) {
       return (
