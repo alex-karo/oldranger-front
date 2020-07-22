@@ -12,52 +12,35 @@ const ArticlesByTag = () => {
   const [pagination, setPagination] = useState({ currentPage: 0 });
   const tagsAtr = useQuery().tags;
 
-  useEffect(() => {
+  const getArticlesToState = paginationValue => {
     if (!tagsAtr) {
-<<<<<<< HEAD
-      queries
-        .getArticlesByTag()
-        .then(el => {
-          setArticles(el.content);
-          setIsEmpty(el.empty);
-        })
-        .catch(() => setIsEmpty(true));
-=======
-      queries.getArticlesByTag(null, pagination.currentPage).then(el => {
+      queries.getArticlesByTag(null, paginationValue).then(el => {
         setArticles(el.content);
         setIsEmpty(el.empty);
+        setPagination({ currentPage: paginationValue, totalElements: el.totalElements });
       });
->>>>>>> 643869a... Pagination on articles page
     } else {
       queries
-        .getArticlesByTag(tagsAtr.split('_'), pagination.currentPage)
+        .getArticlesByTag(tagsAtr.split('_'), paginationValue)
         .then(el => {
           setArticles(el.content.reverse());
           setIsEmpty(el.empty);
+          setPagination({ currentPage: paginationValue, totalElements: el.totalElements });
         })
         .catch(() => setIsEmpty(true));
     }
-  }, [pagination.currentPage]);
+  };
 
   useEffect(() => {
     setPagination({ ...pagination, currentPage: 0 });
-    if (!tagsAtr) {
-      queries.getArticlesByTag(null, pagination.currentPage).then(el => {
-        setArticles(el.content);
-        setIsEmpty(el.empty);
-        setPagination({ ...pagination, totalElements: el.totalElements });
-      });
-    } else {
-      queries
-        .getArticlesByTag(tagsAtr.split('_'), pagination.currentPage)
-        .then(el => {
-          setArticles(el.content.reverse());
-          setIsEmpty(el.empty);
-          setPagination({ ...pagination, totalElements: el.totalElements });
-        })
-        .catch(() => setIsEmpty(true));
-    }
+    const firstPage = 0;
+
+    getArticlesToState(firstPage);
   }, [tagsAtr]);
+
+  useEffect(() => {
+    getArticlesToState(pagination.currentPage);
+  }, [pagination.currentPage]);
 
   const onChangePageNumber = pageNumber => {
     setPagination({ ...pagination, currentPage: pageNumber - 1 });
