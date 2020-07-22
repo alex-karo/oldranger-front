@@ -96,12 +96,11 @@ class Albums extends React.Component {
 
   loadAlbums = async () => {
     const { isMainPage } = this.props;
-    if (isMainPage) {
-      const allAlbums = await queries.getAllAlbums();
-      this.setState({ albums: allAlbums });
-    } else {
-      const userAlbums = await queries.getAlbums();
-      this.setState({ albums: userAlbums });
+    try {
+      const albums = isMainPage ? await queries.getAllAlbums() : await queries.getAlbums();
+      this.setState({ albums });
+    } catch (error) {
+      queries.handleError(error);
     }
   };
 
@@ -267,13 +266,10 @@ class Albums extends React.Component {
     return (
       <Context.Consumer>
         {({ user: { role } }) => {
-          if (role !== 'ROLE_ADMIN') {
-            return this.renderAlbums();
-          }
           return (
             <>
               {this.renderAlbums()}
-              {this.renderAddAlbumButton()}
+              {role === 'ROLE_ADMIN' && this.renderAddAlbumButton()}
             </>
           );
         }}

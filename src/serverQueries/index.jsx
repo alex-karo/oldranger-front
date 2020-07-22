@@ -99,7 +99,7 @@ class Queries {
 
   getTagsDtoTree = async () => {
     const res = await axios.get('/api/tags/node/tree');
-    return res.data;
+    return res?.data;
   };
 
   addNewTagTree = async params => {
