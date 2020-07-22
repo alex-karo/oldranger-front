@@ -41,7 +41,7 @@ const ArticlePhotosUploader = ({
   };
   /* eslint-disable-next-line no-shadow */
   const handleUpload = ({ fileList }) => {
-    fileList.forEach(file => formData.append('photos', file.originFileObj)); // добавить отображение
+    fileList.forEach(file => formData.append('file', file.originFileObj)); // добавить отображение
     setPhotoList(fileList);
     getFormData(formData);
   };

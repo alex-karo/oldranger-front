@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Checkbox, Form, Input, Spin } from 'antd';
 import { Formik } from 'formik';
 import { EditorField, SelectField, FormItemLabel } from './fields';
+import queries from '../../serverQueries/index';
 import useTagsFetching from '../../hooks/useTagsFetching';
 import ArticlePhotosUploader from '../AdminPanel/ArticlePhotosUploader';
 import ArticleAddPhotosModal from '../AdminPanel/ArticleAddPhotosModal';
@@ -14,7 +15,7 @@ const validationSchema = Yup.object({
     .min(5, 'Заголовок не может быть меньше 5 символов'),
   text: Yup.string()
     .required('Это поле обязательно')
-    .max(500000, 'Слишком длинное сообщение'),
+    .max(1000000, 'Слишком длинное сообщение'),
   tagsId: Yup.array(Yup.number().required('Это поле обязательно')).min(1, 'Добавьте минимум 1 тэг'),
 });
 
@@ -26,14 +27,21 @@ const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onS
   const [replyRef, setReplyRef] = useState('');
 
   const imageHandler = image => {
+    const formData = new FormData();
     if (image === true) {
       setAddPhotosModalVisible(true);
     }
-    if (image && typeof image === 'string') {
-      const quillRef = replyRef.getEditor();
-      const range = quillRef.getSelection(true);
+    if (image && typeof image === 'object') {
+      formData.append('file', image);
+      queries.sendPhotos(formData).then(res => {
+        const quillRef = replyRef.getEditor();
+        const range = quillRef.getSelection(true);
 
-      quillRef.insertEmbed(range.index, 'img', { alt: 'image', src: image });
+        quillRef.insertEmbed(range.index, 'img', {
+          alt: 'image',
+          src: `http://oldranger.club:8888/img/chat/${res.data.originalImg}`,
+        });
+      });
     }
   };
 
@@ -55,7 +63,7 @@ const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onS
   const onSubmitWrapper = useCallback(
     () => async (data, { resetForm, setSubmitting }) => {
       try {
-        const res = await onSubmit(photosData, data);
+        const res = await onSubmit(data);
         setSubmitting(false);
         resetForm();
         if (onSubmitSuccess) {
@@ -79,7 +87,11 @@ const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onS
       validationSchema={validationSchema}
       onSubmit={onSubmitWrapper()}
     >
-      {({ values, handleChange, touched, errors, handleSubmit, submitting }) => {
+      {({ values, handleChange, touched, errors, handleSubmit, submitting, isSubmitting }) => {
+        if (isSubmitting) {
+          return <Spin />;
+        }
+
         return (
           <Form onSubmit={handleSubmit} labelAlign="left">
             <FormItemLabel name="title" label="Заголовок">

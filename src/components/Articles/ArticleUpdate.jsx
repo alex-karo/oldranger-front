@@ -36,6 +36,10 @@ const ArticleUpdate = () => {
     return null;
   };
 
+  const handleSubmit = id => {
+    updateArticle(id);
+  };
+
   const { error, loading, results } = useArticleFetching(articleId);
 
   if (loading || error) {
@@ -56,7 +60,7 @@ const ArticleUpdate = () => {
       <StyledHeader>Редактирование статьи</StyledHeader>
       <ArticleForm
         initialValues={{ title, text, tagsId, isDraft, isHideToAnon }}
-        onSubmit={updateArticle(articleId)}
+        onSubmit={() => handleSubmit(articleId)}
         onSubmitSuccess={({ id }) => history.push(`/article/${id}`)}
       />
       {renderDeleteArticle()}

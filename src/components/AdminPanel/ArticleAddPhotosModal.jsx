@@ -13,12 +13,7 @@ const ArticleAddPhotosModal = ({
 }) => {
   const handleOk = () => {
     if (checkedImage) {
-      const reader = new FileReader();
-      const { originFileObj } = checkedImage;
-      reader.readAsDataURL(originFileObj);
-      reader.onloadend = () => {
-        imageHandler(reader.result);
-      };
+      imageHandler(checkedImage.originFileObj);
     }
     setVisible(false);
   };

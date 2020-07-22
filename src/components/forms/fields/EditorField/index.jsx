@@ -11,6 +11,7 @@ class ImageBlot extends BlockEmbed {
     const node = super.create(value);
     node.setAttribute('alt', value.alt);
     node.setAttribute('src', value.src);
+    node.setAttribute('class', value.class);
     node.setAttribute('class', 'img-fluid');
     return node;
   }
@@ -35,7 +36,7 @@ const EditorField = ({ name, setReplyRef, modules, className, children, ...rest 
     <ReactQuill
       id="editor"
       className={`${classFromState} ${className}`}
-      ref={evt => setReplyRef(evt)}
+      ref={setReplyRef && (evt => setReplyRef(evt))}
       value={value}
       onChange={onChange(name)}
       theme="snow"

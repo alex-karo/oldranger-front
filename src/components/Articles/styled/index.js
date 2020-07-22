@@ -50,6 +50,7 @@ export const StyledMeta = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px 5px;
+  overflow: hidden;
 `;
 
 export const StyledArticle = styled.article`

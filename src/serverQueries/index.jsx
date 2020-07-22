@@ -427,6 +427,16 @@ class Queries {
     return res.data;
   };
 
+  sendPhotos = async image => {
+    const res = await axios.post('api/photos/imageDownload', image, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      responseType: 'json',
+    });
+    return res;
+  };
+
   sendMailToAllUsers = async params => {
     const res = await axios.post('/api/admin/sendMail', params);
     return res.data;
