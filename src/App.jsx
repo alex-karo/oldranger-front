@@ -27,7 +27,6 @@ import MainAlbums from './components/hoc/MainAlbums';
 import Albums from './components/Profile/Albums/Albums';
 import AuthorizationStatusEmitter from './EventEmitter/EventEmmiter';
 
-
 const url = BASE_URL;
 
 class App extends React.Component {

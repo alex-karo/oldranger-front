@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Switch, Route, useRouteMatch, useHistory } from 'react-router-dom';
+import { Switch, Route, useRouteMatch, useHistory, useLocation } from 'react-router-dom';
 import { Radio } from 'antd';
 import styled from 'styled-components';
 import UsersList from './UsersList';
@@ -19,14 +19,15 @@ const AdminPanelHeader = styled.div`
 const AdminPanel = () => {
   const { path } = useRouteMatch();
   const history = useHistory();
-  const currentPath = window.location.pathname.split('/');
-  const [selectedUrl, setUrl] = useState(currentPath.pop());
+  const { pathname } = useLocation();
+  const arrayFromPathname = pathname.split('/');
+  const lastPath = arrayFromPathname.pop();
+  const [selectedUrl, setUrl] = useState(lastPath);
 
   const changeUrl = ({ target: { value } }) => {
     history.push(`${path}/${value}`);
     setUrl(value);
   };
-
 
   return (
     <div>

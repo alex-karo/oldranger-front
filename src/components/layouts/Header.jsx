@@ -89,16 +89,16 @@ const Header = ({ countMessages, location: { pathname } }) => {
                   <Link to="/">Главная</Link>
                 </Button>
               ) : (
-                  <Button type="primary" onClick={() => switchForumSitePart(true)}>
-                    <Link to="/">Форум</Link>
-                  </Button>
-                )}
+                <Button type="primary" onClick={() => switchForumSitePart(true)}>
+                  <Link to="/">Форум</Link>
+                </Button>
+              )}
               {isLogin && (
                 <>
                   <Button type="primary">
                     <Link to="/chat">
                       Чат
-                    <Badge count={countMessages} />
+                      <Badge count={countMessages} />
                     </Link>
                   </Button>
                   {isForumHeader ? (
@@ -106,15 +106,15 @@ const Header = ({ countMessages, location: { pathname } }) => {
                       <Link to="/articles">Сайт</Link>
                     </Button>
                   ) : (
-                      <>
-                        <Button>
-                          <Link to="/articles">Статьи</Link>
-                        </Button>
-                        <Button>
-                          <Link to="/albums">Альбомы</Link>
-                        </Button>
-                      </>
-                    )}
+                    <>
+                      <Button>
+                        <Link to="/articles">Статьи</Link>
+                      </Button>
+                      <Button>
+                        <Link to="/albums">Альбомы</Link>
+                      </Button>
+                    </>
+                  )}
                 </>
               )}
             </MenuMain>
@@ -127,13 +127,13 @@ const Header = ({ countMessages, location: { pathname } }) => {
                     </Button>
                     <Button type="danger" onClick={logOut}>
                       Выйти
-                </Button>
+                    </Button>
                   </>
                 ) : (
-                    <Button type="link">
-                      <Link to="/login">Войти</Link>
-                    </Button>
-                  )}
+                  <Button type="link">
+                    <Link to="/login">Войти</Link>
+                  </Button>
+                )}
               </MenuUserFirstRow>
               {isLogin && user.role === 'ROLE_ADMIN' && (
                 <Button style={{ marginLeft: '0' }}>
