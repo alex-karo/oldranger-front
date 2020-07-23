@@ -10,6 +10,7 @@ function useTagsFetching() {
     async function fetchData() {
       try {
         const data = await queries.getTagsDtoTree();
+
         setResults(data);
         setLoading(false);
       } catch (err) {

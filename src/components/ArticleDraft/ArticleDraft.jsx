@@ -30,7 +30,7 @@ const ArticleDraft = () => {
         renderItem={({ id, title, text }) => (
           <List.Item style={{ height: '100px', fontSize: '16px' }}>
             <List.Item.Meta title={title} description={extractionText(3, text.length - 4, text)} />
-            {<Link to={`/article/${id}/update`}>Редактировать</Link>}
+            <Link to={`/article/${id}/update`}>Редактировать</Link>
           </List.Item>
         )}
       />

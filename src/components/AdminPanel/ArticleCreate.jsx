@@ -12,7 +12,6 @@ const createArticle = async values => {
 
 const ArticleCreate = () => {
   const history = useHistory();
-
   return (
     <>
       <StyledHeader>Создание статьи</StyledHeader>

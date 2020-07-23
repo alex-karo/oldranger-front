@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { Spin } from 'antd';
+import { Spin, Button } from 'antd';
 import queries from '../../serverQueries';
 import ArticleForm from '../forms/ArticleForm';
 import useArticleFetching from '../../hooks/useArticleFetching';
 import { StyledCenteredContainer, StyledHeader } from './styled';
+import context from '../Context';
 
 const updateArticle = id => async values => {
   const { title, text, ...params } = values;
@@ -12,9 +13,28 @@ const updateArticle = id => async values => {
   return data;
 };
 
+const deleteArticle = async (id, history) => {
+  await queries.deleteArticle(id);
+  history.push('/articles');
+};
+
 const ArticleUpdate = () => {
   const history = useHistory();
   const { articleId } = useParams();
+  const {
+    user: { role },
+  } = useContext(context);
+
+  const renderDeleteArticle = () => {
+    if (role === 'ROLE_ADMIN') {
+      return (
+        <Button type="danger" onClick={() => deleteArticle(articleId, history)}>
+          Удалить статью
+        </Button>
+      );
+    }
+    return null;
+  };
 
   const { error, loading, results } = useArticleFetching(articleId);
 
@@ -39,6 +59,7 @@ const ArticleUpdate = () => {
         onSubmit={updateArticle(articleId)}
         onSubmitSuccess={({ id }) => history.push(`/article/${id}`)}
       />
+      {renderDeleteArticle()}
     </>
   );
 };
