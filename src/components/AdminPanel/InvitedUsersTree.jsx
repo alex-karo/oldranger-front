@@ -28,13 +28,11 @@ const InvitedUsersTree = ({ treeData }) => {
     treeData.length > 1 && (
       <InvitedUsersBlock>
         <span>Дерево приглашённых пользователей:</span>
-        {
-          <Tree
-            style={{ display: 'inline-block' }}
-            showIcon
-            treeData={constructTree(treeData, userParentId)}
-          />
-        }
+        <Tree
+          style={{ display: 'inline-block' }}
+          showIcon
+          treeData={constructTree(treeData, userParentId)}
+        />
       </InvitedUsersBlock>
     )
   );

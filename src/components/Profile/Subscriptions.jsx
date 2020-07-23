@@ -12,6 +12,7 @@ class Subscriptions extends React.Component {
       topics: [],
       hasMore: true,
       page: 1,
+      errorOnLoading: false,
     };
   }
 
@@ -21,7 +22,9 @@ class Subscriptions extends React.Component {
 
   loadTopics = async () => {
     const { page: oldPage } = this.state;
-    const newTopics = await queries.getProfileSubscriptions(oldPage);
+    const newTopics = await queries
+      .getProfileSubscriptions(oldPage)
+      .catch(() => this.setState({ errorOnLoading: true }));
 
     if (newTopics.length === 0) {
       return this.setState({ hasMore: false });
@@ -41,14 +44,19 @@ class Subscriptions extends React.Component {
   };
 
   render() {
-    const { hasMore, topics } = this.state;
+    const { hasMore, topics, errorOnLoading } = this.state;
+    const emptySubscriptions = (
+      <Row type="flex" justify="center">
+        <h4>Подписок нет</h4>
+      </Row>
+    );
+
+    if (errorOnLoading) {
+      return emptySubscriptions;
+    }
 
     if (topics.length === 0 && !hasMore) {
-      return (
-        <Row type="flex" justify="center">
-          <h4>Подписок нет</h4>
-        </Row>
-      );
+      return emptySubscriptions;
     }
 
     return (

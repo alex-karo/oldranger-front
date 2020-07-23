@@ -26,5 +26,3 @@ yarn-error.log*
 .prettierrc
 debug.log
 prettierrc.json
-.prettierignore
-.gitignore

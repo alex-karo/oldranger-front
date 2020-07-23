@@ -87,7 +87,12 @@ const ProfileData = ({ user, self, id }) => {
       </Link>
     </>
   ) : (
-    <Link to={`/private/${id}`}>
+    <Link
+      to={{
+        pathname: `/private/${id}`,
+        state: 'privateChat',
+      }}
+    >
       <Button type="primary" block className="button">
         Написать
       </Button>

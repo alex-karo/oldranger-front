@@ -11,6 +11,7 @@ const TagsMenu = ({ location }) => {
   const history = useHistory();
   const [activeId, setActiveId] = useState(null);
   const hierarchy = useQuery().tags;
+  const [loading, setLoading] = useState({});
 
   const addActiveTag = tags => {
     const activeTag = tags.find(tag => hierarchy === tag.tagsHierarchy.join('_')) || {};
@@ -18,9 +19,21 @@ const TagsMenu = ({ location }) => {
   };
 
   useEffect(() => {
+    setLoading({
+      ...loading,
+      tags: true,
+    });
+
     queries.getTagsDtoTree().then(el => {
-      setMenuItems(el);
-      addActiveTag(el);
+      const tags = el || [];
+
+      setMenuItems(tags);
+      addActiveTag(tags);
+
+      setLoading({
+        ...loading,
+        tags: false,
+      });
     });
   }, []);
 
@@ -33,8 +46,28 @@ const TagsMenu = ({ location }) => {
   };
 
   const buildTreeMenu = (tags, result = []) => {
-    if (tags.length === 0) {
+    if (tags.length === 0 && result.length !== 0) {
       return result;
+    }
+
+    if (tags.length === 0) {
+      return (
+        <li>
+          <TagsItem active={false} cursor="default" pad={1}>
+            Нет тегов
+          </TagsItem>
+        </li>
+      );
+    }
+
+    if (tags.length === 0) {
+      return (
+        <li>
+          <TagsItem active={false} cursor="default" pad={1}>
+            Нет тегов
+          </TagsItem>
+        </li>
+      );
     }
     const [first, ...rest] = tags;
     if (menuItems.some(el => el.parentId === first.id)) {
@@ -70,7 +103,7 @@ const TagsMenu = ({ location }) => {
 
   return (
     <StyledMenu>
-      {menuItems.length > 0 ? (
+      {!loading.tags || menuItems.length === 0 ? (
         <Menu mode="inline">{buildTreeMenu(menuItems.filter(el => el.parentId === null))}</Menu>
       ) : (
         <Spin />

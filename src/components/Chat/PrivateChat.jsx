@@ -119,12 +119,18 @@ class PrivateChat extends React.Component {
 
   render() {
     const { messages, user, chatToken, anotherUserNick, show } = this.state;
+    const {
+      history: {
+        location: { state },
+      },
+    } = this.props;
     if (!show) {
       return '';
     }
     return (
       <>
         <Chat
+          chatState={state}
           handleDisconnect={this.disconnect}
           deleteCurrentMessage={this.deleteCurrentMessage}
           messages={messages}
@@ -153,6 +159,9 @@ PrivateChat.propTypes = {
   }),
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
+    location: PropTypes.shape({
+      state: PropTypes.string,
+    }),
   }).isRequired,
 };
 

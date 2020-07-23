@@ -23,9 +23,10 @@ const DeletePhotoButton = styled(Button)`
 export const ImageWrapper = styled.div`
   display: inline-block;
   position: relative;
-  width: 239px;
+  width: ${({ topicPageProp }) => (topicPageProp ? 'auto' : '239px')};
   margin: 3px;
   cursor: pointer;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
   &:hover ${DeletePhotoButton} {
     display: block;
   }
@@ -36,13 +37,13 @@ const AlbumNavigation = styled.div`
 export const StyledImage = styled.img`
   object-fit: cover;
   object-position: top center;
-  width: 239px;
-  height: 150px;
+  width: ${({ topicPageProp }) => (topicPageProp ? 'auto' : '239px')};
+  height: ${({ topicPageProp }) => (topicPageProp ? '100px' : '150px')};
 `;
 
 const AlbumWrapper = styled.div`
   display: flex;
-  flex-direction: columns;
+  flex-direction: row;
   flex-wrap: wrap;
   margin-bottom: 50px;
   margin-top: 30px;
@@ -119,10 +120,10 @@ class Album extends React.Component {
   };
 
   loadPhotos = async () => {
-    const {
-      location: { state },
-    } = this.props;
-
+    const { topicPageProp } = this.props;
+    const { location } = this.props;
+    const changeProp = topicPageProp || location;
+    const { state } = changeProp;
     const albumId = state.photoAlbumId;
     try {
       const photos = await queries.getPhotosFromAlbum(albumId);
@@ -235,7 +236,18 @@ class Album extends React.Component {
   }
 }
 
+Album.defaultProps = {
+  topicPageProp: null,
+  location: null,
+};
+
 Album.propTypes = {
+  topicPageProp: PropTypes.shape({
+    state: PropTypes.shape({
+      topicPageProp: PropTypes.string,
+      title: PropTypes.string,
+    }),
+  }),
   location: PropTypes.shape({
     state: PropTypes.shape({
       photoAlbumId: PropTypes.number.isRequired,
@@ -245,7 +257,7 @@ Album.propTypes = {
         slice: PropTypes.func.isRequired,
       }),
     }),
-  }).isRequired,
+  }),
 };
 
 export default withRouter(Album);
