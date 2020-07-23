@@ -22,8 +22,11 @@ class SearchArticlesPage extends React.Component {
 
     this.getArticles(firstPage)
       .then(data => {
-        if (data.articleList) this.setState({ articles: data.articleList, loading: false });
-        else this.setState({ messageError: 'Нет результатов по запросу', loading: false });
+        if (data.articleList) {
+          this.setState({ articles: data.articleList, loading: false });
+        } else {
+          this.setState({ messageError: 'Нет результатов по запросу', loading: false });
+        }
       })
       .catch(error => {
         if (error.response && error.response.status === 404) {
