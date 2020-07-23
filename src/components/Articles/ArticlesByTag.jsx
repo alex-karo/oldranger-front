@@ -55,6 +55,7 @@ const ArticlesByTag = () => {
       })}
       <Pagination
         defaultCurrent={1}
+        hideOnSinglePage
         current={pagination.currentPage + 1}
         total={pagination.totalElements}
         onChange={onChangePageNumber}
