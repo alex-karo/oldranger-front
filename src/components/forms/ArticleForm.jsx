@@ -35,7 +35,7 @@ const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onS
 
       quillRef.insertEmbed(range.index, 'img', {
         alt: 'image',
-        src: image.url,
+        src: image.thumbUrl,
       });
       quillRef.setSelection(range.index + 1);
     }

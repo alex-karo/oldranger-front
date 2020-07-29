@@ -17,7 +17,6 @@ export const ImagesWrapper = styled.div`
 
 export const StyledImage = styled.img`
   max-width: 150px;
-  max-height: 150px;
   margin: 0 5px 5px 0;
 `;
 
@@ -51,7 +50,7 @@ const ArticlePhotosUploader = ({ setPhotoList, isInModal, photoList, setCheckedI
             {
               uid: file.uid,
               name: file.name,
-              url: `http://oldranger.club:8888/img/chat/${res.data.originalImg}`,
+              thumbUrl: `http://oldranger.club:8888/img/chat/${res.originalImg}`,
             },
           ])
         )
