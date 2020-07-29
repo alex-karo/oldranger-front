@@ -53,7 +53,7 @@ class App extends React.Component {
     if (isLogin) {
       await this.connect();
     }
-    this.сonnect();
+    this.connect();
 
     AuthorizationStatusEmitter.subscribe(isAuthorized => {
       if (!isAuthorized) {
@@ -79,7 +79,7 @@ class App extends React.Component {
     this.setState({ isJoinChat: isJoin, countMessages: 0 });
   };
 
-  сonnect = () => {
+  connect = () => {
     this.setState({ connect: true });
   };
 
@@ -136,10 +136,11 @@ class App extends React.Component {
         location: { state },
       },
     } = this.props;
-
     return (
       <Context.Provider
         value={{
+          state,
+          changeJoinChat: this.changeJoinChat,
           changeUserState: this.changeUserState,
           changeLoginState: this.changeLoginState,
           logOut: this.logOut,
@@ -175,6 +176,7 @@ class App extends React.Component {
         {connect ? (
           <ChatRoute
             path={state === 'privateChat' ? '/private/:id' : '/'}
+            countMessages={countMessages}
             isLogin={isLogin}
             changeJoinChat={this.changeJoinChat}
             stompClient={stompClient}

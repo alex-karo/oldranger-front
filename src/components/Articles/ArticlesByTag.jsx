@@ -13,10 +13,13 @@ const ArticlesByTag = () => {
 
   useEffect(() => {
     if (!tagsAtr) {
-      queries.getArticlesByTag().then(el => {
-        setArticles(el.content);
-        setIsEmpty(el.empty);
-      });
+      queries
+        .getArticlesByTag()
+        .then(el => {
+          setArticles(el.content);
+          setIsEmpty(el.empty);
+        })
+        .catch(() => setIsEmpty(true));
     } else {
       queries
         .getArticlesByTag(tagsAtr.split('_'))
