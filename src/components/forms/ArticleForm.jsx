@@ -4,7 +4,6 @@ import * as Yup from 'yup';
 import { Button, Checkbox, Form, Input, Spin } from 'antd';
 import { Formik } from 'formik';
 import { EditorField, SelectField, FormItemLabel } from './fields';
-import queries from '../../serverQueries/index';
 import useTagsFetching from '../../hooks/useTagsFetching';
 import ArticlePhotosUploader from '../AdminPanel/ArticlePhotosUploader';
 import ArticleAddPhotosModal from '../AdminPanel/ArticleAddPhotosModal';
@@ -27,21 +26,18 @@ const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onS
   const [replyRef, setReplyRef] = useState('');
 
   const imageHandler = image => {
-    const formData = new FormData();
     if (image === true) {
       setAddPhotosModalVisible(true);
     }
     if (image && typeof image === 'object') {
-      formData.append('file', image);
-      queries.sendPhotos(formData).then(res => {
-        const quillRef = replyRef.getEditor();
-        const range = quillRef.getSelection(true);
+      const quillRef = replyRef.getEditor();
+      const range = quillRef.getSelection(true);
 
-        quillRef.insertEmbed(range.index, 'img', {
-          alt: 'image',
-          src: `http://oldranger.club:8888/img/chat/${res.data.originalImg}`,
-        });
+      quillRef.insertEmbed(range.index, 'img', {
+        alt: 'image',
+        src: image.url,
       });
+      quillRef.setSelection(range.index + 1);
     }
   };
 

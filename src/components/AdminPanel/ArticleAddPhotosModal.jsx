@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal } from 'antd';
+import { Modal, Empty } from 'antd';
 import PropTypes from 'prop-types';
 import ArticlePhotosUploader from './ArticlePhotosUploader';
 
@@ -13,7 +13,7 @@ const ArticleAddPhotosModal = ({
 }) => {
   const handleOk = () => {
     if (checkedImage) {
-      imageHandler(checkedImage.originFileObj);
+      imageHandler(checkedImage);
     }
     setVisible(false);
   };
@@ -24,7 +24,11 @@ const ArticleAddPhotosModal = ({
 
   return (
     <Modal title="Выберите фото" visible={isVisible} onCancel={handleCancel} onOk={handleOk}>
-      <ArticlePhotosUploader isInModal setCheckedImage={setCheckedImage} photoList={photoList} />
+      {photoList.length === 0 ? (
+        <Empty description="Нет изображений" />
+      ) : (
+        <ArticlePhotosUploader isInModal setCheckedImage={setCheckedImage} photoList={photoList} />
+      )}
     </Modal>
   );
 };

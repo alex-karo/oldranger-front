@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Upload, Icon, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import queries from '../../serverQueries/index';
 
 export const ImagesWrapper = styled.div`
   display: flex;
@@ -9,10 +10,9 @@ export const ImagesWrapper = styled.div`
   flex-wrap: wrap;
   .clicked-image {
     border: 2px solid #33e842;
-    transform: scale(2, 0.5)
+    transform: scale(1.3, 1.3);
     overflow: hidden;
   }
-  
 `;
 
 export const StyledImage = styled.img`
@@ -21,14 +21,7 @@ export const StyledImage = styled.img`
   margin: 0 5px 5px 0;
 `;
 
-const ArticlePhotosUploader = ({
-  getFormData,
-  setPhotoList,
-  isInModal,
-  photoList,
-  setCheckedImage,
-}) => {
-  const formData = new FormData();
+const ArticlePhotosUploader = ({ setPhotoList, isInModal, photoList, setCheckedImage }) => {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [pickedImageUid, setPickedImageUid] = useState('');
@@ -39,11 +32,37 @@ const ArticlePhotosUploader = ({
     setPreviewImage(file.thumbUrl);
     setPreviewVisible(true);
   };
-  /* eslint-disable-next-line no-shadow */
-  const handleUpload = ({ fileList }) => {
-    fileList.forEach(file => formData.append('file', file.originFileObj)); // добавить отображение
-    setPhotoList(fileList);
-    getFormData(formData);
+
+  const customRequest = ({ onProgress, onSuccess, onError, file }) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const config = {
+      headers: { 'content-type': 'multipart/form-data' },
+      onUploadProgress: event => {
+        onProgress({ percent: (event.loaded / event.total) * 100 });
+      },
+    };
+    queries
+      .sendPhotos(formData, config)
+      .then(res =>
+        onSuccess(
+          setPhotoList([
+            ...photoList,
+            {
+              uid: file.uid,
+              name: file.name,
+              url: `http://oldranger.club:8888/img/chat/${res.data.originalImg}`,
+            },
+          ])
+        )
+      )
+      .catch(err => onError(err));
+  };
+
+  const handleRemove = file => {
+    const newPhotoList = photoList.filter(photo => photo.uid !== file.uid);
+    setPhotoList(newPhotoList);
+    setCheckedImage('');
   };
 
   const uploadButton = (
@@ -88,13 +107,10 @@ const ArticlePhotosUploader = ({
     <div>
       <Upload
         listType="picture-card"
-        fileList={photoList}
+        defaultFileList={photoList}
         onPreview={handlePreview}
-        onChange={handleUpload}
-        onRemove={() => {
-          setCheckedImage('');
-        }}
-        beforeUpload={() => false} // return false so that antd doesn't upload the picture right away
+        customRequest={customRequest}
+        onRemove={handleRemove}
       >
         {uploadButton}
       </Upload>
@@ -106,7 +122,6 @@ const ArticlePhotosUploader = ({
 };
 
 ArticlePhotosUploader.propTypes = {
-  getFormData: PropTypes.func.isRequired,
   setPhotoList: PropTypes.func.isRequired,
   isInModal: PropTypes.bool.isRequired,
   photoList: PropTypes.arrayOf(PropTypes.object).isRequired,

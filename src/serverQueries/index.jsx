@@ -427,13 +427,8 @@ class Queries {
     return res.data;
   };
 
-  sendPhotos = async image => {
-    const res = await axios.post('api/photos/imageDownload', image, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      responseType: 'json',
-    });
+  sendPhotos = async (formData, config) => {
+    const res = await axios.post('api/photos/imageDownload', formData, config);
     return res;
   };
 
