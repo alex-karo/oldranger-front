@@ -32,6 +32,12 @@ const ArticlePhotosUploader = ({ setPhotoList, isInModal, photoList, setCheckedI
     setPreviewVisible(true);
   };
 
+  const handleRemove = file => {
+    const newPhotoList = photoList.filter(photo => photo.uid !== file.uid);
+    setPhotoList(newPhotoList);
+    setCheckedImage('');
+  };
+
   const customRequest = ({ onProgress, onSuccess, onError, file }) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -43,7 +49,7 @@ const ArticlePhotosUploader = ({ setPhotoList, isInModal, photoList, setCheckedI
     };
     queries
       .sendPhotos(formData, config)
-      .then(res =>
+      .then(res => {
         onSuccess(
           setPhotoList([
             ...photoList,
@@ -51,17 +57,16 @@ const ArticlePhotosUploader = ({ setPhotoList, isInModal, photoList, setCheckedI
               uid: file.uid,
               name: file.name,
               thumbUrl: `http://oldranger.club:8888/img/chat/${res.originalImg}`,
+              status: 'done',
             },
           ])
-        )
-      )
-      .catch(err => onError(err));
-  };
-
-  const handleRemove = file => {
-    const newPhotoList = photoList.filter(photo => photo.uid !== file.uid);
-    setPhotoList(newPhotoList);
-    setCheckedImage('');
+        );
+      })
+      .catch(err => {
+        queries.handleError(err);
+        const error = new Error('Сетевая ошибка');
+        onError(error);
+      });
   };
 
   const uploadButton = (
