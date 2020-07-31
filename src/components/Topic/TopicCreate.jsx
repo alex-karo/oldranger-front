@@ -49,11 +49,14 @@ class TopicCreate extends React.Component {
       imagesToUpload: [],
       photoAlbumIds: [],
       fileList: [],
+      errorOnLoading: false,
     };
   }
 
   componentDidMount = async () => {
-    const response = await queries.getAllSections();
+    const response = await queries
+      .getAllSections()
+      .catch(() => this.setState({ errorOnLoading: true }));
     const sections = response.map(item => item.section.name);
     const data = {};
     response.forEach(item => {
@@ -136,8 +139,13 @@ class TopicCreate extends React.Component {
   };
 
   render() {
-    const { children, subsection, isModal, count, imagesToUpload } = this.state;
+    const { children, subsection, isModal, count, imagesToUpload, errorOnLoading } = this.state;
     const { errors, touched, isSubmitting } = this.props;
+
+    if (errorOnLoading) {
+      return 'Ошибка загрузки';
+    }
+
     return (
       <>
         {isModal ? (
