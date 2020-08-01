@@ -20,8 +20,7 @@ const AdminPanel = () => {
   const { path } = useRouteMatch();
   const history = useHistory();
   const { pathname } = useLocation();
-  const arrayFromPathname = pathname.split('/');
-  const lastPath = arrayFromPathname.pop();
+  const lastPath = pathname.split('/').pop();
   const [selectedUrl, setUrl] = useState(lastPath);
 
   const changeUrl = ({ target: { value } }) => {
