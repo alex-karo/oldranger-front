@@ -1,8 +1,10 @@
 import React from 'react';
 import Stomp from 'stompjs';
 import SockJS from 'sockjs-client';
+import { Spin } from 'antd';
 import 'antd/dist/antd.css';
-
+import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import queries from './serverQueries';
 import {
   ArticleDraft,
@@ -67,11 +69,9 @@ class App extends React.Component {
   connect = async () => {
     const currentUser = await queries.getCurrentUser();
     if (currentUser.username) {
-      const socket = new SockJS(`${url}ws`, null, {});
-      this.stompClient = Stomp.over(socket);
-      // this.stompClient.debug = null;
-      this.stompClient.connect({}, this.onConnected, () => {});
-      this.setState({ stompClient: this.stompClient });
+      const socket = await new SockJS(`${url}ws`, null, {});
+      this.stompClient = await Stomp.over(socket);
+      await this.stompClient.connect({}, this.onConnected);
     }
   };
 
@@ -84,7 +84,8 @@ class App extends React.Component {
   };
 
   onConnected = () => {
-    this.stompClient.subscribe(`/channel/public`, this.onCheckMessage, {});
+    this.setState({ stompClient: this.stompClient });
+    this.stompClient.subscribe('/channel/public', this.onCheckMessage, {});
   };
 
   disconnect = () => {
@@ -130,10 +131,16 @@ class App extends React.Component {
       stompClient,
       connect,
     } = this.state;
-
+    const {
+      history: {
+        location: { state },
+      },
+    } = this.props;
     return (
       <Context.Provider
         value={{
+          state,
+          changeJoinChat: this.changeJoinChat,
           changeUserState: this.changeUserState,
           changeLoginState: this.changeLoginState,
           logOut: this.logOut,
@@ -166,29 +173,30 @@ class App extends React.Component {
         <SearchRoute />
         <ArticleDraft />
         <ArticlesRoute isLogin={isLogin} role={role} />
-
-        {/* TODO delete eslint disable */}
-        {/* eslint-disable-next-line no-undef */}
         {connect ? (
           <ChatRoute
-            path="/chat"
+            path={state === 'privateChat' ? '/private/:id' : '/'}
+            countMessages={countMessages}
             isLogin={isLogin}
             changeJoinChat={this.changeJoinChat}
             stompClient={stompClient}
             user={user}
-            component={ChatAuth}
+            component={state === 'privateChat' ? PrivateChat : ChatAuth}
           />
-        ) : null}
-        <ChatRoute
-          exact
-          path="/private/:id"
-          isLogin={isLogin}
-          user={user}
-          component={PrivateChat}
-        />
+        ) : (
+          <Spin />
+        )}
       </Context.Provider>
     );
   }
 }
 
-export default App;
+App.propTypes = {
+  history: PropTypes.shape({
+    location: PropTypes.shape({
+      state: PropTypes.string,
+    }),
+  }).isRequired,
+};
+
+export default withRouter(App);

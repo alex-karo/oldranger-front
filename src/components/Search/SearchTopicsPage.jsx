@@ -18,7 +18,9 @@ class SearchTopicsPage extends React.Component {
   }
 
   componentDidMount() {
-    this.getTopics(0)
+    const firstPage = 1;
+
+    this.getTopics(firstPage)
       .then(data => {
         if (data) this.setState({ topics: data.topics, loading: false });
       })
@@ -26,6 +28,7 @@ class SearchTopicsPage extends React.Component {
         if (error.response && error.response.status === 404) {
           this.setState({ messageError: error.response.data, loading: false });
         }
+        this.setState({ loading: false });
       });
   }
 

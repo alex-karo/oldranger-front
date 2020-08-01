@@ -13,7 +13,7 @@ class Queries {
   }
 
   handleSuccess = response => {
-    return response;
+    return response?.data;
   };
 
   handleError = error => {
@@ -27,13 +27,14 @@ class Queries {
 
     if (error.response.status === 401) {
       AuthorizationStatusEmitter.emit(false);
-      throw error;
     }
+
+    throw error;
   };
 
   logIn = async formData => {
     const res = await axios.post('login', formData);
-    return res.data;
+    return res;
   };
 
   logOut = async () => {
@@ -43,17 +44,17 @@ class Queries {
 
   requestRegistration = async values => {
     const res = await axios.post('api/registration/new', values);
-    return res.data;
+    return res;
   };
 
   updateProfile = async formData => {
     const res = await axios.post('/api/updateProfile', formData);
-    return res.data;
+    return res;
   };
 
   updateAvatar = async data => {
     const res = await axios.post('/api/avatar/set', data);
-    return res.data;
+    return res;
   };
 
   editEmailProfile = async (newEmail, password) => {
@@ -67,7 +68,7 @@ class Queries {
         },
       }
     );
-    if (res.data === 0) {
+    if (res === 0) {
       throw Error('Что-то не так, не удалось изменить email');
     }
     return res;
@@ -84,57 +85,57 @@ class Queries {
 
   createArticle = async (data, params) => {
     const res = await axios.post('/api/article/add', data, { params });
-    return res.data;
+    return res;
   };
 
   getArticlesByTag = async tags => {
     if (!tags) {
       const res = await axios.get(`/api/article/withoutTag`, {});
-      return res.data;
+      return res;
     }
     const tagsString = tags.join('&tag_id=');
     const res = await axios.get(`/api/article/tag?tag_id=${tagsString}&page=0`, {});
-    return res.data;
+    return res;
   };
 
   getTagsDtoTree = async () => {
     const res = await axios.get('/api/tags/node/tree');
-    return res?.data;
+    return res;
   };
 
   addNewTagTree = async params => {
     const res = await axios.post('/api/tags/node/add', {}, { params });
-    return res.data;
+    return res;
   };
 
   updateTagsTree = async params => {
     const res = await axios.put(`/api/tags/node/update`, {}, { params });
-    return res.data;
+    return res;
   };
 
   deleteTags = async params => {
     const res = await axios.delete(`/api/tags/node/delete`, { params });
-    return res.data;
+    return res;
   };
 
   updateArticle = async (id, data, params) => {
     const res = await axios.put(`/api/article/update/${id}`, data, { params });
-    return res.data;
+    return res;
   };
 
   deleteArticle = async id => {
     const res = await axios.delete(`/api/article/delete?idArticle=${id}`);
-    return res.data;
+    return res;
   };
 
   getArticleById = async params => {
     const res = await axios.get(`/api/article/comments`, { params });
-    return res.data;
+    return res;
   };
 
   getArticleDraft = async () => {
     const res = await axios.get('/api/article/drafts');
-    return res.data;
+    return res;
   };
 
   createArticleComment = async (data, params) => {
@@ -144,7 +145,7 @@ class Queries {
         'Content-Type': 'text/plain',
       },
     });
-    return res.data;
+    return res;
   };
 
   updateArticleComment = async (data, params) => {
@@ -154,59 +155,59 @@ class Queries {
         'Content-Type': 'text/plain',
       },
     });
-    return res.data;
+    return res;
   };
 
   deleteArticleComment = async id => {
     const res = await axios.delete(`/api/article/comment/delete/${id}`);
-    return res.data;
+    return res;
   };
 
   getArticleTags = async () => {
     const res = await axios.get('/api/articleTag');
-    return res.data;
+    return res;
   };
 
   getData = async page => {
     const res = await axios.get(page);
-    return res.data;
+    return res;
   };
 
   getProfileTopics = async page => {
     const res = await axios.get(`/api/topics/`, { params: { page } });
-    return res.data;
+    return res;
   };
 
   getProfileComments = async page => {
     const res = await axios.get(`/api/comments/`, { params: { page } });
-    return res.data;
+    return res;
   };
 
   getTopic = async (id, page, limit) => {
     const res = await axios.get(`/api/topic/${id}`, {
       params: { page, limit },
     });
-    return res.data;
+    return res;
   };
 
   updateTopic = async formData => {
     const res = await axios.put('/api/topic/edit', formData);
-    return res.data;
+    return res;
   };
 
   getProfileSubscriptions = async page => {
     const res = await axios.get(`/api/subscriptions`, { params: { page } });
-    return res.data;
+    return res;
   };
 
   addTopicToSubscriptions = async topicId => {
     const res = await axios.post(`/api/subscriptions`, {}, { params: { topicId } });
-    return res.data;
+    return res;
   };
 
   deleteTopicFromSubscriptions = async topicId => {
     const res = await axios.delete('/api/subscriptions', { params: { topicId } });
-    return res.data;
+    return res;
   };
 
   getProfileData = async () => {
@@ -224,22 +225,22 @@ class Queries {
     const res = await axios.get(`/api/subsection/${id}`, {
       params: { dateTime: '2099-01-01%2000%3A00%3A00', page },
     });
-    return res.data;
+    return res;
   };
 
   getAllSections = async () => {
     const res = await axios.get('/api/allsectionsandsubsections');
-    return res.data;
+    return res;
   };
 
   getActualTopics = async () => {
     const res = await axios.get('/api/actualtopics');
-    return res.data;
+    return res;
   };
 
   searchByComments = async (finderTag, page) => {
     const res = await axios.get(`/api/searchComments`, { params: { finderTag, page } });
-    return res.data;
+    return res;
   };
 
   searchByTopics = async finderTag => {
@@ -247,14 +248,14 @@ class Queries {
     const res = await axios.get(`/api/searchTopics`, {
       params: { finderTag, node: 0, nodeValue: 0 },
     });
-    return res.data;
+    return res;
   };
 
   searchByArticles = async (title, page) => {
     const res = await axios.get(`/api/searchArticles`, {
       params: { title, page },
     });
-    return res.data;
+    return res;
   };
 
   addComment = async newComment => {
@@ -277,7 +278,7 @@ class Queries {
     }
 
     const res = await axios.post('/api/comment/add', formData);
-    return res.data;
+    return res;
   };
 
   updateComment = async editingComment => {
@@ -301,7 +302,7 @@ class Queries {
       params: { commentID: commentId },
     });
 
-    return res.data;
+    return res;
   };
 
   deleteComment = async commentId => {
@@ -309,68 +310,71 @@ class Queries {
     return res.status;
   };
 
+  addCommentToPhoto = async params => {
+    const res = await axios.post('/api/photo/comment/add', null, {
+      params,
+    });
+    return res.data;
+  };
+
+  getPhotoWithData = async id => {
+    const res = await axios.get(`/api/photos/${id}`, { params: { limit: 100 } });
+    return res;
+  };
+
   getInviteCode = async () => {
     const res = await axios.post('/api/token/invite', {});
-    return res.data;
+    return res;
   };
 
   sendInviteCode = async ({ mail }) => {
     const res = await axios.post(`/api/token/invite/bymail`, {}, { params: { mail } });
-    return res.data;
+    return res;
   };
 
   registrationUserAdd = async key => {
     const res = await axios.post(`/api/registration`, {}, { params: { key } });
-    return res.data;
+    return res;
   };
 
   registrationUser = async values => {
     const res = await axios.post('/api/token/confirm/bymail', values);
-    return res.data;
+    return res;
   };
-
-  // uploadPhoto = async photo => {
-  //   // пока бекенд не готов, загружаем фото в первый и единственный альбом
-  //   const res = await axios.post('/api/photos/1', photo, {
-  //     withCredentials: true,
-  //   });
-  //   const res = await axios.post('/api/photos/1', photo);
-  //   return res.data.small;
-  // };
 
   getAlbums = async () => {
     const res = await axios.get('/api/albums');
-    return res.data;
+    return res;
   };
 
   createNewAlbum = async data => {
     const res = await axios.post(`/api/albums?albumTitle=${data}`);
-    return res.data;
+    return res;
   };
 
   updateAlbum = async (id, params) => {
     const res = await axios.put(`/api/albums/${id}`, null, { params });
-    return res.data;
+    return res;
   };
 
   deleteAlbum = async id => {
     const res = await axios.delete(`/api/albums/${id}`);
-    return res.data;
+    return res;
   };
 
   getPhotosFromAlbum = async id => {
     const res = await axios.get(`/api/albums/getPhotos/${id}`);
-    return res.data;
+    return res;
   };
 
   addPhotosInAlbum = async (albumId, photosArr) => {
     const res = await axios.post(`/api/photos/${albumId}`, photosArr);
-    return res.data;
+    return res;
   };
 
   deletePhotoFromAlbum = async photoId => {
     const res = await axios.delete(`/api/photos/${photoId}`);
-    return res.data;
+    return res;
   };
 
   deletePhotosFromAlbum = async photoIds => {
@@ -381,17 +385,17 @@ class Queries {
     const res = await axios.get('/api/admin/users', {
       params: { page: Number(page), ...(query ? { query } : {}) },
     });
-    return res.data;
+    return res;
   };
 
   getUserById = async id => {
     const res = await axios.get(`/api/admin/getUser/${id}`);
-    return res.data;
+    return res;
   };
 
   getUsersTree = async (id, deep) => {
     const res = await axios.get(`/api/usersTree/user/${id}/${deep}`);
-    return res.data;
+    return res;
   };
 
   blackListRequest = async (id, dateUnblock = new Date()) => {
@@ -400,7 +404,7 @@ class Queries {
       dateUnblock: new Date(dateUnblock).toISOString(),
       // Не работает, потому что на беке ещё не смержили ветку с dev
     });
-    return res.data;
+    return res;
   };
 
   prohibitionWrite = async (id, banType, dateUnblock = new Date()) => {
@@ -409,42 +413,42 @@ class Queries {
       banType,
       dateUnblock: new Date(dateUnblock).toISOString(),
     });
-    return res.data;
+    return res;
   };
 
   unblockUser = async id => {
     const res = await axios.post('/api/admin/unblocking', { id });
-    return res.data;
+    return res;
   };
 
   unmuteUser = async id => {
     const res = await axios.post('/api/admin/unmute', { id });
-    return res.data;
+    return res;
   };
 
   sendMailToAllUsers = async params => {
     const res = await axios.post('/api/admin/sendMail', params);
-    return res.data;
+    return res;
   };
 
   postFile = async formData => {
     const res = await axios.post('/api/chat/image', formData);
-    return res.data;
+    return res;
   };
 
   isForbidden = async () => {
     const res = await axios.get('/api/chat/isForbidden');
-    return res.data;
+    return res;
   };
 
   getCurrentUser = async () => {
     const res = await axios.get('/api/chat/user');
-    return res.data;
+    return res;
   };
 
   getAllUsers = async () => {
     const res = await axios.get('/api/chat/users');
-    return res.data;
+    return res;
   };
 
   getAllMessages = async page => {
@@ -464,7 +468,7 @@ class Queries {
 
   getPersonalToken = async (id, params) => {
     const res = await axios.get(`/api/private/${id}`, { params });
-    return res.data;
+    return res;
   };
 
   getPersonalMessage = async (chatToken, page) => {
@@ -474,19 +478,19 @@ class Queries {
 
   postFilePersonalChat = async (formData, chatToken) => {
     const res = await axios.post(`/api/private/image/${chatToken}`, formData);
-    return res.data;
+    return res;
   };
 
   getAnotherUserData = async id => {
     const res = await axios.get(`/api/${id}`);
-    return res.data;
+    return res;
   };
 
   getFilteredUsers = async (page, query) => {
     const res = await axios.get('/api/admin/users', {
       params: { page: Number(page), ...(query ? { query } : {}) },
     });
-    return res.data;
+    return res;
   };
 }
 
