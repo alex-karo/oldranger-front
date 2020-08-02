@@ -90,9 +90,7 @@ class Queries {
 
   getArticlesByTag = async (tags, pageNumber) => {
     if (!tags) {
-      const res = await axios.get(`/api/article/withoutTag?page=${pageNumber}`, {
-        page: pageNumber,
-      });
+      const res = await axios.get(`/api/article/withoutTags?page=${pageNumber}`);
       return res;
     }
     const tagsString = tags.join('&tag_id=');
