@@ -211,8 +211,8 @@ class Queries {
   };
 
   getProfileData = async () => {
-    const { data } = await axios.get('/api/currentUser');
-    return data;
+    const res = await axios.get('/api/currentUser');
+    return res;
   };
 
   getUserProfileData = async () => {
