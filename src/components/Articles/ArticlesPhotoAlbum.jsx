@@ -37,12 +37,13 @@ const AlbumWrapper = styled.div`
   flex-wrap: wrap;
   margin-bottom: 50px;
   margin-top: 30px;
+
   @media (max-width: 1000px) {
     justify-content: center;
   }
 `;
 
-const CustomHeader = ({ isModal, modalProps: { onClose } }) =>
+const AlbumModalHeader = ({ isModal, modalProps: { onClose } }) =>
   isModal ? (
     <div>
       <CloseModalButton onClick={onClose} title="close">
@@ -88,7 +89,7 @@ const ArticlePhotoAlbum = ({ photoAlbumId }) => {
               <Carousel
                 views={images}
                 currentIndex={selectedIndex}
-                components={{ Header: CustomHeader }}
+                components={{ Header: AlbumModalHeader }}
               />
             </Modal>
           ) : null}
@@ -102,7 +103,7 @@ ArticlePhotoAlbum.propTypes = {
   photoAlbumId: PropTypes.number.isRequired,
 };
 
-CustomHeader.propTypes = {
+AlbumModalHeader.propTypes = {
   isModal: PropTypes.bool.isRequired,
   modalProps: PropTypes.shape({
     onClose: PropTypes.func.isRequired,

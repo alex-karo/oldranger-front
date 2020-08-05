@@ -39,7 +39,7 @@ const ArticlePhotosUploader = ({ setPhotoList, isInModal, photoList, setCheckedI
     setCheckedImage('');
   };
 
-  const customRequest = ({ onProgress, onSuccess, onError, file }) => {
+  const handleImageSend = ({ onProgress, onSuccess, onError, file }) => {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -79,13 +79,13 @@ const ArticlePhotosUploader = ({ setPhotoList, isInModal, photoList, setCheckedI
     </div>
   );
 
-  const clickHandler = uid => {
-    const eventHandler = () => {
+  const handleClick = uid => {
+    const handleImagePickEvent = () => {
       setPickedImageUid(uid);
       const image = photoList.filter(photo => photo.uid === uid)[0];
       setCheckedImage(image);
     };
-    return eventHandler;
+    return handleImagePickEvent;
   };
 
   if (isInModal) {
@@ -96,14 +96,14 @@ const ArticlePhotosUploader = ({ setPhotoList, isInModal, photoList, setCheckedI
             return (
               <StyledImage
                 className="clicked-image"
-                onClick={clickHandler(photo.uid)}
+                onClick={handleClick(photo.uid)}
                 key={photo.uid}
                 src={photo.thumbUrl}
               />
             );
           }
           return (
-            <StyledImage onClick={clickHandler(photo.uid)} key={photo.uid} src={photo.thumbUrl} />
+            <StyledImage onClick={handleClick(photo.uid)} key={photo.uid} src={photo.thumbUrl} />
           );
         })}
       </ImagesWrapper>
@@ -116,7 +116,7 @@ const ArticlePhotosUploader = ({ setPhotoList, isInModal, photoList, setCheckedI
         listType="picture-card"
         defaultFileList={photoList}
         onPreview={handlePreview}
-        customRequest={customRequest}
+        customRequest={handleImageSend}
         onRemove={handleRemove}
       >
         {uploadButton}
