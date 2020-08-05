@@ -98,7 +98,9 @@ class Albums extends React.Component {
     const { isMainPage } = this.props;
     try {
       const albums = isMainPage ? await queries.getAllAlbums() : await queries.getAlbums();
-      this.setState({ albums });
+      if (albums) {
+        this.setState({ albums });
+      }
     } catch (error) {
       queries.handleError(error);
     }

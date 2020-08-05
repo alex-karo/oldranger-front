@@ -9,11 +9,11 @@ const ArticleAddPhotosModal = ({
   photoList,
   checkedImage,
   setCheckedImage,
-  imageHandler,
+  handleImage,
 }) => {
   const handleOk = () => {
     if (checkedImage) {
-      imageHandler(checkedImage);
+      handleImage(checkedImage);
     }
     setVisible(false);
   };
@@ -37,10 +37,9 @@ ArticleAddPhotosModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   setVisible: PropTypes.func.isRequired,
   photoList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  checkedImage: PropTypes.object.isRequired,
+  checkedImage: PropTypes.shape.isRequired,
   setCheckedImage: PropTypes.string.isRequired,
-  imageHandler: PropTypes.func.isRequired,
+  handleImage: PropTypes.func.isRequired,
 };
 
 export default ArticleAddPhotosModal;

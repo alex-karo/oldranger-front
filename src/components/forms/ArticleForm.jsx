@@ -12,22 +12,19 @@ const validationSchema = Yup.object({
   title: Yup.string()
     .required('Это поле обязательно')
     .min(5, 'Заголовок не может быть меньше 5 символов'),
-  text: Yup.string()
-    .required('Это поле обязательно')
-    .max(1000000, 'Слишком длинное сообщение'),
+  text: Yup.string().required('Это поле обязательно'),
   tagsId: Yup.array(Yup.number().required('Это поле обязательно')).min(1, 'Добавьте минимум 1 тэг'),
 });
 
 const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onSubmitError }) => {
-  const [photosData, setPhotosData] = useState(new FormData());
   const [photoList, setPhotoList] = useState([]);
-  const [addPhotosModalVisible, setAddPhotosModalVisible] = useState(false);
+  const [isAddPhotosModalVisible, setIsAddPhotosModalVisible] = useState(false);
   const [checkedImage, setCheckedImage] = useState('');
   const [replyRef, setReplyRef] = useState('');
 
-  const imageHandler = image => {
-    if (image === true) {
-      setAddPhotosModalVisible(true);
+  const handleImage = image => {
+    if (image) {
+      setIsAddPhotosModalVisible(true);
     }
     if (image && typeof image === 'object') {
       const quillRef = replyRef.getEditor();
@@ -50,11 +47,9 @@ const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onS
         [{ list: 'ordered' }, { list: 'bullet' }],
         ['image'],
       ],
-      handlers: { image: imageHandler },
+      handlers: { image: handleImage },
     },
   };
-
-  const getFormData = formData => setPhotosData(formData);
 
   const onSubmitWrapper = useCallback(
     () => async (data, { resetForm, setSubmitting }) => {
@@ -72,7 +67,7 @@ const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onS
         }
       }
     },
-    [onSubmit, onSubmitSuccess, onSubmitError, photosData]
+    [onSubmit, onSubmitSuccess, onSubmitError]
   );
 
   const { loading, results: tags, error } = useTagsFetching();
@@ -116,7 +111,6 @@ const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onS
               <ArticlePhotosUploader
                 setPhotoList={setPhotoList}
                 setCheckedImage={setCheckedImage}
-                getFormData={getFormData}
                 photoList={photoList}
               />
             </Form.Item>
@@ -136,11 +130,11 @@ const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onS
               </Button>
             </Form.Item>
             <ArticleAddPhotosModal
-              isVisible={addPhotosModalVisible}
-              imageHandler={imageHandler}
+              isVisible={isAddPhotosModalVisible}
+              handleImage={handleImage}
               checkedImage={checkedImage}
               setCheckedImage={setCheckedImage}
-              setVisible={setAddPhotosModalVisible}
+              setVisible={setIsAddPhotosModalVisible}
               photoList={photoList}
             />
           </Form>

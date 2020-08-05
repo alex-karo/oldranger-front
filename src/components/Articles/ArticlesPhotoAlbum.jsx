@@ -7,13 +7,13 @@ import { BASE_URL } from '../../constants/index';
 import queries from '../../serverQueries/index';
 
 const CloseModalButton = styled(Button)`
-position:absolute;
-top:20px;
-padding:5px
-right:20px;
-width:44px;
-opacity: 0.7;
-z-index: 1;
+  position: absolute;
+  top: 20px;
+  padding: 5px;
+  right: 20px;
+  width: 44px;
+  opacity: 0.7;
+  z-index: 1;
 `;
 
 export const ImageWrapper = styled.div`
@@ -55,14 +55,14 @@ const ArticlePhotoAlbum = ({ photoAlbumId }) => {
   const [photos, setPhotos] = useState([]);
   const [photoTempUrl] = useState(`${BASE_URL}api/securedPhoto/photoFromAlbum/`);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [lightboxIsOpen, setLightboxIsOpen] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   useEffect(() => {
     queries.getPhotosFromAlbum(photoAlbumId).then(res => setPhotos(res));
   }, [photoAlbumId]);
 
   const toggleLightbox = selectIndex => {
-    setLightboxIsOpen(!lightboxIsOpen);
+    setIsLightboxOpen(!isLightboxOpen);
     setSelectedIndex(selectIndex);
   };
 
@@ -83,7 +83,7 @@ const ArticlePhotoAlbum = ({ photoAlbumId }) => {
           </ImageWrapper>
         ))}
         <ModalGateway>
-          {lightboxIsOpen ? (
+          {isLightboxOpen ? (
             <Modal onClose={toggleLightbox}>
               <Carousel
                 views={images}

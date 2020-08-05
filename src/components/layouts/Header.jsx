@@ -74,8 +74,6 @@ const MenuUserFirstRow = styled.div`
   margin-bottom: 4%;
 `;
 
-const muteChat = false;
-
 const Header = ({ countMessages, location: { pathname } }) => {
   const [isForumHeader, setHeaderState] = useState(pathname === '/');
 

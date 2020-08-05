@@ -8,6 +8,7 @@ export const ImagesWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
+
   .clicked-image {
     border: 2px solid #33e842;
     transform: scale(1.3, 1.3);
@@ -21,15 +22,15 @@ export const StyledImage = styled.img`
 `;
 
 const ArticlePhotosUploader = ({ setPhotoList, isInModal, photoList, setCheckedImage }) => {
-  const [previewVisible, setPreviewVisible] = useState(false);
+  const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [pickedImageUid, setPickedImageUid] = useState('');
 
-  const handleCancel = () => setPreviewVisible(false);
+  const handleCancel = () => setIsPreviewVisible(false);
 
   const handlePreview = file => {
     setPreviewImage(file.thumbUrl);
-    setPreviewVisible(true);
+    setIsPreviewVisible(true);
   };
 
   const handleRemove = file => {
@@ -41,12 +42,14 @@ const ArticlePhotosUploader = ({ setPhotoList, isInModal, photoList, setCheckedI
   const customRequest = ({ onProgress, onSuccess, onError, file }) => {
     const formData = new FormData();
     formData.append('file', file);
+
     const config = {
       headers: { 'content-type': 'multipart/form-data' },
       onUploadProgress: event => {
         onProgress({ percent: (event.loaded / event.total) * 100 });
       },
     };
+
     queries
       .sendPhotos(formData, config)
       .then(res => {
@@ -118,7 +121,7 @@ const ArticlePhotosUploader = ({ setPhotoList, isInModal, photoList, setCheckedI
       >
         {uploadButton}
       </Upload>
-      <Modal visible={previewVisible} footer={null} onCancel={handleCancel}>
+      <Modal visible={isPreviewVisible} footer={null} onCancel={handleCancel}>
         <img alt="example" style={{ width: '100%' }} src={previewImage} />
       </Modal>
     </div>
