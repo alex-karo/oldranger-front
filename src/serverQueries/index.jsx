@@ -211,8 +211,8 @@ class Queries {
   };
 
   getProfileData = async () => {
-    const { data } = await axios.get('/api/currentUser');
-    return data;
+    const res = await axios.get('/api/currentUser');
+    return res;
   };
 
   getUserProfileData = async () => {
@@ -345,6 +345,11 @@ class Queries {
   getAlbums = async () => {
     const res = await axios.get('/api/albums');
     return res;
+  };
+
+  getAllAlbums = async () => {
+    const res = await axios.get('/api/albums/all');
+    return res.data;
   };
 
   createNewAlbum = async data => {

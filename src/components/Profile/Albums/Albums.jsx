@@ -46,7 +46,6 @@ const AlbomShadow = styled.div`
   padding: 35px 12px 9px;
   background: url(/shadow.png);
 `;
-
 const PhotoCounter = styled.span`
   position: absolute;
   bottom: 0;
@@ -96,8 +95,13 @@ class Albums extends React.Component {
   }
 
   loadAlbums = async () => {
-    const allAlbums = await queries.getAlbums();
-    this.setState({ albums: allAlbums });
+    const { isMainPage } = this.props;
+    try {
+      const albums = isMainPage ? await queries.getAllAlbums() : await queries.getAlbums();
+      this.setState({ albums });
+    } catch (error) {
+      queries.handleError(error);
+    }
   };
 
   createNewAlbum = async title => {
@@ -178,16 +182,16 @@ class Albums extends React.Component {
     });
   };
 
-  render() {
-    const { albums, visible } = this.state;
+  renderAlbums = () => {
+    const { albums } = this.state;
     const { isMainPage } = this.props;
     return (
       <>
-        {isMainPage ? (
+        {isMainPage && (
           <Row type="flex" justify="center">
             <h2>Альбомы</h2>
           </Row>
-        ) : null}
+        )}
         {albums.length > 0 ? (
           <StyledAlbumWrapper>
             {albums.map(album => (
@@ -211,15 +215,13 @@ class Albums extends React.Component {
                 >
                   <Icon type="delete" style={{ color: 'red' }} />
                 </DeletePhotoButton>
-                {album.photosCounter === 0 ? null : (
-                  <EditPhotoButton
-                    type="default"
-                    title="Редактировать альбом"
-                    onClick={this.editPhotoAlbum(album)}
-                  >
-                    <Icon type="edit" />
-                  </EditPhotoButton>
-                )}
+                <EditPhotoButton
+                  type="default"
+                  title="Редактировать албом"
+                  onClick={this.editPhotoAlbum(album)}
+                >
+                  <Icon type="edit" />
+                </EditPhotoButton>
               </StyledAlbumCard>
             ))}
           </StyledAlbumWrapper>
@@ -228,28 +230,50 @@ class Albums extends React.Component {
             <h4>Пока альбомов нет</h4>
           </Row>
         )}
-        {isMainPage ? null : (
-          <Row type="flex" justify="center">
-            <div>
-              <Button
-                type="primary"
-                onClick={() => {
-                  this.setState({ visible: true });
-                }}
-              >
-                Создать альбом
-              </Button>
-              <CreateAlbumPrompt
-                visible={visible}
-                onCreate={this.createNewAlbum}
-                onCancel={() => {
-                  this.setState({ visible: false });
-                }}
-              />
-            </div>
-          </Row>
-        )}
       </>
+    );
+  };
+
+  renderAddAlbumButton = () => {
+    const { isMainPage } = this.props;
+    const { visible } = this.state;
+    return (
+      !isMainPage && (
+        <Row type="flex" justify="center">
+          <div>
+            <Button
+              type="primary"
+              onClick={() => {
+                this.setState({ visible: true });
+              }}
+            >
+              Создать альбом
+            </Button>
+            <CreateAlbumPrompt
+              visible={visible}
+              onCreate={this.createNewAlbum}
+              onCancel={() => {
+                this.setState({ visible: false });
+              }}
+            />
+          </div>
+        </Row>
+      )
+    );
+  };
+
+  render() {
+    return (
+      <Context.Consumer>
+        {({ user: { role } }) => {
+          return (
+            <>
+              {this.renderAlbums()}
+              {role === 'ROLE_ADMIN' && this.renderAddAlbumButton()}
+            </>
+          );
+        }}
+      </Context.Consumer>
     );
   }
 }
@@ -260,10 +284,14 @@ Albums.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
   }).isRequired,
-  isMainPage: PropTypes.bool.isRequired,
+  isMainPage: PropTypes.bool,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+};
+
+Albums.defaultProps = {
+  isMainPage: false,
 };
 
 export default withRouter(Albums);
