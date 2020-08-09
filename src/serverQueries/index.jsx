@@ -113,6 +113,11 @@ class Queries {
     return res;
   };
 
+  updateTreeAll = async tree => {
+    const res = await axios.put(`/api/tags/node/updateAll`, tree);
+    return res;
+  };
+
   deleteTags = async params => {
     const res = await axios.delete(`/api/tags/node/delete`, { params });
     return res;
@@ -211,8 +216,8 @@ class Queries {
   };
 
   getProfileData = async () => {
-    const { data } = await axios.get('/api/currentUser');
-    return data;
+    const res = await axios.get('/api/currentUser');
+    return res;
   };
 
   getUserProfileData = async () => {
