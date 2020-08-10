@@ -113,8 +113,8 @@ class Queries {
     return res;
   };
 
-  updateTreeAll = async tree => {
-    const res = await axios.put(`/api/tags/node/updateAll`, tree);
+  updateTreeAll = async params => {
+    const res = await axios.put(`/api/tags/node/updateAll`, { params });
     return res;
   };
 

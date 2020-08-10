@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { Icon, Button } from 'antd';
 import styled from 'styled-components';
 import TagsModal from '../forms/Modal';
-import queries from '../../serverQueries/index';
 
 const EditIcon = ({ onClick }) => (
   <WrapperIcon>
@@ -37,13 +36,18 @@ const ArticlesTree = props => {
     dataTags,
     eventType,
     changeActiveTags,
+    updateTagAll,
     delTag,
     editTagsId,
     handleTagsSubmit,
     handleCancel,
     visible,
   } = props;
+
+  const [tree, setTree] = useState(dataTags);
+  const disabled = dataTags === tree;
   const blankTag = { id: -1, position: 1, parentId: -1 };
+
   const normalizeData = ({ title, id, tagsHierarchy, children }, idParent, index, acc = []) => {
     const nevTag = {
       tags: title,
@@ -67,7 +71,7 @@ const ArticlesTree = props => {
     const [first, ...rest] = data;
     const { id, children } = first;
     const nevTags = {
-      tags: first.title,
+      tag: first.title,
       id: first.id,
       parentId: null,
       tagsHierarchy: first.tagsHierarchy,
@@ -82,8 +86,6 @@ const ArticlesTree = props => {
     return getFlatDataFromTree(rest, [...acc, child]);
   };
 
-  const [tree, setTree] = useState(dataTags);
-  const disabled = dataTags === tree;
   const fetchTags = () => {
     setTree(dataTags);
   };
@@ -92,9 +94,9 @@ const ArticlesTree = props => {
     fetchTags();
   }, [props]);
 
-  const handleTreeUpdate = async () => {
+  const handleTreeUpdate = () => {
     const data = getFlatDataFromTree(tree);
-    await queries.updateTreeAll(data);
+    updateTagAll(data);
   };
 
   const handlechange = data => {
@@ -135,7 +137,7 @@ const ArticlesTree = props => {
               )}
               {editTagsId === node.id && eventType === 'update' ? (
                 <TagsModal
-                  text=""
+                  text={node.title}
                   visible={visible}
                   onCancel={handleCancel}
                   onSubmit={handleTagsSubmit}
@@ -218,6 +220,7 @@ ArticlesTree.propTypes = {
   eventType: PropTypes.string.isRequired,
   changeActiveTags: PropTypes.func.isRequired,
   delTag: PropTypes.func.isRequired,
+  updateTagAll: PropTypes.func.isRequired,
   editTagsId: PropTypes.number.isRequired,
   handleTagsSubmit: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,

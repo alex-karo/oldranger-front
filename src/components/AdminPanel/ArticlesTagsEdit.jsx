@@ -81,6 +81,11 @@ const ArticlesTagsEdit = () => {
     fetchTags();
   };
 
+  const updateTagAll = async data => {
+    await queries.updateTreeAll(data);
+    fetchTags();
+  };
+
   const delTag = id => async () => {
     await queries.deleteTags({ id });
     fetchTags();
@@ -127,6 +132,7 @@ const ArticlesTagsEdit = () => {
             editTagsId={editTagsId}
             visible={visible}
             handleCancel={handleCancel}
+            updateTagAll={updateTagAll}
           />
         </Menu>
       }
