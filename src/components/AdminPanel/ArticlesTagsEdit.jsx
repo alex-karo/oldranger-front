@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Menu } from 'antd';
-import { cloneDeep } from 'lodash';
 import queries from '../../serverQueries/index';
 import ArticlesTree from './ArticlesTree';
 
 const ArticlesTagsEdit = () => {
-  const [menuItems, setMenuItems] = useState([]);
   const [treeData, setTreeData] = useState([]);
   const [editTagsId, setEditTagsId] = useState(-1);
   const [eventType, setEventType] = useState('add');
@@ -62,12 +60,10 @@ const ArticlesTagsEdit = () => {
   const fetchTags = async () => {
     try {
       const tags = await queries.getTagsDtoTree();
-      setMenuItems(tags);
-      const tags2 = cloneDeep(tags);
-      const data = getTreeFromFlatData(tags2);
+      const data = getTreeFromFlatData(tags);
       setTreeData(data);
     } catch (err) {
-      setMenuItems([]);
+      setTreeData([]);
     }
   };
 
@@ -124,7 +120,6 @@ const ArticlesTagsEdit = () => {
         <Menu mode="inline">
           <ArticlesTree
             dataTags={treeData}
-            menuItems={menuItems}
             delTag={delTag}
             changeActiveTags={changeActiveTags}
             handleTagsSubmit={handleTagsSubmit}

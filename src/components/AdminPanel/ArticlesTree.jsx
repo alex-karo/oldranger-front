@@ -66,12 +66,13 @@ const ArticlesTree = props => {
 
   const getFlatDataFromTree = (data, acc = []) => {
     if (data.length === 0) {
-      return acc.flat(Infinity);
+      const res = acc.flat(Infinity);
+      return res;
     }
     const [first, ...rest] = data;
     const { id, children } = first;
     const nevTags = {
-      tag: first.title,
+      tags: first.title,
       id: first.id,
       parentId: null,
       tagsHierarchy: first.tagsHierarchy,
