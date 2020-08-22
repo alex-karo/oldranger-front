@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Menu } from 'antd';
+import { Menu, message } from 'antd';
 import queries from '../../serverQueries/index';
 import ArticlesTree from './ArticlesTree';
+import { getTreeFromFlatData } from '../../utils';
 
 const ArticlesTagsEdit = () => {
   const [treeData, setTreeData] = useState([]);
@@ -9,48 +10,12 @@ const ArticlesTagsEdit = () => {
   const [eventType, setEventType] = useState('add');
   const [visible, setVisible] = useState(false);
 
-  const normalizeData = (data, rest) => {
-    return data.map(el => {
-      const title = el.tag;
-      const { id } = el;
-      const { parentId } = el;
-      const { tagsHierarchy } = el;
-      const { position } = el;
-      const children = rest.filter(tag => tag.parentId === el.id);
-
-      return {
-        title,
-        id,
-        parentId,
-        tagsHierarchy,
-        expanded: true,
-        position,
-        children: children.length === 0 ? [] : normalizeData(children, rest),
-      };
-    });
+  const success = () => {
+    message.success('Изменения сохранены');
   };
 
-  const getTreeFromFlatData = (data, res = []) => {
-    if (data.length === 0) {
-      return res;
-    }
-    const [first, ...rest] = data;
-    if (first.parentId === null) {
-      const children = rest.filter(
-        el => el.parentId === first.id && el.parentId !== null && el.id !== first.id
-      );
-      const tag = {
-        title: first.tag,
-        id: first.id,
-        position: first.position,
-        parentId: first.parentId,
-        tagsHierarchy: first.tagsHierarchy,
-        expanded: true,
-        children: normalizeData(children, rest, first.id),
-      };
-      res.push(tag);
-    }
-    return getTreeFromFlatData(rest, res);
+  const error = () => {
+    message.error('Что-то пошло не так, повторите запрос позже');
   };
 
   const handleCancel = () => {
@@ -78,8 +43,12 @@ const ArticlesTagsEdit = () => {
   };
 
   const updateTagAll = async data => {
-    await queries.updateTreeAll(data);
-    fetchTags();
+    try {
+      await queries.updateTreeAll(data);
+      success();
+    } catch (err) {
+      error();
+    }
   };
 
   const delTag = id => async () => {

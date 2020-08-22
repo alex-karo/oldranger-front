@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Icon, Button } from 'antd';
 import styled from 'styled-components';
 import TagsModal from '../forms/Modal';
+import { getFlatDataFromTree } from '../../utils';
 
 const EditIcon = ({ onClick }) => (
   <WrapperIcon>
@@ -45,70 +46,27 @@ const ArticlesTree = props => {
   } = props;
 
   const [tree, setTree] = useState(dataTags);
-  const disabled = dataTags === tree;
+  const [disabled, setDisabled] = useState(true);
   const blankTag = { id: -1, position: 1, parentId: -1 };
 
-  const normalizeData = ({ title, id, tagsHierarchy, children }, idParent, index, acc = []) => {
-    const nevTag = {
-      tags: title,
-      id,
-      parentId: idParent,
-      tagsHierarchy,
-      position: index + 1,
-    };
-
-    acc.push(nevTag);
-    if (children) {
-      children.map((el, indexEl) => normalizeData(el, id, indexEl, acc));
-    }
-    return acc;
-  };
-
-  const getFlatDataFromTree = (data, acc = []) => {
-    if (data.length === 0) {
-      const res = acc.flat(Infinity);
-      return res;
-    }
-    const [first, ...rest] = data;
-    const { id, children } = first;
-    const nevTags = {
-      tags: first.title,
-      id: first.id,
-      parentId: null,
-      tagsHierarchy: first.tagsHierarchy,
-      position: first.position,
-    };
-
-    acc.push(nevTags);
-    if (children === undefined || children.length === 0) {
-      return getFlatDataFromTree(rest, acc);
-    }
-    const child = children.map((el, index) => normalizeData(el, id, index));
-    return getFlatDataFromTree(rest, [...acc, child]);
-  };
-
-  const fetchTags = () => {
+  const transformTree = () => {
     setTree(dataTags);
   };
 
   useEffect(() => {
-    fetchTags();
-  }, [props]);
+    transformTree();
+  }, [dataTags]);
 
-  const handleTreeUpdate = () => {
-    const data = getFlatDataFromTree(tree);
+  const handleTreeUpdate = async () => {
+    const data = await getFlatDataFromTree(tree);
     updateTagAll(data);
+    setDisabled(true);
   };
 
   const handlechange = data => {
+    setDisabled(false);
     setTree(data);
   };
-
-  const renderComponents = tags => (
-    <TagsAdd onClick={changeActiveTags(tags.id, 'add')}>
-      <span>добавить подраздел</span>
-    </TagsAdd>
-  );
 
   return (
     <div style={{ height: 400 }}>
@@ -124,7 +82,11 @@ const ArticlesTree = props => {
                 <EditIcon onClick={changeActiveTags(node.id, 'update')} />
                 <DeleteIcon onClick={delTag(node.id)} />
               </TagsLabel>
-              <div>{renderComponents(node)}</div>
+              <div>
+                <TagsAdd onClick={changeActiveTags(node.id, 'add')}>
+                  <span>добавить подраздел</span>
+                </TagsAdd>
+              </div>
               {editTagsId === node.id && eventType === 'add' ? (
                 <TagsModal
                   text=""
