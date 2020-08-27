@@ -7,10 +7,8 @@ import useArticleFetching from '../../hooks/useArticleFetching';
 import { StyledCenteredContainer, StyledHeader } from './styled';
 import context from '../Context';
 
-const updateArticle = id => async values => {
-  const { title, text, ...params } = values;
-  const data = await queries.updateArticle(id, { title, text }, params);
-  return data;
+const updateArticle = async (id, { title, text, ...params }) => {
+  await queries.updateArticle(id, { title, text }, params);
 };
 
 const deleteArticle = async (id, history) => {
@@ -36,8 +34,8 @@ const ArticleUpdate = () => {
     return null;
   };
 
-  const handleSubmit = id => {
-    updateArticle(id);
+  const handleSubmit = (id, results) => {
+    updateArticle(id, results);
   };
 
   const { error, loading, results } = useArticleFetching(articleId);
@@ -51,7 +49,7 @@ const ArticleUpdate = () => {
   }
 
   const {
-    article: { title, text, articleTags, isHideToAnon = true, draft: isDraft },
+    article: { id, title, text, articleTags, isHideToAnon = true, draft: isDraft },
   } = results;
   const tagsId = articleTags.map(tag => tag.id);
 
@@ -60,8 +58,8 @@ const ArticleUpdate = () => {
       <StyledHeader>Редактирование статьи</StyledHeader>
       <ArticleForm
         initialValues={{ title, text, tagsId, isDraft, isHideToAnon }}
-        onSubmit={() => handleSubmit(articleId)}
-        onSubmitSuccess={({ id }) => history.push(`/article/${id}`)}
+        onSubmit={result => handleSubmit(articleId, result)}
+        onSubmitSuccess={() => history.push(`/article/${id}`)}
       />
       {renderDeleteArticle()}
     </>
