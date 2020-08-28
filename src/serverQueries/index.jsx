@@ -88,13 +88,13 @@ class Queries {
     return res;
   };
 
-  getArticlesByTag = async tags => {
+  getArticlesByTag = async (tags, pageNumber) => {
     if (!tags) {
-      const res = await axios.get(`/api/article/withoutTag`, {});
+      const res = await axios.get(`/api/article/withoutTags?page=${pageNumber}`);
       return res;
     }
     const tagsString = tags.join('&tag_id=');
-    const res = await axios.get(`/api/article/tag?tag_id=${tagsString}&page=0`, {});
+    const res = await axios.get(`/api/article/tag?tag_id=${tagsString}&page=${pageNumber}`, {});
     return res;
   };
 
@@ -350,6 +350,11 @@ class Queries {
     return res;
   };
 
+  getAllAlbums = async () => {
+    const res = await axios.get('/api/albums/all');
+    return res.data;
+  };
+
   createNewAlbum = async data => {
     const res = await axios.post(`/api/albums?albumTitle=${data}`);
     return res;
@@ -368,6 +373,11 @@ class Queries {
   getPhotosFromAlbum = async id => {
     const res = await axios.get(`/api/albums/getPhotos/${id}`);
     return res;
+  };
+
+  getSecuredPhoto = async id => {
+    const res = await axios.get(`/api/securedPhoto/photoFromAlbum/${id}`);
+    return res.data;
   };
 
   addPhotosInAlbum = async (albumId, photosArr) => {
@@ -426,6 +436,11 @@ class Queries {
 
   unmuteUser = async id => {
     const res = await axios.post('/api/admin/unmute', { id });
+    return res;
+  };
+
+  sendPhotos = async (formData, config) => {
+    const res = await axios.post('api/photos/imageDownload', formData, config);
     return res;
   };
 

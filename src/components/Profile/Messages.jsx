@@ -1,6 +1,6 @@
 import React from 'react';
 import { HashLink } from 'react-router-hash-link';
-import { Row, message } from 'antd';
+import { Row, message, Spin } from 'antd';
 import queries from '../../serverQueries';
 import TopicCommentsList from '../Topic/TopicCommentsList';
 import TopicCommentItem from '../Topic/TopicCommentItem';
@@ -11,6 +11,7 @@ class Messages extends React.Component {
     this.state = {
       messages: [],
       hasMore: true,
+      inProgress: true,
       page: 1,
     };
   }
@@ -29,6 +30,7 @@ class Messages extends React.Component {
     return this.setState(({ messages, page }) => ({
       messages: [...messages, ...newMessages],
       page: page + 1,
+      inProgress: false,
     }));
   };
 
@@ -61,7 +63,7 @@ class Messages extends React.Component {
   };
 
   render() {
-    const { hasMore, messages } = this.state;
+    const { hasMore, messages, inProgress } = this.state;
 
     if (messages.length === 0 && !hasMore) {
       return (
@@ -70,6 +72,8 @@ class Messages extends React.Component {
         </Row>
       );
     }
+
+    if (inProgress) return <Spin />;
 
     return (
       <TopicCommentsList

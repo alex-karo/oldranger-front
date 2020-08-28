@@ -1,0 +1,31 @@
+.img-fluid {
+	max-width: 40%;
+	max-height: 40%;
+	float: left;
+	margin: 4px 10px 2px 0px;
+	border: 1px solid #CCC;
+	padding: 6px;
+}
+
+.ql-align-right {
+	float: right;
+}
+
+.ql-align-center {
+	clear: both;
+  margin: 0 30%;
+}
+
+.clearfix {
+	zoom: 1;
+}
+
+.clearfix:before,
+.clearfix:after {
+	content: "";
+	display: table;
+}
+
+.clearfix:after {
+	clear: both;
+}

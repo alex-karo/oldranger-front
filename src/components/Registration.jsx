@@ -54,6 +54,7 @@ const Registration = () => {
     setStatus('');
     const res = await queries.registrationUser({ key: token, ...values });
     if (res === 1) {
+      queries.createNewAlbum(values.firstName);
       setStatus('Письмо с подтверждением отправлено на ваш email');
     } else {
       setStatus('Некорректный token регистрации');
