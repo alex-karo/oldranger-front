@@ -36,7 +36,7 @@ import {
 } from './styled';
 
 const url = BASE_URL;
-const options = [
+const timeMessage = [
   { value: '30', label: '30 минут' },
   { value: '60', label: '1 час' },
   { value: '120', label: '2 часа' },
@@ -56,7 +56,7 @@ class Chat extends React.Component {
       replyTo: null,
       hasScrolled: false,
       minimizeChat: true,
-      select: options,
+      select: timeMessage,
     };
   }
 
