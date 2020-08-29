@@ -33,13 +33,13 @@ const MailingLetters = () => {
   ];
 
   const transformMessage = (values, user) => {
-    const data = new Date();
+    const dateMessage = new Date();
     const res = {
       emailDraft: {
         id: user.id,
         subject: values.subject,
         message: values.message,
-        lastEditDate: data,
+        lastEditDate: dateMessage,
       },
       roles: values.roles.map(rol => rol.value),
     };
