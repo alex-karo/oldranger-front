@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import * as Yup from 'yup';
 import { Formik, Field } from 'formik';
@@ -20,21 +21,21 @@ const SubmitButtonWrapper = styled.div`
 `;
 
 const formStyles = { width: '500px' };
+const selectRole = [
+  { value: 'ROLE_ADMIN', label: 'администратору' },
+  { value: 'ROLE_MODERATOR', label: 'модератору' },
+  { value: 'ROLE_USER', label: 'новичкам' },
+  { value: 'ROLE_PROSPECT', label: 'постояльцам' },
+  { value: 'ROLE_OLD_TIMER', label: 'старожилам' },
+  { value: 'ROLE_VETERAN', label: 'ветеранам' },
+];
 
 const MailingLetters = () => {
   const [sendingStatus, setSendingStatus] = useState('');
-  const select = [
-    { value: 'ROLE_ADMIN', label: 'администратору' },
-    { value: 'ROLE_MODERATOR', label: 'модератору' },
-    { value: 'ROLE_USER', label: 'новичкам' },
-    { value: 'ROLE_PROSPECT', label: 'постояльцам' },
-    { value: 'ROLE_OLD_TIMER', label: 'старожилам' },
-    { value: 'ROLE_VETERAN', label: 'ветеранам' },
-  ];
 
   const transformMessage = (values, user) => {
     const dateMessage = new Date();
-    const res = {
+    const dataUser = {
       emailDraft: {
         id: user.id,
         subject: values.subject,
@@ -43,12 +44,28 @@ const MailingLetters = () => {
       },
       roles: values.roles.map(rol => rol.value),
     };
-    return res;
+    return dataUser;
   };
   const validationSchema = Yup.object().shape({
     subject: Yup.string().required('Обязательное поле'),
     message: Yup.string().required('Обязательное поле'),
   });
+  const handleSubmitMessage = (values, user, setSubmitting, resetForm) => {
+    setSubmitting(true);
+    const dataMessage = transformMessage(values, user);
+    serverQueries
+      .sendMailToAllUsers(dataMessage)
+      .then(() => {
+        setSendingStatus('success');
+        setSubmitting(false);
+        resetForm();
+      })
+      .catch(err => {
+        setSendingStatus('error');
+        setSubmitting(false);
+        /* eslint no-unused-vars: ["error", { "args": "none" }] */
+      });
+  };
 
   return (
     <Context.Consumer>
@@ -58,22 +75,9 @@ const MailingLetters = () => {
             <Formik
               validationSchema={validationSchema}
               initialValues={{ subject: '', message: '', roles: '' }}
-              onSubmit={(values, { setSubmitting, resetForm }) => {
-                setSubmitting(true);
-                const dataMessage = transformMessage(values, user);
-                serverQueries
-                  .sendMailToAllUsers(dataMessage)
-                  .then(() => {
-                    setSendingStatus('success');
-                    setSubmitting(false);
-                    resetForm();
-                  })
-                  .catch(err => {
-                    setSendingStatus('error');
-                    setSubmitting(false);
-                    throw err;
-                  });
-              }}
+              onSubmit={(values, { setSubmitting, resetForm }) =>
+                handleSubmitMessage(values, user, setSubmitting, resetForm)
+              }
             >
               {({
                 values,
@@ -86,10 +90,7 @@ const MailingLetters = () => {
                 setFieldValue,
               }) => (
                 <Form onSubmit={handleSubmit} style={formStyles}>
-                  <Form.Item
-                    validateStatus={touched.subject && errors.subject ? 'error' : null}
-                    help={touched.subject && errors.subject ? errors.subject : null}
-                  >
+                  <FormItem touched={touched.subject} errors={errors.subject}>
                     <Input
                       type="subject"
                       id="subject"
@@ -99,11 +100,8 @@ const MailingLetters = () => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
-                  </Form.Item>
-                  <Form.Item
-                    validateStatus={touched.message && errors.message ? 'error' : null}
-                    help={touched.message && errors.message ? errors.message : null}
-                  >
+                  </FormItem>
+                  <FormItem touched={touched.message} errors={errors.message}>
                     <Input.TextArea
                       autoSize={{ minRows: 8, maxRows: 8 }}
                       type="message"
@@ -114,7 +112,7 @@ const MailingLetters = () => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
-                  </Form.Item>
+                  </FormItem>
                   <h2 style={{ textAlign: 'center' }}>Выбирите кому отправить сообщения</h2>
                   <Field
                     name="roles"
@@ -123,7 +121,7 @@ const MailingLetters = () => {
                         type="roles"
                         id="roles"
                         name="roles"
-                        options={select}
+                        options={selectRole}
                         placeholder="Выберите кому отправить сообщения"
                         value={values.roles}
                         isMulti
@@ -152,6 +150,28 @@ const MailingLetters = () => {
       }}
     </Context.Consumer>
   );
+};
+
+const FormItem = ({ touched, errors, children }) => {
+  return (
+    <Form.Item
+      validateStatus={touched && errors ? 'error' : null}
+      help={touched && errors ? errors : null}
+    >
+      {children}
+    </Form.Item>
+  );
+};
+
+FormItem.propTypes = {
+  children: PropTypes.element.isRequired,
+  touched: PropTypes.bool,
+  errors: PropTypes.string,
+};
+
+FormItem.defaultProps = {
+  touched: false,
+  errors: '',
 };
 
 export default MailingLetters;
