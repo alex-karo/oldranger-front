@@ -69,7 +69,7 @@ const parseTags = ({ title, id, tagsHierarchy, children }, parentId, index, acc 
 
   acc.push(nevTag);
   if (children) {
-    children.map((el, indexEl) => parseTags(el, id, indexEl, acc));
+    children.forEach((el, indexEl) => parseTags(el, id, indexEl, acc));
   }
   return acc;
 };
