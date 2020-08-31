@@ -158,7 +158,8 @@ class TopicPage extends React.Component {
       this.setState({ reply: null, answerId: null, files: [], uploading: false });
       resetForm();
       history.push({
-        pathname: `${history.location.pathname}?page=${lastPage}`,
+        pathname: `${history.location.pathname}`,
+        search: `page=${lastPage}`,
         state: { photoAlbumId: photoAlbum },
       });
     } catch {
