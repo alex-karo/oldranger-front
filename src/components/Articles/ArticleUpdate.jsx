@@ -7,8 +7,11 @@ import useArticleFetching from '../../hooks/useArticleFetching';
 import { StyledCenteredContainer, StyledHeader } from './styled';
 import context from '../Context';
 
-const updateArticle = async (id, { title, text, ...params }) => {
+const updateArticle = async (id, results, history) => {
+  const { title, text, ...params } = results;
   await queries.updateArticle(id, { title, text }, params);
+  const { isDraft } = results;
+  isDraft ? history.push(`/admin-panel/articleDraft`) : history.push(`/article/${id}`);
 };
 
 const deleteArticle = async (id, history) => {
@@ -35,7 +38,7 @@ const ArticleUpdate = () => {
   };
 
   const handleSubmit = (id, results) => {
-    updateArticle(id, results);
+    updateArticle(id, results, history);
   };
 
   const { error, loading, results } = useArticleFetching(articleId);
@@ -52,7 +55,6 @@ const ArticleUpdate = () => {
     article: { id, title, text, articleTags, isHideToAnon = true, draft: isDraft },
   } = results;
   const tagsId = articleTags.map(tag => tag.id);
-
   return (
     <>
       <StyledHeader>Редактирование статьи</StyledHeader>
