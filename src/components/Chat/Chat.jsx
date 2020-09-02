@@ -231,7 +231,7 @@ class Chat extends React.Component {
   render() {
     const { messages, usersOnline, label, chatState } = this.props;
     const fixedChat = chatState !== 'mainChat' && chatState !== 'privateChat';
-    const { message, filePath, hasScrolled, minimizeChat, select } = this.state;
+    const { message, filePath, hasScrolled, minimizeChat, select, disabled } = this.state;
     return (
       <Context.Consumer>
         {({ user, countMessages, changeJoinChat }) => {
