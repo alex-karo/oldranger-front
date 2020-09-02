@@ -130,7 +130,7 @@ class TopicEditingForm extends React.Component {
                 <Button
                   type="primary"
                   htmlType="submit"
-                  disabled={!!touched.messgae && !!errors.message}
+                  disabled={!!touched.message && !!errors.message}
                 >
                   Сохранить
                 </Button>
