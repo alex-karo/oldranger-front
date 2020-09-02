@@ -331,7 +331,7 @@ class Queries {
 
   getAllAlbums = async () => {
     const res = await axios.get('/api/albums/all');
-    return res.data;
+    return res;
   };
 
   createNewAlbum = async data => {
