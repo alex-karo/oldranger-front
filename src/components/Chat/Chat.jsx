@@ -36,7 +36,7 @@ import {
 } from './styled';
 
 const url = BASE_URL;
-const options = [
+const timeMessage = [
   { value: '30', label: '30 минут' },
   { value: '60', label: '1 час' },
   { value: '120', label: '2 часа' },
@@ -56,8 +56,7 @@ class Chat extends React.Component {
       replyTo: null,
       hasScrolled: false,
       minimizeChat: true,
-      select: options,
-      disabled: false,
+      select: timeMessage,
     };
   }
 
@@ -232,7 +231,7 @@ class Chat extends React.Component {
   render() {
     const { messages, usersOnline, label, chatState } = this.props;
     const fixedChat = chatState !== 'mainChat' && chatState !== 'privateChat';
-    const { message, filePath, hasScrolled, minimizeChat, select, disabled } = this.state;
+    const { message, filePath, hasScrolled, minimizeChat, select } = this.state;
     return (
       <Context.Consumer>
         {({ user, countMessages, changeJoinChat }) => {

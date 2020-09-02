@@ -1,46 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { Menu, Icon } from 'antd';
-import styled from 'styled-components';
+import { Menu, message } from 'antd';
 import queries from '../../serverQueries/index';
-import TagsForm from '../forms/TagsForm';
-
-const ShowEditorForm = ({ text, left, onSubmit }) => (
-  <TagsForm text={text} left={left} onSubmit={onSubmit} />
-);
-
-ShowEditorForm.propTypes = {
-  text: PropTypes.string.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  left: PropTypes.string.isRequired,
-};
-
-const EditIcon = ({ onClick }) => (
-  <Icon type="edit" theme="outlined" onClick={onClick} style={{ marginRight: '10px' }} />
-);
-
-EditIcon.propTypes = {
-  onClick: PropTypes.func.isRequired,
-};
-
-const DeleteIcon = ({ onClick }) => <Icon type="delete" theme="outlined" onClick={onClick} />;
-
-DeleteIcon.propTypes = {
-  onClick: PropTypes.func.isRequired,
-};
+import ArticlesTree from './ArticlesTree';
+import { getTreeFromFlatData } from '../../utils';
 
 const ArticlesTagsEdit = () => {
-  const [menuItems, setMenuItems] = useState([]);
+  const [treeData, setTreeData] = useState([]);
   const [editTagsId, setEditTagsId] = useState(-1);
   const [eventType, setEventType] = useState('add');
-  const blankTag = { id: -1, position: 1, parentId: -1 };
+  const [visible, setVisible] = useState(false);
+
+  const success = () => {
+    message.success('Изменения сохранены');
+  };
+
+  const error = () => {
+    message.error('Что-то пошло не так, повторите запрос позже');
+  };
+
+  const handleCancel = () => {
+    setVisible(!visible);
+  };
 
   const fetchTags = async () => {
     try {
       const tags = await queries.getTagsDtoTree();
-      setMenuItems(tags);
+      const data = getTreeFromFlatData(tags);
+      setTreeData(data);
     } catch (err) {
-      setMenuItems([]);
+      setTreeData([]);
     }
   };
 
@@ -54,6 +42,15 @@ const ArticlesTagsEdit = () => {
     fetchTags();
   };
 
+  const updateTagAll = async data => {
+    try {
+      await queries.updateTreeAll(data);
+      success();
+    } catch (err) {
+      error();
+    }
+  };
+
   const delTag = id => async () => {
     await queries.deleteTags({ id });
     fetchTags();
@@ -61,12 +58,14 @@ const ArticlesTagsEdit = () => {
 
   const changeActiveTags = (id, eventT) => evt => {
     evt.preventDefault();
+    setVisible(!visible);
     setEventType(eventT);
     setEditTagsId(id);
   };
 
-  const handleTagsSubmit = ({ id, parentId, position }) => async ({ text }) => {
+  const handleTagsSubmit = async ({ id, parentId, position }, { text }) => {
     const checkParentId = parentId === null ? -1 : parentId;
+    setVisible(false);
     try {
       if (eventType === 'update') {
         await updateTag({ id, parentId: checkParentId, tagName: text, position });
@@ -84,80 +83,21 @@ const ArticlesTagsEdit = () => {
     fetchTags();
   }, []);
 
-  const buildTreeTags = (tags, result = []) => {
-    if (tags.length === 0) {
-      return result;
-    }
-    const [first, ...rest] = tags;
-    const left = `${first.tagsHierarchy.length * 20}px`;
-    if (menuItems.some(el => el.parentId === first.id)) {
-      return buildTreeTags(rest, [
-        ...result,
-        <li key={`item-${first.id}`}>
-          <TagsItem left={left}>
-            <div>
-              <TagsLabel>{first.tag}</TagsLabel>
-              <EditIcon onClick={changeActiveTags(first.id, 'update')} />
-              <DeleteIcon onClick={delTag(first.id)} />
-            </div>
-            <TagsAdd role="button" tabIndex="0" onClick={changeActiveTags(first.id, 'add')}>
-              <span>добавить подраздел</span>
-            </TagsAdd>
-          </TagsItem>
-          {editTagsId === first.id && eventType === 'add' ? (
-            <ShowEditorForm text="" left={left} onSubmit={handleTagsSubmit(first)} />
-          ) : (
-            ''
-          )}
-          {editTagsId === first.id && eventType === 'update' ? (
-            <ShowEditorForm text={first.tag} left={left} onSubmit={handleTagsSubmit(first)} />
-          ) : (
-            ''
-          )}
-          <ul>{buildTreeTags(menuItems.filter(elem => elem.parentId === first.id))}</ul>
-        </li>,
-      ]);
-    }
-    return buildTreeTags(rest, [
-      ...result,
-      <li key={`item-${first.id}`}>
-        <TagsItem left={left}>
-          <div>
-            <TagsLabel>{first.tag}</TagsLabel>
-            <EditIcon onClick={changeActiveTags(first.id, 'update')} />
-            <DeleteIcon onClick={delTag(first.id)} />
-          </div>
-          <TagsAdd role="button" tabIndex="0" onClick={changeActiveTags(first.id, 'add')}>
-            <span>добавить подраздел</span>
-          </TagsAdd>
-        </TagsItem>
-        {editTagsId === first.id && eventType === 'add' ? (
-          <ShowEditorForm text="" left={left} onSubmit={handleTagsSubmit(first)} />
-        ) : (
-          ''
-        )}
-        {editTagsId === first.id && eventType === 'update' ? (
-          <ShowEditorForm text={first.tag} left={left} onSubmit={handleTagsSubmit(first)} />
-        ) : (
-          ''
-        )}
-      </li>,
-    ]);
-  };
-
   return (
     <div style={{ border: '1px solid lightblue', padding: '20px' }}>
       {
         <Menu mode="inline">
-          {menuItems ? buildTreeTags(menuItems.filter(el => el.parentId === null)) : null}
-          <TagsAddFirst role="button" tabIndex="0" onClick={changeActiveTags(-1, 'add')}>
-            <span>Добавить новый раздел</span>
-          </TagsAddFirst>
-          {editTagsId === -1 && eventType === 'add' ? (
-            <ShowEditorForm text="" left="20px" onSubmit={handleTagsSubmit(blankTag)} />
-          ) : (
-            ''
-          )}
+          <ArticlesTree
+            dataTags={treeData}
+            delTag={delTag}
+            changeActiveTags={changeActiveTags}
+            handleTagsSubmit={handleTagsSubmit}
+            eventType={eventType}
+            editTagsId={editTagsId}
+            visible={visible}
+            handleCancel={handleCancel}
+            updateTagAll={updateTagAll}
+          />
         </Menu>
       }
     </div>
@@ -165,30 +105,3 @@ const ArticlesTagsEdit = () => {
 };
 
 export default ArticlesTagsEdit;
-
-const TagsItem = styled.div`
-  margin: 0;
-  display: flex;
-  height: 60px;
-  flex-direction: column;
-  padding-left: ${props => `${props.left}`};
-`;
-const TagsLabel = styled.span`
-  font-size: 16px;
-  margin-right: 15px;
-`;
-const TagsAdd = styled.p`
-  font-size: 10px;
-  margin-top: 15px;
-  cursor: pointer;
-  &:hover {
-    color: lightblue;
-  }
-`;
-const TagsAddFirst = styled.p`
-  cursor: pointer;
-  margin-left: 20px;
-  &:hover {
-    color: lightblue;
-  }
-`;

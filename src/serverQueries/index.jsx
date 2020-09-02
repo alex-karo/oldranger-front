@@ -113,6 +113,10 @@ class Queries {
     return res;
   };
 
+  updateTreeAll = async tree => {
+    return axios.put(`/api/tags/node/updateAll`, tree);
+  };
+
   deleteTags = async params => {
     const res = await axios.delete(`/api/tags/node/delete`, { params });
     return res;
