@@ -8,10 +8,9 @@ import { StyledCenteredContainer, StyledHeader } from './styled';
 import context from '../Context';
 
 const updateArticle = async (id, results, history) => {
-  const { title, text, ...params } = results;
-  await queries.updateArticle(id, { title, text }, params);
-  const { isDraft } = results;
-  isDraft ? history.push(`/admin-panel/articleDraft`) : history.push(`/article/${id}`);
+  const { title, text, isDraft, ...params } = results;
+  await queries.updateArticle(id, { title, text }, { ...params, isDraft });
+  history.push(isDraft ? `/admin-panel/articleDraft` : `/article/${id}`);
 };
 
 const deleteArticle = async (id, history) => {
