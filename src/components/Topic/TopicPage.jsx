@@ -123,10 +123,16 @@ class TopicPage extends React.Component {
   };
 
   handleSubmitComment = async (messageText, resetForm) => {
-    if (messageText === '') {
+    let errorMsg = null;
+    if (!messageText.length) {
+      errorMsg = 'Сообщение не может быть пустым';
+    }
+    if (messageText.length > 50000) {
+      errorMsg = 'Превышна максимальная длина сообщения';
+    }
+    if (errorMsg) {
       notification.open({
-        message: 'Сообщение не может быть пустым',
-        description: 'Максимальное количество символов 500000',
+        message: errorMsg,
         icon: <GoldIcon type="warning" />,
       });
       return;
