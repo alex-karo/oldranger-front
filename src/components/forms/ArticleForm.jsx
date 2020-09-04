@@ -125,6 +125,7 @@ const ArticleForm = ({ initialValues, buttonText, onSubmit, onSubmitSuccess, onS
                 htmlType="submit"
                 disabled={!!touched.message && !!errors.message}
                 loading={submitting}
+                onClick={() => {onSubmitWrapper()}}
               >
                 {buttonText}
               </Button>
