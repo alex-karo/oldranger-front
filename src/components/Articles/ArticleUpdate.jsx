@@ -7,10 +7,10 @@ import useArticleFetching from '../../hooks/useArticleFetching';
 import { StyledCenteredContainer, StyledHeader } from './styled';
 import context from '../Context';
 
-const updateArticle = id => async values => {
-  const { title, text, ...params } = values;
-  const data = await queries.updateArticle(id, { title, text }, params);
-  return data;
+const updateArticle = async data => {
+  const { articleId, title, text, ...params } = data;
+  const response = await queries.updateArticle(articleId, { title, text }, params);
+  return response;
 };
 
 const deleteArticle = async (id, history) => {
@@ -35,9 +35,9 @@ const ArticleUpdate = () => {
     }
     return null;
   };
-
-  const handleSubmit = id => {
-    updateArticle(id);
+  
+  const handleSubmit = data => {
+    return updateArticle(data);
   };
 
   const { error, loading, results } = useArticleFetching(articleId);
@@ -59,8 +59,8 @@ const ArticleUpdate = () => {
     <>
       <StyledHeader>Редактирование статьи</StyledHeader>
       <ArticleForm
-        initialValues={{ title, text, tagsId, isDraft, isHideToAnon }}
-        onSubmit={() => handleSubmit(articleId)}
+        initialValues={{ title, text, tagsId, isDraft, isHideToAnon, articleId }}
+        onSubmit={handleSubmit}
         onSubmitSuccess={({ id }) => history.push(`/article/${id}`)}
       />
       {renderDeleteArticle()}
