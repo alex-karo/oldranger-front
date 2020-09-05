@@ -11,6 +11,13 @@ const modules = {
   ],
 };
 
+// Этот костыль подчищает за ReactQuill, который оставляет
+// после очистки формы мусорные символы
+const handleOnChangeArgs = (...args) => {
+  const [, delta, author, funcs] = args;
+  return funcs.getText().length > 1 ? args : ['', delta, author, funcs];
+};
+
 const TopicReplyEditor = props => {
   const [clazz, setClazz] = useState('');
   const { value, onChange, replyRef, ...rest } = props;
@@ -19,7 +26,9 @@ const TopicReplyEditor = props => {
       className={clazz}
       ref={replyRef}
       value={value}
-      onChange={onChange}
+      onChange={(...args) => {
+        onChange(...handleOnChangeArgs(...args));
+      }}
       theme="snow"
       onFocus={() => {
         setClazz('my-quill');
