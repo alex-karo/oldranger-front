@@ -9,9 +9,7 @@ import fileProps from './propTypes/fileProps';
 import context from '../Context';
 
 const validationSchema = Yup.object({
-  message: Yup.string()
-    .min(1, 'Сообщение не может быть пустым')
-    .max(500000, 'Слишком длинное сообщение').isRequired,
+  message: Yup.string().max(500000, 'Слишком длинное сообщение'),
 });
 
 const TopicReplyForm = ({ replyRef, handleSubmitComment, handleAddFile, files, uploading }) => {
