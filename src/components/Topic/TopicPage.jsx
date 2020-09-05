@@ -130,7 +130,7 @@ class TopicPage extends React.Component {
     const messageComentsEntity = {
       idTopic: topic.id,
       idUser: user.id,
-      text: messageText.trim(),
+      text: messageText.length ? messageText : '<br>',
     };
 
     if (answerId) {
