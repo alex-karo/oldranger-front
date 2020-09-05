@@ -123,15 +123,6 @@ class TopicPage extends React.Component {
   };
 
   handleSubmitComment = async (messageText, resetForm) => {
-    if (messageText === '') {
-      notification.open({
-        message: 'Сообщение не может быть пустым',
-        description: 'Максимальное количество символов 500000',
-        icon: <GoldIcon type="warning" />,
-      });
-      return;
-    }
-
     this.setState({ uploading: true });
     const { topic, answerId, files } = this.state;
     const { user } = this.context;
