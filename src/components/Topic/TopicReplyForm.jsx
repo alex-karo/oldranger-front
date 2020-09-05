@@ -59,7 +59,7 @@ const TopicReplyForm = ({ replyRef, handleSubmitComment, handleAddFile, files, u
               <Button
                 type="primary"
                 htmlType="submit"
-                disabled={(!!touched.messgae && !!errors.message) || muteComments}
+                disabled={(!values.message && !files.length) || muteComments}
                 loading={uploading}
               >
                 {uploading ? 'Отправка' : 'Отправить'}
