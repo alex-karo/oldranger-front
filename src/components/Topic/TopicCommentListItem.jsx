@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { dataToFormatedDate, dateToDateDistance } from '../../utils';
 import { ListItem } from './styled';
 import TopicUserInfo from './TopicUserInfo';
-import TopicPhotoList from './TopicPhotoList';
 import fileProps from './propTypes/fileProps';
 import commentProps from './propTypes/commentProps';
 import UserAvatar from '../commons/UserAvatar';
@@ -62,7 +61,6 @@ const TopicCommentListItem = ({
           </Tooltip>
         }
       />
-      {convertedImages && !toggleEdeting && <TopicPhotoList fileList={convertedImages} />}
     </ListItem>
   );
 };
