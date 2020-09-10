@@ -11,13 +11,12 @@ import * as Yup from 'yup';
 import { formatDateToLocalTimeZone } from '../../../utils';
 import UserAvatar from '../../commons/UserAvatar';
 
+const validationSchema = Yup.object({ text: Yup.string().required('Введите текст комментария') });
+const initialValues = { text: '' };
+
 const renderEditorForm = onSubmit => {
   return (
-    <Formik
-      initialValues={{ text: '' }}
-      validationSchema={Yup.object({ text: Yup.string().required('Введите текст комментария') })}
-      onSubmit={onSubmit}
-    >
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
       <Form>
         <Form.Item name="text">
           <Input.TextArea name="text" rows={4} />
