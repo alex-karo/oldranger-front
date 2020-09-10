@@ -156,7 +156,6 @@ class TopicCommentItem extends React.Component {
         comment={comment}
         withActions={withActions}
         toggleEdeting={toggleEdeting}
-        convertedImages={convertedImages}
         commentActions={commentActions}
         muteComments={muteComments}
         contentCommentText={contentCommentText}
