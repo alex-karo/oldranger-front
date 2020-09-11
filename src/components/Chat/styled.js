@@ -1,5 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 import { Badge } from 'antd';
+import { Link } from 'react-router-dom';
 
 const Ul = styled.ul`
   list-style: none;
@@ -123,7 +124,7 @@ export const User = styled(Li)`
   padding: 5px;
 `;
 
-export const UserLink = styled.a`
+export const UserLink = styled(Link)`
   color: #333;
   &:hover {
     color: #128ff2;
