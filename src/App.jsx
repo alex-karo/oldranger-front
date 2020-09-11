@@ -49,7 +49,7 @@ class App extends React.Component {
   }
 
   componentDidMount = async () => {
-    this.сonnect();
+    this.connect();
 
     AuthorizationStatusEmitter.subscribe(isAuthorized => {
       if (!isAuthorized) {
@@ -68,15 +68,12 @@ class App extends React.Component {
       const socket = await new SockJS(`${url}ws`, null, {});
       this.stompClient = await Stomp.over(socket);
       await this.stompClient.connect({}, this.onConnected);
+      this.setState({ connect: true });
     }
   };
 
   changeJoinChat = isJoin => {
     this.setState({ isJoinChat: isJoin, countMessages: 0 });
-  };
-
-  сonnect = () => {
-    this.setState({ connect: true });
   };
 
   onConnected = () => {
