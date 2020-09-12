@@ -283,7 +283,6 @@ class Chat extends React.Component {
                     </MessageList>
                   </div>
                 </Main>
-
                 <Form
                   minimizeChat={minimizeChat}
                   fixedChat={fixedChat}

@@ -118,7 +118,9 @@ class TopicCommentItem extends React.Component {
     ) : (
       <>
         <Markup content={comment.commentText} />
-        {convertedImages && !toggleEdeting && <TopicPhotoList fileList={convertedImages} />}
+        {convertedImages.length > 0 && !toggleEdeting && (
+          <TopicPhotoList fileList={convertedImages} />
+        )}
       </>
     );
 

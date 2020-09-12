@@ -9,6 +9,7 @@ const Ul = styled.ul`
   padding: 0 20px 0 20px;
   width: 80%;
   border-left: 1px solid #e8e8e8;
+  badding-bottom: 114px;
 `;
 
 const Li = styled.li`
@@ -224,8 +225,11 @@ export const Arrow = styled.span`
 `;
 
 export const Form = styled.form`
-  display: ${({ minimizeChat, fixedChat }) => (minimizeChat && fixedChat ? 'none' : 'block')};
+  display: ${({ minimizeChat, fixedChat }) => (minimizeChat && fixedChat ? 'none' : 'flex')};
   padding: 20px;
+  flex-direction: column;
+  margin-left: auto;
+  width: 80%;
 `;
 
 export const Footer = styled.footer`
