@@ -77,8 +77,8 @@ const MenuUserFirstRow = styled.div`
 const Header = ({ countMessages, location: { pathname } }) => {
   const [isForumHeader, setHeaderState] = useState(pathname === '/');
 
-  let history = useHistory();
-  
+  const history = useHistory();
+
   const switchForumSitePart = bool => {
     setHeaderState(bool);
   };
@@ -139,10 +139,13 @@ const Header = ({ countMessages, location: { pathname } }) => {
                     <Button>
                       <Link to="/profile">Профиль</Link>
                     </Button>
-                    <Button type="danger" onClick={ () => {
-                      logOut();
-                      return history.push('/') 
-                    }}>
+                    <Button
+                      type="danger"
+                      onClick={() => {
+                        logOut();
+                        return history.push('/');
+                      }}
+                    >
                       Выйти
                     </Button>
                   </>
