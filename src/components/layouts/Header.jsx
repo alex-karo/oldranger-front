@@ -78,7 +78,6 @@ const Header = ({ countMessages, location: { pathname } }) => {
   const [isForumHeader, setHeaderState] = useState(pathname === '/');
 
   const history = useHistory();
-
   const switchForumSitePart = bool => {
     setHeaderState(bool);
   };
@@ -142,8 +141,7 @@ const Header = ({ countMessages, location: { pathname } }) => {
                     <Button
                       type="danger"
                       onClick={() => {
-                        logOut();
-                        return history.push('/');
+                        logOut(history);
                       }}
                     >
                       Выйти

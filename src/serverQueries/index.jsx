@@ -37,8 +37,9 @@ class Queries {
     return res;
   };
 
-  logOut = async () => {
+  logOut = async history => {
     const res = await axios.get('api/logout');
+    await history.push('/');
     return res;
   };
 

@@ -111,9 +111,9 @@ class App extends React.Component {
     this.setState({ user: { ...data } });
   };
 
-  logOut = async () => {
+  logOut = async history => {
     localStorage.removeItem('user');
-    queries.logOut();
+    queries.logOut(history);
     this.disconnect();
     this.setState({ isLogin: false, user: {} });
   };
