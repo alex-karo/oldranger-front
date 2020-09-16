@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 import { dataToFormatedDate, dateToDateDistance } from '../../utils';
 import { ListItem } from './styled';
 import TopicUserInfo from './TopicUserInfo';
-import TopicPhotoList from './TopicPhotoList';
-import fileProps from './propTypes/fileProps';
 import commentProps from './propTypes/commentProps';
 import UserAvatar from '../commons/UserAvatar';
 
@@ -13,7 +11,6 @@ const TopicCommentListItem = ({
   comment,
   withActions,
   toggleEdeting,
-  convertedImages,
   commentActions,
   contentEditingForm,
   contentCommentText,
@@ -62,7 +59,6 @@ const TopicCommentListItem = ({
           </Tooltip>
         }
       />
-      {convertedImages && !toggleEdeting && <TopicPhotoList fileList={convertedImages} />}
     </ListItem>
   );
 };
@@ -71,7 +67,6 @@ export default TopicCommentListItem;
 
 TopicCommentListItem.defaultProps = {
   withActions: false,
-  convertedImages: null,
   contentReplyText: null,
   muteComments: false,
 };
@@ -83,7 +78,6 @@ TopicCommentListItem.propTypes = {
   commentActions: PropTypes.node.isRequired,
   contentEditingForm: PropTypes.node.isRequired,
   contentCommentText: PropTypes.node.isRequired,
-  convertedImages: PropTypes.arrayOf(fileProps),
   comment: commentProps.isRequired,
   contentReplyText: PropTypes.node,
 };

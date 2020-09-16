@@ -10,6 +10,7 @@ import { ReplyTag, DeletedMessageText } from './styled';
 import TopicEditingForm from './TopicEditingForm';
 import commentProps from './propTypes/commentProps';
 import TopicCommentListItem from './TopicCommentListItem';
+import TopicPhotoList from './TopicPhotoList';
 import Context from '../Context';
 import { userRoles, SECURED_ALBUM_URL, DEFAULT_COMMENT_PICTURE } from '../../constants';
 
@@ -115,7 +116,12 @@ class TopicCommentItem extends React.Component {
         <Markup content={comment.commentText} />
       </DeletedMessageText>
     ) : (
-      <Markup content={comment.commentText} />
+      <>
+        <Markup content={comment.commentText} />
+        {convertedImages.length > 0 && !toggleEdeting && (
+          <TopicPhotoList fileList={convertedImages} />
+        )}
+      </>
     );
 
     const contentReplyText = comment.replyNick ? (
@@ -152,7 +158,6 @@ class TopicCommentItem extends React.Component {
         comment={comment}
         withActions={withActions}
         toggleEdeting={toggleEdeting}
-        convertedImages={convertedImages}
         commentActions={commentActions}
         muteComments={muteComments}
         contentCommentText={contentCommentText}

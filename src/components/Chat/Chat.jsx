@@ -4,7 +4,7 @@ import Select from 'react-select';
 import { throttle } from 'lodash';
 
 import { Input, Button, message as systemMessage, Icon, Tooltip } from 'antd';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { BASE_URL } from '../../constants';
 import Context from '../Context';
 import {
@@ -131,9 +131,9 @@ class Chat extends React.Component {
       index % 2 === 0 ? (
         el
       ) : (
-        <a href={el} target="_blank" rel="noopener noreferrer">
+        <Link to={el} target="_blank" rel="noopener noreferrer">
           {el}
-        </a>
+        </Link>
       )
     );
     return result;
@@ -154,9 +154,9 @@ class Chat extends React.Component {
           <div>
             <MessageAuthor>{msg.sender}</MessageAuthor>
             {msg.originalImg ? (
-              <a
+              <Link
                 rel="noopener noreferrer"
-                href={`${url}img/chat/${msg.originalImg}`}
+                to={`${url}img/chat/${msg.originalImg}`}
                 target="_blank"
               >
                 <MessageImage
@@ -164,15 +164,15 @@ class Chat extends React.Component {
                   className="message-image"
                   src={`${url}img/chat/${msg.thumbnailImg}`}
                 />
-              </a>
+              </Link>
             ) : (
               ''
             )}
             {msg.filePath ? (
               <div>
-                <a href={`${url}img/chat/${msg.filePath}`} download>
+                <Link to={`${url}img/chat/${msg.filePath}`} download>
                   {msg.fileName}
-                </a>
+                </Link>
               </div>
             ) : (
               ''
@@ -266,7 +266,7 @@ class Chat extends React.Component {
                         const [username, id] = userOn;
                         return (
                           <User key={userOn}>
-                            <UserLink href={`/anotheruser/${id}`}>{username}</UserLink>
+                            <UserLink to={`/anotheruser/${id}`}>{username}</UserLink>
                           </User>
                         );
                       })}
@@ -283,7 +283,6 @@ class Chat extends React.Component {
                     </MessageList>
                   </div>
                 </Main>
-
                 <Form
                   minimizeChat={minimizeChat}
                   fixedChat={fixedChat}
