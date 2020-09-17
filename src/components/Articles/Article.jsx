@@ -28,9 +28,9 @@ const Article = props => {
           <Link
             style={{
               fontSize: '16px',
-              'margin-left': '6px',
+              marginLeft: '6px',
               color: '#24292e',
-              'line-height': '40px',
+              lineHeight: '40px',
             }}
             to={`/article/${articleInfo.id}/update`}
           >
