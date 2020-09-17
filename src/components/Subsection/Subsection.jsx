@@ -83,6 +83,7 @@ class Subsection extends React.Component {
   }
 }
 
+
 Subsection.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.objectOf(PropTypes.string),

@@ -190,7 +190,7 @@ class App extends React.Component {
 App.propTypes = {
   history: PropTypes.shape({
     location: PropTypes.shape({
-      state: PropTypes.string,
+      state: PropTypes.object,
     }),
   }).isRequired,
 };

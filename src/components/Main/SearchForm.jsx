@@ -84,8 +84,14 @@ const SearchForm = ({ history }) => {
   );
 };
 
+SearchForm.defaultProps = {
+  isLogin: false,
+};
+
+
 SearchForm.propTypes = {
   history: PropTypes.objectOf(PropTypes.any).isRequired,
+  isLogin: PropTypes.bool,
 };
 
 export default withRouter(SearchForm);
