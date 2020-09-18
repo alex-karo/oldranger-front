@@ -69,7 +69,7 @@ const MenuUser = styled.div`
 
 const MenuUserFirstRow = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   width: 100%;
   margin-bottom: 4%;
 `;
@@ -80,15 +80,16 @@ const Header = ({ countMessages, location: { pathname } }) => {
   const switchForumSitePart = bool => {
     setHeaderState(bool);
   };
-
   return (
     <Context.Consumer>
       {({ isLogin, logOut, user, muteChat, state, changeJoinChat }) => (
         <StyledHeader>
-          <WrapLogo>
-            <Logo src={logo} alt='Клуб "Старый следопыт"' />
-            <LogoText>Клуб &quot;Старый следопыт&quot;</LogoText>
-          </WrapLogo>
+          <Link to="/">
+            <WrapLogo>
+              <Logo src={logo} alt='Клуб "Старый следопыт"' />
+              <LogoText>Клуб &quot;Старый следопыт&quot;</LogoText>
+            </WrapLogo>
+          </Link>
           <Menu>
             <MenuMain>
               {isForumHeader ? (

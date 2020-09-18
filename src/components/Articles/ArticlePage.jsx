@@ -223,7 +223,7 @@ class ArticlePage extends React.Component {
     if (error || loading) {
       return (
         <StyledCenteredContainer>
-          {loading ? <Spin /> : 'Не удалось загрузить статью'}
+          {loading ? <Spin /> : <h1>404Error. Page no found. Такой статьи нет</h1>}
         </StyledCenteredContainer>
       );
     }

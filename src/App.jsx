@@ -3,7 +3,7 @@ import Stomp from 'stompjs';
 import SockJS from 'sockjs-client';
 import { Spin } from 'antd';
 import 'antd/dist/antd.css';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import queries from './serverQueries';
 import {
@@ -108,6 +108,16 @@ class App extends React.Component {
     this.setState({ user: { ...data } });
   };
 
+  routeHandler = path => {
+    const array = ['articles', 'chat', 'profile', 'albums', 'topic', 'article'];
+    for (let i = 0; i < array.length; i++) {
+      if (path.includes(array[i])) {
+        return null;
+      }
+    }
+    return <Redirect to="/" />;
+  };
+
   logOut = async () => {
     localStorage.removeItem('user');
     queries.logOut();
@@ -126,7 +136,8 @@ class App extends React.Component {
     } = this.state;
     const {
       history: {
-        location: { state },
+        // eslint-disable-next-line react/prop-types
+        location: { state, pathname },
       },
     } = this.props;
     return (
@@ -179,6 +190,7 @@ class App extends React.Component {
         ) : (
           <Spin />
         )}
+        {this.routeHandler(pathname)}
       </Context.Provider>
     );
   }

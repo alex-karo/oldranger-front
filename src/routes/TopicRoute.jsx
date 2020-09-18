@@ -9,10 +9,8 @@ import TopicUpdate from '../components/Topic/TopicUpdate';
 
 const TopicRoute = ({ isLogin, role }) => (
   <Switch>
+    <Route exact path="/topic/:topicId" component={TopicPage} />
     <PrivateRoute isAllowed={isLogin} path="/topic/add" component={TopicCreate} />
-    <Route exact path="/topic/:topicId">
-      <TopicPage />
-    </Route>
     <PrivateRoute
       isAllowed={isLogin && role === userRoles.admin}
       exact

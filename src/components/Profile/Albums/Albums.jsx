@@ -226,7 +226,7 @@ class Albums extends React.Component {
                 </DeletePhotoButton>
                 <EditPhotoButton
                   type="default"
-                  title="Редактировать албом"
+                  title="Редактировать альбом"
                   onClick={this.editPhotoAlbum(album)}
                 >
                   <Icon type="edit" />

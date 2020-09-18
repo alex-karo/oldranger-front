@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
-import { Breadcrumb, message, notification, Spin, Typography, Button, Result } from 'antd';
+import { Breadcrumb, message, notification, Typography, Button, Spin } from 'antd';
 import Comment from 'antd/es/comment';
 import { Markup } from 'interweave';
 import Album from '../Profile/Albums/Album';
@@ -14,6 +14,7 @@ import TopicStartMessage from './TopicStartMessage';
 import Context from '../Context';
 import withGetUserProfile from '../hoc/withGetUserProfile';
 import UserAvatar from '../commons/UserAvatar';
+import { StyledCenteredContainer } from '../Articles/styled';
 
 const { Text } = Typography;
 
@@ -42,35 +43,48 @@ class TopicPage extends React.Component {
   }
 
   getTopics = page => {
+    this.setState({ loading: true });
     // Get a topic and a list of comments for this topic by topic id
     const { match } = this.props;
     if (page === 1) {
       queries
         .getTopic(match.params.topicId, 0, 10)
         .then(({ topic, commentDto, subscribed }) => {
+          if (!topic) {
+            message.error('Такого топика нет');
+            this.setState({ error: true, loading: false });
+            return;
+          }
           this.setState({
             topic: { ...topic, isSubscribed: subscribed },
             page,
             messages: commentDto ? commentDto.content : null,
             error: false,
+            loading: false,
           });
         })
         .catch(() => {
-          this.setState({ error: true });
+          this.setState({ error: true, loading: false });
         });
     } else {
       queries
         .getTopic(match.params.topicId, page - 1, 10)
         .then(({ topic, commentDto, subscribed }) => {
+          if (!topic) {
+            message.error('Такого топика нет');
+            this.setState({ error: true, loading: false });
+            return;
+          }
           this.setState({
             topic: { ...topic, isSubscribed: subscribed },
             page,
             messages: commentDto ? commentDto.content : null,
             error: false,
+            loading: false,
           });
         })
         .catch(() => {
-          this.setState({ error: true });
+          this.setState({ error: true, loading: false });
         });
     }
   };
@@ -287,114 +301,111 @@ class TopicPage extends React.Component {
   };
 
   render() {
-    const { messages, topic, page, reply, files, uploading, error } = this.state;
+    const { messages, topic, page, reply, files, uploading, error, loading } = this.state;
     const { userProfile } = this.props;
     const { isLogin } = this.context;
     const avatar = userProfile.avatar ? (
       <UserAvatar src={userProfile.avatar} alt="User Avatar" />
     ) : null;
-    return error ? (
-      <Result
-        status="403"
-        title="403"
-        subTitle="Извините, вы не авторизованы для доступа к этой странице."
-        extra={
-          <Button type="primary">
-            <Link to="/login">Авторизироваться</Link>
-          </Button>
-        }
-      />
-    ) : (
-      <div>
-        {topic ? (
-          <div>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Link to="/">Главная</Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <Link to={`/section/${topic.section.id}`}>{topic.section.name}</Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <Link to={`/subsection/${topic.subsection.id}`}>{topic.subsection.name}</Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <Link to={`/topic/${topic.id}`}>{topic.name}</Link>
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <TopicStartMessage topic={topic} toggleLightbox={this.toggleLightbox} />
-            {topic.photoAlbum ? <Album topicPageProp={this.createAlbumProp(topic)} /> : null}
-            {isLogin && (
-              <Button onClick={this.toggleSubscriptionStatus}>
-                {topic.isSubscribed ? 'Отписаться' : 'Подписаться'}
-              </Button>
-            )}
-            <TopicCommentsList
-              changePageHandler={this.changePageHandler}
-              messages={messages}
-              itemComponent={item => (
-                <TopicCommentItem
-                  comment={item}
-                  handleQuoteComment={this.handleQuoteComment}
-                  deleteComment={this.handleDeleteComment}
-                  getTopics={this.getTopics}
-                  page={page}
-                />
-              )}
-              total={topic.messageCount}
-              page={page}
-              replyButtonHandler={this.replyButtonHandler}
-              openNotification={this.openNotification}
-            />
-          </div>
-        ) : (
-          <Spin />
-        )}
-        {reply && (
-          <TopicCommentReplyAlert
-            type="success"
-            closeText="Отменить комментирование"
-            onClose={this.handleCancelReply}
-            message={
-              <>
-                <span>
-                  Ответ на сообщение пользователя <Text strong>{reply.replyNick}</Text>
-                </span>
-                <Markup content={reply.replyText} />
-              </>
-            }
-          />
-        )}
-        {isLogin ? (
-          <Comment
-            avatar={avatar}
-            content={
-              <TopicReplyForm
-                replyRef={element => {
-                  this.replyForm = element;
-                }}
-                handleSubmitComment={this.handleSubmitComment}
-                handleAddFile={this.handleAddFile}
-                files={files}
-                uploading={uploading}
+    if (error) {
+      return (
+        <div>
+          <StyledCenteredContainer>
+            <h1>404Error. Page no found. Такого топика нет</h1>
+          </StyledCenteredContainer>
+        </div>
+      );
+    }
+    const onLoad =
+      loading === true || loading === undefined ? (
+        <Spin />
+      ) : (
+        <div>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              <Link to="/">Главная</Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Link to={`/section/${topic.section.id}`}>{topic.section.name}</Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Link to={`/subsection/${topic.subsection.id}`}>{topic.subsection.name}</Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Link to={`/topic/${topic.id}`}>{topic.name}</Link>
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <TopicStartMessage topic={topic} toggleLightbox={this.toggleLightbox} />
+          {topic.photoAlbum ? <Album topicPageProp={this.createAlbumProp(topic)} /> : null}
+          {isLogin && (
+            <Button onClick={this.toggleSubscriptionStatus}>
+              {topic.isSubscribed ? 'Отписаться' : 'Подписаться'}
+            </Button>
+          )}
+          <TopicCommentsList
+            changePageHandler={this.changePageHandler}
+            messages={messages}
+            itemComponent={item => (
+              <TopicCommentItem
+                comment={item}
+                handleQuoteComment={this.handleQuoteComment}
+                deleteComment={this.handleDeleteComment}
+                getTopics={this.getTopics}
+                page={page}
               />
-            }
+            )}
+            total={topic.messageCount}
+            page={page}
+            replyButtonHandler={this.replyButtonHandler}
+            openNotification={this.openNotification}
           />
-        ) : (
-          <TopicReplyWarning>
-            Для возможности добавлять комментарии необходимо{' '}
-            <Link to="/login">авторизироваться</Link>.
-          </TopicReplyWarning>
-        )}
-        <ReplyFloatButton
-          type="primary"
-          icon="message"
-          onClick={isLogin ? this.replyButtonHandler : this.openNotification}
-        >
-          Ответить
-        </ReplyFloatButton>
-      </div>
-    );
+          {reply && (
+            <TopicCommentReplyAlert
+              type="success"
+              closeText="Отменить комментирование"
+              onClose={this.handleCancelReply}
+              message={
+                <>
+                  <span>
+                    Ответ на сообщение пользователя <Text strong>{reply.replyNick}</Text>
+                  </span>
+                  <Markup content={reply.replyText} />
+                </>
+              }
+            />
+          )}
+          {isLogin ? (
+            <Comment
+              avatar={avatar}
+              content={
+                <TopicReplyForm
+                  replyRef={element => {
+                    this.replyForm = element;
+                  }}
+                  handleSubmitComment={this.handleSubmitComment}
+                  handleAddFile={this.handleAddFile}
+                  files={files}
+                  uploading={uploading}
+                />
+              }
+            />
+          ) : (
+            <TopicReplyWarning>
+              Для возможности добавлять комментарии необходимо{' '}
+              <Link to="/login">авторизироваться</Link>.
+            </TopicReplyWarning>
+          )}
+          <ReplyFloatButton
+            type="primary"
+            icon="message"
+            onClick={isLogin ? this.replyButtonHandler : this.openNotification}
+          >
+            Ответить
+          </ReplyFloatButton>
+        </div>
+      );
+
+    return <div>{onLoad}</div>;
   }
 }
 
