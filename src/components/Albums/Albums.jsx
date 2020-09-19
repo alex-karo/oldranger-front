@@ -3,9 +3,9 @@ import { Row, Button, Icon, message, Modal } from 'antd';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import queries from '../../../serverQueries';
-import Context from '../../Context';
-import { BASE_URL } from '../../../constants';
+import queries from '../../serverQueries';
+import Context from '../Context';
+import { BASE_URL, userRoles } from '../../constants';
 import CreateAlbumPrompt from './CreateAlbumPrompt';
 
 const DeletePhotoButton = styled(Button)`
@@ -164,36 +164,10 @@ class Albums extends React.Component {
     });
   };
 
-  openAlbum = album => () => {
-    const {
-      history,
-      location: { pathname },
-      isMainPage,
-    } = this.props;
-    const { photoAlbumId, photosCounter, thumbImageId, title } = album;
-    const newPhotoAlbumId = {
-      id: photoAlbumId,
-      photosCounter,
-      thumbImageId,
-      title,
-    };
-    if (isMainPage) {
-      history.push({
-        pathname: `/profile/albums/${album.photoAlbumId}`,
-        state: { photoAlbumId: newPhotoAlbumId },
-      });
-      return;
-    }
-    const url = `${pathname}/${album.photoAlbumId}`;
-    history.push({
-      pathname: url,
-      state: { photoAlbumId: newPhotoAlbumId },
-    });
-  };
-
-  renderAlbums = () => {
+  renderAlbums = role => {
     const { albums } = this.state;
     const { isMainPage } = this.props;
+    const { history, location } = this.props;
     return (
       <>
         {isMainPage && (
@@ -204,7 +178,15 @@ class Albums extends React.Component {
         {albums.length > 0 ? (
           <StyledAlbumWrapper>
             {albums.map(album => (
-              <StyledAlbumCard onClick={this.openAlbum(album)} key={album.photoAlbumId}>
+              <StyledAlbumCard
+                onClick={() =>
+                  history.push({
+                    pathname: `${location.pathname}/${album.photoAlbumId}`,
+                    state: { photoAlbumId: album },
+                  })
+                }
+                key={album.photoAlbumId}
+              >
                 <AlbomBackgroundImage
                   src={
                     album.thumbImageId
@@ -217,20 +199,24 @@ class Albums extends React.Component {
                   <PhotoCounter>{album.photosCounter}</PhotoCounter>
                 </AlbomShadow>
 
-                <DeletePhotoButton
-                  type="default"
-                  title="Удалить альбом"
-                  onClick={this.deleteAlbum(album)}
-                >
-                  <Icon type="delete" style={{ color: 'red' }} />
-                </DeletePhotoButton>
-                <EditPhotoButton
-                  type="default"
-                  title="Редактировать албом"
-                  onClick={this.editPhotoAlbum(album)}
-                >
-                  <Icon type="edit" />
-                </EditPhotoButton>
+                {role === userRoles.admin && (
+                  <DeletePhotoButton
+                    type="default"
+                    title="Удалить альбом"
+                    onClick={this.deleteAlbum(album)}
+                  >
+                    <Icon type="delete" style={{ color: 'red' }} />
+                  </DeletePhotoButton>
+                )}
+                {!isMainPage && (
+                  <EditPhotoButton
+                    type="default"
+                    title="Редактировать албом"
+                    onClick={this.editPhotoAlbum(album)}
+                  >
+                    <Icon type="edit" />
+                  </EditPhotoButton>
+                )}
               </StyledAlbumCard>
             ))}
           </StyledAlbumWrapper>
@@ -277,8 +263,8 @@ class Albums extends React.Component {
         {({ user: { role } }) => {
           return (
             <>
-              {this.renderAlbums()}
-              {role === 'ROLE_ADMIN' && this.renderAddAlbumButton()}
+              {this.renderAlbums(role)}
+              {role === userRoles.admin && this.renderAddAlbumButton()}
             </>
           );
         }}

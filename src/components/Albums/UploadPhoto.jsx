@@ -2,7 +2,7 @@ import { Button, Icon, message, Row, Upload } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import queries from '../../../serverQueries';
+import queries from '../../serverQueries';
 
 const UploadButton = styled(Button)`
   @media (max-width: 479px) {

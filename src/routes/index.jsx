@@ -5,6 +5,7 @@ import TopicRoute from './TopicRoute';
 import SearchRoute from './SearchRoute';
 import SubsectionRoute from './SubsectionRoute';
 import ArticlesRoute from './ArticlesRoute';
+import AlbumsRoute from './AlbumsRoute';
 import ChatRoute from './ChatRoute';
 import ArticleDraft from './ArticleDraft';
 
@@ -17,5 +18,6 @@ export {
   SearchRoute,
   SubsectionRoute,
   ArticlesRoute,
+  AlbumsRoute,
   ChatRoute,
 };

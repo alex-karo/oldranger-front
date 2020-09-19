@@ -1,47 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { parseISO, format, formatDistanceToNow } from 'date-fns';
 import ru from 'date-fns/locale/ru';
 import PropTypes from 'prop-types';
-import { Button, Comment, Form, List, Input, Tooltip, Popover } from 'antd';
-import { formatDateToLocalTimeZone } from '../../../utils';
-import UserAvatar from '../../commons/UserAvatar';
+import { Comment, List, Tooltip, Popover } from 'antd';
+import { Form, SubmitButton, Input } from 'formik-antd';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import { formatDateToLocalTimeZone } from '../../utils';
+import UserAvatar from '../commons/UserAvatar';
 
-const { TextArea } = Input;
+const validationSchema = Yup.object({ text: Yup.string().required('Введите текст комментария') });
+const initialValues = { text: '' };
 
-const Editor = data => {
-  const { onChange, onSubmit, value, idPhoto } = data;
+const renderEditorForm = onSubmit => {
   return (
-    <>
-      <Form.Item>
-        <TextArea rows={4} onChange={onChange} value={value} />
-      </Form.Item>
-      <Form.Item>
-        <Button htmlType="submit" onClick={() => onSubmit(idPhoto)} type="primary">
-          Добавить комментарий
-        </Button>
-      </Form.Item>
-    </>
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+      <Form>
+        <Form.Item name="text">
+          <Input.TextArea name="text" rows={4} />
+        </Form.Item>
+        <SubmitButton type="primary">Добавить комментарий</SubmitButton>
+      </Form>
+    </Formik>
   );
 };
 
 function ModalPhoto(props) {
   const { src, currentComments, addComment, idPhoto } = props;
-  const [newCommentText, setNewCommentText] = useState('');
 
-  const handleSubmit = async () => {
-    if (!newCommentText) {
-      return;
-    }
-    const data = { idPhoto, commentText: newCommentText };
-    addComment(data);
-    setNewCommentText('');
-  };
-
-  const handleChange = event => {
-    const { value } = event.target;
-    setNewCommentText(value);
+  const handleSubmit = (values, { resetForm }) => {
+    addComment({ idPhoto, commentText: values.text });
+    resetForm();
   };
 
   currentComments.sort((commentA, commentB) => {
@@ -88,43 +79,26 @@ function ModalPhoto(props) {
     />
   );
 
-  const formAddComment = () => (
-    <Comment
-      content={
-        <Editor
-          onChange={handleChange}
-          onSubmit={handleSubmit}
-          value={newCommentText}
-          idPhoto={idPhoto}
-        />
-      }
-    />
-  );
-
   return (
     <>
       <StyledImage src={src} />
-      {formAddComment()}
+      {<Comment content={renderEditorForm(handleSubmit)} />}
       {currentComments.length > 0 && <CommentList comments={currentComments} />}
     </>
   );
 }
-
 const StyledImage = styled.img`
   object-fit: cover;
   object-position: top center;
   width: 100%;
 `;
-
 ModalPhoto.propTypes = {
   idPhoto: PropTypes.number.isRequired,
   currentComments: PropTypes.arrayOf(PropTypes.object),
   src: PropTypes.string.isRequired,
   addComment: PropTypes.func.isRequired,
 };
-
 ModalPhoto.defaultProps = {
   currentComments: [],
 };
-
 export default withRouter(ModalPhoto);

@@ -4,7 +4,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { Breadcrumb, message, notification, Spin, Typography, Button, Result } from 'antd';
 import Comment from 'antd/es/comment';
 import { Markup } from 'interweave';
-import Album from '../Profile/Albums/Album';
+import Album from '../Albums/Album';
 import TopicCommentsList from './TopicCommentsList';
 import queries from '../../serverQueries';
 import { GoldIcon, ReplyFloatButton, TopicCommentReplyAlert, TopicReplyWarning } from './styled';

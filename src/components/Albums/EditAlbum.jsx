@@ -3,9 +3,9 @@ import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { message, Button, Input, Modal } from 'antd';
 import styled from 'styled-components';
-import queries from '../../../serverQueries';
+import queries from '../../serverQueries';
 import { StyledImage } from './Album';
-import { BASE_URL } from '../../../constants';
+import { BASE_URL } from '../../constants';
 
 const EditSection = styled.div`
   justify-content: space-around;
