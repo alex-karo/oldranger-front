@@ -1,7 +1,6 @@
 import React from 'react';
 import Stomp from 'stompjs';
 import SockJS from 'sockjs-client';
-import { Spin } from 'antd';
 import 'antd/dist/antd.css';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -121,7 +120,6 @@ class App extends React.Component {
       user,
       countMessages,
       stompClient,
-      connect,
     } = this.state;
     const {
       history: {
@@ -160,19 +158,15 @@ class App extends React.Component {
         <ArticleDraft />
         <ArticlesRoute isLogin={isLogin} role={role} />
         <AlbumsRoute isLogin={isLogin} role={role} />
-        {connect ? (
-          <ChatRoute
-            path={state === 'privateChat' ? '/private/:id' : '/'}
-            countMessages={countMessages}
-            isLogin={isLogin}
-            changeJoinChat={this.changeJoinChat}
-            stompClient={stompClient}
-            user={user}
-            component={state === 'privateChat' ? PrivateChat : ChatAuth}
-          />
-        ) : (
-          <Spin />
-        )}
+        <ChatRoute
+          path={state === 'privateChat' ? '/private/:id' : '/'}
+          countMessages={countMessages}
+          isLogin={isLogin}
+          changeJoinChat={this.changeJoinChat}
+          stompClient={stompClient}
+          user={user}
+          component={state === 'privateChat' ? PrivateChat : ChatAuth}
+        />
       </Context.Provider>
     );
   }
