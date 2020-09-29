@@ -288,7 +288,6 @@ class TopicPage extends React.Component {
 
   render() {
     const { messages, topic, page, reply, files, uploading, error } = this.state;
-    console.log(files);
     const { userProfile } = this.props;
     const { isLogin } = this.context;
     const avatar = userProfile.avatar ? (
