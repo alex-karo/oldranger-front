@@ -19,13 +19,9 @@ const SubSectionsList = ({ section, isLogin }) => {
   );
 };
 
-SubSectionsList.defaultProps = {
-  isLogin: false,
-};
-
 SubSectionsList.propTypes = {
   section: sectionProps.isRequired,
-  isLogin: sectionProps.bool,
+  isLogin: sectionProps.isRequired,
 };
 
 export default SubSectionsList;

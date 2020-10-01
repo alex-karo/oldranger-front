@@ -85,19 +85,21 @@ const ArticlesTagsEdit = () => {
 
   return (
     <div style={{ border: '1px solid lightblue', padding: '20px' }}>
-      <Menu mode="inline">
-        <ArticlesTree
-          dataTags={treeData}
-          delTag={delTag}
-          changeActiveTags={changeActiveTags}
-          handleTagsSubmit={handleTagsSubmit}
-          eventType={eventType}
-          editTagsId={editTagsId}
-          visible={visible}
-          handleCancel={handleCancel}
-          updateTagAll={updateTagAll}
-        />
-      </Menu>
+      {
+        <Menu mode="inline">
+          <ArticlesTree
+            dataTags={treeData}
+            delTag={delTag}
+            changeActiveTags={changeActiveTags}
+            handleTagsSubmit={handleTagsSubmit}
+            eventType={eventType}
+            editTagsId={editTagsId}
+            visible={visible}
+            handleCancel={handleCancel}
+            updateTagAll={updateTagAll}
+          />
+        </Menu>
+      }
     </div>
   );
 };

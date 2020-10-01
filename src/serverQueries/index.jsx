@@ -13,7 +13,7 @@ class Queries {
   }
 
   handleSuccess = response => {
-    return response.data;
+    return response?.data;
   };
 
   handleError = error => {
