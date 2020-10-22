@@ -89,7 +89,7 @@ const ProfileData = ({ user, self, id }) => {
   ) : (
     <Link
       to={{
-        pathname: `/private/${id}`,
+        pathname: `/profile/private/${id}`,
         state: 'privateChat',
       }}
     >

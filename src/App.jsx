@@ -161,11 +161,17 @@ class App extends React.Component {
         <ArticlesRoute isLogin={isLogin} role={role} />
         <AlbumsRoute isLogin={isLogin} role={role} />
         <ChatRoute
-          path={state === 'privateChat' ? '/private/:id' : '/'}
-          countMessages={countMessages}
+          path="/chat"
           isLogin={isLogin}
           changeJoinChat={this.changeJoinChat}
           stompClient={stompClient}
+          user={user}
+          component={ChatAuth}
+        />
+        <ChatRoute
+          exact
+          path="/profile/private/:id"
+          isLogin={isLogin}
           user={user}
           component={state === 'privateChat' ? PrivateChat : ChatAuth}
         />

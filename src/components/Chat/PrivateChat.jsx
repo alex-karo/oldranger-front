@@ -113,8 +113,10 @@ class PrivateChat extends React.Component {
 
   postFile = chatToken => async formData => queries.postFilePersonalChat(formData, chatToken);
 
-  deleteCurrentMessage = async () => {
-    // TO-DO на беке нет функционала
+  deleteCurrentMessage = async id => {
+    const { messages } = this.state;
+    queries.deletePrivateMessage(id);
+    this.setState({ messages: messages.filter(msg => msg.id !== id) });
   };
 
   render() {

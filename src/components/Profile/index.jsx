@@ -16,6 +16,7 @@ import Invite from './Invite';
 import Albums from '../Albums/Albums';
 import Album from '../Albums/Album';
 import EditAlbum from '../Albums/EditAlbum';
+import PrivateChatlist from '../Chat/PrivateChatlist';
 
 const Profile = () => {
   const { path } = useRouteMatch();
@@ -46,6 +47,7 @@ const Profile = () => {
         <div>
           <Radio.Group value={currentPage} onChange={changePage} style={{ marginBottom: 20 }}>
             <Radio.Button value="">Профиль</Radio.Button>
+            <Radio.Button value="private">Личные сообщения</Radio.Button>
             <Radio.Button value="messages">Сообщения</Radio.Button>
             <Radio.Button value="themes">Темы</Radio.Button>
             <Radio.Button value="subscriptions">Подписки</Radio.Button>
@@ -57,6 +59,7 @@ const Profile = () => {
         </div>
         <Switch>
           <Route exact path={`${path}/`} component={MainProfile} />
+          <Route exact path={`${path}/private`} component={PrivateChatlist} />
           <Route path={`${path}/messages`} component={Messages} />
           <Route path={`${path}/themes`} component={Themes} />
           <Route path={`${path}/subscriptions`} component={Subscriptions} />

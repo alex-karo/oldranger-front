@@ -114,6 +114,12 @@ const Header = ({ countMessages, location: { pathname } }) => {
                       <StyledBadge state={state} count={countMessages} />
                     </Link>
                   </Button>
+                  <Button type="primary">
+                    <Link to="/profile/private">
+                      {/* {здесь должна быть функция считающая личные сообщения} */}
+                      Личные сообщения <Badge count="1" />
+                    </Link>
+                  </Button>
                   {isForumHeader ? (
                     <Button type="primary" onClick={() => switchForumSitePart(false)}>
                       <Link to="/articles">Сайт</Link>
